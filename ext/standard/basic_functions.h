@@ -102,7 +102,7 @@ PHP_FUNCTION(get_include_path);
 PHP_FUNCTION(set_include_path);
 PHP_FUNCTION(restore_include_path);
 
-PHP_FUNCTION(print_r);
+PHP_FUNCTION(cetak_rekursif);
 PHP_FUNCTION(fprintf);
 PHP_FUNCTION(vfprintf);
 

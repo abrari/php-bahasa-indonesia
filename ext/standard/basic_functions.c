@@ -3010,10 +3010,10 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 	PHP_FE(serialize,														arginfo_serialize)
 	PHP_FE(unserialize,														arginfo_unserialize)
 
-	PHP_FE(var_dump,														arginfo_var_dump)
+	PHP_FE(cetak_variabel,														arginfo_var_dump)
 	PHP_FE(var_export,														arginfo_var_export)
 	PHP_FE(debug_zval_dump,													arginfo_debug_zval_dump)
-	PHP_FE(print_r,															arginfo_print_r)
+	PHP_FE(cetak_rekursif,															arginfo_print_r)
 	PHP_FE(memory_get_usage,												arginfo_memory_get_usage)
 	PHP_FE(memory_get_peak_usage,											arginfo_memory_get_peak_usage)
 
@@ -5600,7 +5600,7 @@ PHP_FUNCTION(restore_include_path)
 
 /* {{{ proto mixed print_r(mixed var [, bool return])
    Prints out or returns information about the specified variable */
-PHP_FUNCTION(print_r)
+PHP_FUNCTION(cetak_rekursif)
 {
 	zval *var;
 	zend_bool do_return = 0;
