@@ -25,6 +25,9 @@ fungsi generator($n) {
 }
 untuksetiap (generator(5) sebagai $x) cetak $x;
 
+// eval
+jalankan("cetak 'ini dievaluasi';");
+
 // include, include_once, require, require_once
 sertakan 'hello-world.php';
 sertakan_satu_kali 'hello-world.php';

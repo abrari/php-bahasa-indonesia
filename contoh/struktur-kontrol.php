@@ -10,6 +10,9 @@ jika (kosong($a)) {
     tampil "negatif\n";
 }
 
+$p = benar;
+jika ($p == benar && $a == 10) cetak "yes\n";
+
 // switch, case, break
 $b = 2;
 pilihan($b) {
