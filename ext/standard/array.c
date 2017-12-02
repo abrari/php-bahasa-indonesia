@@ -1756,7 +1756,7 @@ static zend_long php_extract_ref_if_exists(zend_array *arr, zend_array *symbol_t
 			if (ZSTR_LEN(var_name) == sizeof("GLOBALS")-1 && !strcmp(ZSTR_VAL(var_name), "GLOBALS")) {
 				continue;
 			}
-			if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+			if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 				if (!exception_thrown) {
 					exception_thrown = 1;
 					zend_throw_error(NULL, "Cannot re-assign $this");
@@ -1800,7 +1800,7 @@ static zend_long php_extract_if_exists(zend_array *arr, zend_array *symbol_table
 			if (ZSTR_LEN(var_name) == sizeof("GLOBALS")-1 && !strcmp(ZSTR_VAL(var_name), "GLOBALS")) {
 				continue;
 			}
-			if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+			if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 				if (!exception_thrown) {
 					exception_thrown = 1;
 					zend_throw_error(NULL, "Cannot re-assign $this");
@@ -1833,7 +1833,7 @@ static zend_long php_extract_ref_overwrite(zend_array *arr, zend_array *symbol_t
 		if (!php_valid_var_name(ZSTR_VAL(var_name), ZSTR_LEN(var_name))) {
 			continue;
 		}
-		if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+		if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 			if (!exception_thrown) {
 				exception_thrown = 1;
 				zend_throw_error(NULL, "Cannot re-assign $this");
@@ -1878,7 +1878,7 @@ static zend_long php_extract_overwrite(zend_array *arr, zend_array *symbol_table
 		if (!php_valid_var_name(ZSTR_VAL(var_name), ZSTR_LEN(var_name))) {
 			continue;
 		}
-		if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+		if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 			if (!exception_thrown) {
 				exception_thrown = 1;
 				zend_throw_error(NULL, "Cannot re-assign $this");
@@ -1934,7 +1934,7 @@ static zend_long php_extract_ref_prefix_if_exists(zend_array *arr, zend_array *s
 			}
 			php_prefix_varname(&final_name, prefix, ZSTR_VAL(var_name), ZSTR_LEN(var_name), 1);
 			if (php_valid_var_name(Z_STRVAL(final_name), Z_STRLEN(final_name))) {
-				if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+				if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 					if (!exception_thrown) {
 						exception_thrown = 1;
 						zend_throw_error(NULL, "Cannot re-assign $this");
@@ -1986,7 +1986,7 @@ static zend_long php_extract_prefix_if_exists(zend_array *arr, zend_array *symbo
 			}
 			php_prefix_varname(&final_name, prefix, ZSTR_VAL(var_name), ZSTR_LEN(var_name), 1);
 			if (php_valid_var_name(Z_STRVAL(final_name), Z_STRLEN(final_name))) {
-				if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+				if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 					if (!exception_thrown) {
 						exception_thrown = 1;
 						zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2043,7 +2043,7 @@ static zend_long php_extract_ref_prefix_same(zend_array *arr, zend_array *symbol
 			}
 			php_prefix_varname(&final_name, prefix, ZSTR_VAL(var_name), ZSTR_LEN(var_name), 1);
 			if (php_valid_var_name(Z_STRVAL(final_name), Z_STRLEN(final_name))) {
-				if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+				if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 					if (!exception_thrown) {
 						exception_thrown = 1;
 						zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2068,7 +2068,7 @@ static zend_long php_extract_ref_prefix_same(zend_array *arr, zend_array *symbol
 			if (!php_valid_var_name(ZSTR_VAL(var_name), ZSTR_LEN(var_name))) {
 				continue;
 			}
-			if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+			if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 				if (!exception_thrown) {
 					exception_thrown = 1;
 					zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2113,7 +2113,7 @@ static zend_long php_extract_prefix_same(zend_array *arr, zend_array *symbol_tab
 			}
 			php_prefix_varname(&final_name, prefix, ZSTR_VAL(var_name), ZSTR_LEN(var_name), 1);
 			if (php_valid_var_name(Z_STRVAL(final_name), Z_STRLEN(final_name))) {
-				if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+				if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 					if (!exception_thrown) {
 						exception_thrown = 1;
 						zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2139,7 +2139,7 @@ static zend_long php_extract_prefix_same(zend_array *arr, zend_array *symbol_tab
 			if (!php_valid_var_name(ZSTR_VAL(var_name), ZSTR_LEN(var_name))) {
 				continue;
 			}
-			if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+			if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 				if (!exception_thrown) {
 					exception_thrown = 1;
 					zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2177,7 +2177,7 @@ static zend_long php_extract_ref_prefix_all(zend_array *arr, zend_array *symbol_
 			zend_string_release(str);
 		}
 		if (php_valid_var_name(Z_STRVAL(final_name), Z_STRLEN(final_name))) {
-			if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+			if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 				if (!exception_thrown) {
 					exception_thrown = 1;
 					zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2224,7 +2224,7 @@ static zend_long php_extract_prefix_all(zend_array *arr, zend_array *symbol_tabl
 			zend_string_release(str);
 		}
 		if (php_valid_var_name(Z_STRVAL(final_name), Z_STRLEN(final_name))) {
-			if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+			if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 				if (!exception_thrown) {
 					exception_thrown = 1;
 					zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2280,7 +2280,7 @@ static zend_long php_extract_ref_prefix_invalid(zend_array *arr, zend_array *sym
 				continue;
 			}
 		}
-		if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+		if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 			if (!exception_thrown) {
 				exception_thrown = 1;
 				zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2334,7 +2334,7 @@ static zend_long php_extract_prefix_invalid(zend_array *arr, zend_array *symbol_
 				continue;
 			}
 		}
-		if (Z_STRLEN(final_name) == sizeof("this")-1  && !strcmp(Z_STRVAL(final_name), "this")) {
+		if (Z_STRLEN(final_name) == sizeof("ini")-1  && !strcmp(Z_STRVAL(final_name), "ini")) {
 			if (!exception_thrown) {
 				exception_thrown = 1;
 				zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2375,7 +2375,7 @@ static zend_long php_extract_ref_skip(zend_array *arr, zend_array *symbol_table)
 		if (!php_valid_var_name(ZSTR_VAL(var_name), ZSTR_LEN(var_name))) {
 			continue;
 		}
-		if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+		if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 			if (!exception_thrown) {
 				exception_thrown = 1;
 				zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2419,7 +2419,7 @@ static zend_long php_extract_skip(zend_array *arr, zend_array *symbol_table) /* 
 		if (!php_valid_var_name(ZSTR_VAL(var_name), ZSTR_LEN(var_name))) {
 			continue;
 		}
-		if (ZSTR_LEN(var_name) == sizeof("this")-1  && !strcmp(ZSTR_VAL(var_name), "this")) {
+		if (ZSTR_LEN(var_name) == sizeof("ini")-1  && !strcmp(ZSTR_VAL(var_name), "ini")) {
 			if (!exception_thrown) {
 				exception_thrown = 1;
 				zend_throw_error(NULL, "Cannot re-assign $this");
@@ -2560,7 +2560,7 @@ static void php_compact_var(HashTable *eg_active_symbol_table, zval *return_valu
 			ZVAL_COPY(&data, value_ptr);
 			zend_hash_update(Z_ARRVAL_P(return_value), Z_STR_P(entry), &data);
 		}
-		if (zend_string_equals_literal(Z_STR_P(entry), "this")) {
+		if (zend_string_equals_literal(Z_STR_P(entry), "ini")) {
 			zend_object *object = zend_get_this_object(EG(current_execute_data));
 			if (object) {
 				GC_ADDREF(object);

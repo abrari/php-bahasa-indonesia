@@ -1299,7 +1299,7 @@ static int phpdbg_watchpoint_parse_symtables(char *input, size_t len, int (*call
 	int ret;
 
 	if (scope && len >= 5 && !memcmp("$this", input, 5)) {
-		zend_hash_str_add(EG(current_execute_data)->symbol_table, ZEND_STRL("this"), &EG(current_execute_data)->This);
+		zend_hash_str_add(EG(current_execute_data)->symbol_table, ZEND_STRL("ini"), &EG(current_execute_data)->This);
 	}
 
 	if (callback == phpdbg_create_array_watchpoint) {

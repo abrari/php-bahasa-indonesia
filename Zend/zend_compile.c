@@ -2618,7 +2618,7 @@ static zend_bool is_this_fetch(zend_ast *ast) /* {{{ */
 {
 	if (ast->kind == ZEND_AST_VAR && ast->child[0]->kind == ZEND_AST_ZVAL) {
 		zval *name = zend_ast_get_zval(ast->child[0]);
-		return Z_TYPE_P(name) == IS_STRING && zend_string_equals_literal(Z_STR_P(name), "this");
+		return Z_TYPE_P(name) == IS_STRING && zend_string_equals_literal(Z_STR_P(name), "ini");
 	}
 
 	return 0;
@@ -4246,7 +4246,7 @@ static void zend_compile_static_var_common(zend_ast *var_ast, zval *value, zend_
 	}
 	zend_hash_update(CG(active_op_array)->static_variables, var_name, value);
 
-	if (zend_string_equals_literal(var_name, "this")) {
+	if (zend_string_equals_literal(var_name, "ini")) {
 		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as static variable");
 	}
 
@@ -5120,7 +5120,7 @@ void zend_compile_try(zend_ast *ast) /* {{{ */
 			opline->op1.constant = zend_add_class_name_literal(CG(active_op_array),
 					zend_resolve_class_name_ast(class_ast));
 
-			if (zend_string_equals_literal(var_name, "this")) {
+			if (zend_string_equals_literal(var_name, "ini")) {
 				zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign $this");
 			}
 
@@ -5468,7 +5468,7 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 		if (EX_VAR_TO_NUM(var_node.u.op.var) != i) {
 			zend_error_noreturn(E_COMPILE_ERROR, "Redefinition of parameter $%s",
 				ZSTR_VAL(name));
-		} else if (zend_string_equals_literal(name, "this")) {
+		} else if (zend_string_equals_literal(name, "ini")) {
 			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as parameter");
 		}
 
@@ -5627,7 +5627,7 @@ static void zend_compile_closure_binding(znode *closure, zend_ast *uses_ast) /* 
 		zend_bool by_ref = var_name_ast->attr;
 		zend_op *opline;
 
-		if (zend_string_equals_literal(var_name, "this")) {
+		if (zend_string_equals_literal(var_name, "ini")) {
 			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as lexical variable");
 		}
 
