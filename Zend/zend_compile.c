@@ -131,7 +131,7 @@ struct reserved_class_name {
 };
 static const struct reserved_class_name reserved_class_names[] = {
 	{ZEND_STRL("bool")},
-	{ZEND_STRL("false")},
+	{ZEND_STRL("salah")},
 	{ZEND_STRL("float")},
 	{ZEND_STRL("int")},
 	{ZEND_STRL("null")},
@@ -139,7 +139,7 @@ static const struct reserved_class_name reserved_class_names[] = {
 	{ZEND_STRL("self")},
 	{ZEND_STRL("static")},
 	{ZEND_STRL("string")},
-	{ZEND_STRL("true")},
+	{ZEND_STRL("benar")},
 	{ZEND_STRL("void")},
 	{ZEND_STRL("iterable")},
 	{ZEND_STRL("object")},
