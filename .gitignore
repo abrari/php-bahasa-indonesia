@@ -135,6 +135,8 @@ Zend/zend_ini_parser.output
 Zend/zend_language_parser.c
 Zend/zend_language_parser.h
 Zend/zend_language_parser.output
+Zend/zend_language_scanner.c
+Zend/zend_language_scanner_defs.h
 
 # Extension specific ignores
 ext/*/configure.in
