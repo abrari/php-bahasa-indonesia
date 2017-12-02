@@ -369,20 +369,20 @@ static int cli_is_valid_code(char *code, int len, zend_string **prompt) /* {{{ *
 	switch (code_type) {
 		default:
 			if (brace_count) {
-				*prompt = cli_get_prompt("php", '(');
+				*prompt = cli_get_prompt("phpid", '(');
 			} else if (brackets_count) {
-				*prompt = cli_get_prompt("php", '{');
+				*prompt = cli_get_prompt("phpid", '{');
 			} else {
-				*prompt = cli_get_prompt("php", '>');
+				*prompt = cli_get_prompt("phpid", '>');
 			}
 			break;
 		case sstring:
 		case sstring_esc:
-			*prompt = cli_get_prompt("php", '\'');
+			*prompt = cli_get_prompt("phpid", '\'');
 			break;
 		case dstring:
 		case dstring_esc:
-			*prompt = cli_get_prompt("php", '"');
+			*prompt = cli_get_prompt("phpid", '"');
 			break;
 		case comment_block:
 			*prompt = cli_get_prompt("/* ", '>');
@@ -586,7 +586,7 @@ static int readline_shell_run(void) /* {{{ */
 	char *line;
 	size_t size = 4096, pos = 0, len;
 	char *code = emalloc(size);
-	zend_string *prompt = cli_get_prompt("php", '>');
+	zend_string *prompt = cli_get_prompt("phpid", '>');
 	char *history_file;
 	int history_lines_to_write = 0;
 
@@ -642,7 +642,7 @@ static int readline_shell_run(void) /* {{{ */
 
 				zend_string_release(prompt);
 				/* TODO: This might be wrong! */
-				prompt = cli_get_prompt("php", '>');
+				prompt = cli_get_prompt("phpid", '>');
 				continue;
 			}
 		}

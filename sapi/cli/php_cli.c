@@ -930,9 +930,9 @@ static int do_cli(int argc, char **argv) /* {{{ */
 
 		if (interactive) {
 #if (HAVE_LIBREADLINE || HAVE_LIBEDIT) && !defined(COMPILE_DL_READLINE)
-			printf("Interactive shell\n\n");
+			printf("Mode shell interaktif\n\n");
 #else
-			printf("Interactive mode enabled\n\n");
+			printf("Mode interaktif\n\n");
 #endif
 			fflush(stdout);
 		}

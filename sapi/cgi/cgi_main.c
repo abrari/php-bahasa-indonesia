@@ -2338,7 +2338,7 @@ consult the installation file that came with this distribution, or visit \n\
 					switch (c) {
 
 						case 'a':	/* interactive mode */
-							printf("Interactive mode enabled\n\n");
+							printf("Mode interaktif\n\n");
 							break;
 
 						case 'C': /* don't chdir to the script directory */
