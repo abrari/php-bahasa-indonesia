@@ -1228,7 +1228,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_GOTO);
 }
 
-<ST_IN_SCRIPTING>"tampilkan" {
+<ST_IN_SCRIPTING>"tampil" {
 	RETURN_TOKEN(T_ECHO);
 }
 
@@ -1244,7 +1244,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_INTERFACE);
 }
 
-<ST_IN_SCRIPTING>"trait" {
+<ST_IN_SCRIPTING>"sifat" {
 	RETURN_TOKEN(T_TRAIT);
 }
 
