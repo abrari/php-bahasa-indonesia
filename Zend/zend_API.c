@@ -2159,7 +2159,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 					if (type_name[0] == '?') {
 						type_name++;
 					}
-					if (!scope && (!strcasecmp(type_name, "self") || !strcasecmp(type_name, "parent"))) {
+					if (!scope && (!strcasecmp(type_name, "diri") || !strcasecmp(type_name, "induk"))) {
 						zend_error_noreturn(E_CORE_ERROR, "Cannot declare a return type of %s outside of a class scope", type_name);
 					}
 				}
@@ -2822,7 +2822,7 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 	zend_str_tolower_copy(ZSTR_VAL(lcname), ZSTR_VAL(name), name_len);
 
 	*strict_class = 0;
-	if (zend_string_equals_literal(lcname, "self")) {
+	if (zend_string_equals_literal(lcname, "diri")) {
 		if (!scope) {
 			if (error) *error = estrdup("cannot access self:: when no class scope is active");
 		} else {
@@ -2833,7 +2833,7 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 			}
 			ret = 1;
 		}
-	} else if (zend_string_equals_literal(lcname, "parent")) {
+	} else if (zend_string_equals_literal(lcname, "induk")) {
 		if (!scope) {
 			if (error) *error = estrdup("cannot access parent:: when no class scope is active");
 		} else if (!scope->parent) {
@@ -2847,7 +2847,7 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 			*strict_class = 1;
 			ret = 1;
 		}
-	} else if (zend_string_equals_literal(lcname, "static")) {
+	} else if (zend_string_equals_literal(lcname, "statis")) {
 		zend_class_entry *called_scope = zend_get_called_scope(EG(current_execute_data));
 
 		if (!called_scope) {

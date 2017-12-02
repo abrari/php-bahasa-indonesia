@@ -306,13 +306,13 @@ ZEND_API zval *zend_get_constant_ex(zend_string *cname, zend_class_entry *scope,
 		zend_class_constant *c = NULL;
 		zval *ret_constant = NULL;
 
-		if (zend_string_equals_literal_ci(class_name, "self")) {
+		if (zend_string_equals_literal_ci(class_name, "diri")) {
 			if (UNEXPECTED(!scope)) {
 				zend_throw_error(NULL, "Cannot access self:: when no class scope is active");
 				goto failure;
 			}
 			ce = scope;
-		} else if (zend_string_equals_literal_ci(class_name, "parent")) {
+		} else if (zend_string_equals_literal_ci(class_name, "induk")) {
 			if (UNEXPECTED(!scope)) {
 				zend_throw_error(NULL, "Cannot access parent:: when no class scope is active");
 				goto failure;
@@ -322,7 +322,7 @@ ZEND_API zval *zend_get_constant_ex(zend_string *cname, zend_class_entry *scope,
 			} else {
 				ce = scope->parent;
 			}
-		} else if (zend_string_equals_literal_ci(class_name, "static")) {
+		} else if (zend_string_equals_literal_ci(class_name, "statis")) {
 			ce = zend_get_called_scope(EG(current_execute_data));
 			if (UNEXPECTED(!ce)) {
 				zend_throw_error(NULL, "Cannot access static:: when no class scope is active");

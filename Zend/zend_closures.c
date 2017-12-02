@@ -200,7 +200,7 @@ ZEND_METHOD(Closure, bind)
 		} else {
 			zend_string *tmp_class_name;
 			zend_string *class_name = zval_get_tmp_string(scope_arg, &tmp_class_name);
-			if (zend_string_equals_literal(class_name, "static")) {
+			if (zend_string_equals_literal(class_name, "statis")) {
 				ce = closure->func.common.scope;
 			} else if ((ce = zend_lookup_class_ex(class_name, NULL, 1)) == NULL) {
 				zend_error(E_WARNING, "Class '%s' not found", ZSTR_VAL(class_name));

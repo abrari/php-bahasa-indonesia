@@ -135,9 +135,9 @@ static const struct reserved_class_name reserved_class_names[] = {
 	{ZEND_STRL("float")},
 	{ZEND_STRL("int")},
 	{ZEND_STRL("null")},
-	{ZEND_STRL("parent")},
-	{ZEND_STRL("self")},
-	{ZEND_STRL("static")},
+	{ZEND_STRL("induk")},
+	{ZEND_STRL("diri")},
+	{ZEND_STRL("statis")},
 	{ZEND_STRL("string")},
 	{ZEND_STRL("benar")},
 	{ZEND_STRL("void")},
@@ -1445,11 +1445,11 @@ static inline zend_bool class_name_refers_to_active_ce(zend_string *class_name, 
 
 uint32_t zend_get_class_fetch_type(zend_string *name) /* {{{ */
 {
-	if (zend_string_equals_literal_ci(name, "self")) {
+	if (zend_string_equals_literal_ci(name, "diri")) {
 		return ZEND_FETCH_CLASS_SELF;
-	} else if (zend_string_equals_literal_ci(name, "parent")) {
+	} else if (zend_string_equals_literal_ci(name, "induk")) {
 		return ZEND_FETCH_CLASS_PARENT;
-	} else if (zend_string_equals_literal_ci(name, "static")) {
+	} else if (zend_string_equals_literal_ci(name, "statis")) {
 		return ZEND_FETCH_CLASS_STATIC;
 	} else {
 		return ZEND_FETCH_CLASS_DEFAULT;
@@ -1472,8 +1472,8 @@ static void zend_ensure_valid_class_fetch_type(uint32_t fetch_type) /* {{{ */
 {
 	if (fetch_type != ZEND_FETCH_CLASS_DEFAULT && !CG(active_class_entry) && zend_is_scope_known()) {
 		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use \"%s\" when no class scope is active",
-			fetch_type == ZEND_FETCH_CLASS_SELF ? "self" :
-			fetch_type == ZEND_FETCH_CLASS_PARENT ? "parent" : "static");
+			fetch_type == ZEND_FETCH_CLASS_SELF ? "diri" :
+			fetch_type == ZEND_FETCH_CLASS_PARENT ? "induk" : "statis");
 	}
 }
 /* }}} */
@@ -1511,7 +1511,7 @@ static zend_bool zend_try_compile_const_expr_resolve_class_name(zval *zv, zend_a
 			if (constant) {
 				zend_error_noreturn(E_COMPILE_ERROR,
 					"%s::class cannot be used for compile-time class name resolution",
-					fetch_type == ZEND_FETCH_CLASS_STATIC ? "static" : "parent"
+					fetch_type == ZEND_FETCH_CLASS_STATIC ? "statis" : "induk"
 				);
 			} else {
 				ZVAL_NULL(zv);
