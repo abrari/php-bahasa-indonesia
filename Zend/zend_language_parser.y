@@ -946,9 +946,9 @@ expr_without_variable:
 			{ $$ = zend_ast_create_decl(ZEND_AST_CLOSURE, $2 | $13, $1, $3,
 				  zend_string_init("{closure}", sizeof("{closure}") - 1, 0),
 			      $5, $7, $11, $8); CG(extra_fn_flags) = $9; }
-	|	T_STATIC function returns_ref backup_doc_comment '(' parameter_list ')' lexical_vars
+	|	function T_STATIC returns_ref backup_doc_comment '(' parameter_list ')' lexical_vars
 		return_type backup_fn_flags '{' inner_statement_list '}' backup_fn_flags
-			{ $$ = zend_ast_create_decl(ZEND_AST_CLOSURE, $3 | $14 | ZEND_ACC_STATIC, $2, $4,
+			{ $$ = zend_ast_create_decl(ZEND_AST_CLOSURE, $3 | $14 | ZEND_ACC_STATIC, $1, $4,
 			      zend_string_init("{closure}", sizeof("{closure}") - 1, 0),
 			      $6, $8, $12, $9); CG(extra_fn_flags) = $10; }
 ;
