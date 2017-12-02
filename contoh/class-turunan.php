@@ -25,4 +25,9 @@ kelas Pegawai turunan Orang mengimplementasikan Test {
 $pegawai = buat Pegawai("Chandra", "HRD");
 cetak_variabel($pegawai);
 
+// instanceof
+cetak_variabel($pegawai merupakansuatu Orang);
 
+// clone
+$pegawai2 = salin $pegawai;
+cetak_variabel($pegawai2);
