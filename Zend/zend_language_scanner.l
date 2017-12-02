@@ -1122,121 +1122,93 @@ NEWLINE ("\r"|"\n"|"\r\n")
 /* compute yyleng before each rule */
 <!*> := yyleng = YYCURSOR - SCNG(yy_text);
 
-<ST_IN_SCRIPTING>"exit" {
+<ST_IN_SCRIPTING>"keluar" {
 	RETURN_TOKEN(T_EXIT);
 }
 
-<ST_IN_SCRIPTING>"die" {
+<ST_IN_SCRIPTING>"matikan" {
 	RETURN_TOKEN(T_EXIT);
 }
 
-<ST_IN_SCRIPTING>"function" {
+<ST_IN_SCRIPTING>"fungsi" {
 	RETURN_TOKEN(T_FUNCTION);
 }
 
-<ST_IN_SCRIPTING>"const" {
+<ST_IN_SCRIPTING>"konstanta" {
 	RETURN_TOKEN(T_CONST);
 }
 
-<ST_IN_SCRIPTING>"return" {
+<ST_IN_SCRIPTING>"kembalikan" {
 	RETURN_TOKEN(T_RETURN);
 }
 
-<ST_IN_SCRIPTING>"yield"{WHITESPACE}"from"[^a-zA-Z0-9_\x80-\xff] {
+<ST_IN_SCRIPTING>"hasilkan"{WHITESPACE}"dari"[^a-zA-Z0-9_\x80-\xff] {
 	yyless(yyleng - 1);
 	HANDLE_NEWLINES(yytext, yyleng);
 	RETURN_TOKEN(T_YIELD_FROM);
 }
 
-<ST_IN_SCRIPTING>"yield" {
+<ST_IN_SCRIPTING>"hasilkan" {
 	RETURN_TOKEN(T_YIELD);
 }
 
-<ST_IN_SCRIPTING>"try" {
+<ST_IN_SCRIPTING>"coba" {
 	RETURN_TOKEN(T_TRY);
 }
 
-<ST_IN_SCRIPTING>"catch" {
+<ST_IN_SCRIPTING>"tangkap" {
 	RETURN_TOKEN(T_CATCH);
 }
 
-<ST_IN_SCRIPTING>"finally" {
+<ST_IN_SCRIPTING>"akhirnya" {
 	RETURN_TOKEN(T_FINALLY);
 }
 
-<ST_IN_SCRIPTING>"throw" {
+<ST_IN_SCRIPTING>"lemparkan" {
 	RETURN_TOKEN(T_THROW);
 }
 
-<ST_IN_SCRIPTING>"if" {
+<ST_IN_SCRIPTING>"jika" {
 	RETURN_TOKEN(T_IF);
 }
 
-<ST_IN_SCRIPTING>"elseif" {
-	RETURN_TOKEN(T_ELSEIF);
-}
-
-<ST_IN_SCRIPTING>"endif" {
-	RETURN_TOKEN(T_ENDIF);
-}
-
-<ST_IN_SCRIPTING>"else" {
+<ST_IN_SCRIPTING>"selainnya" {
 	RETURN_TOKEN(T_ELSE);
 }
 
-<ST_IN_SCRIPTING>"while" {
+<ST_IN_SCRIPTING>"selama" {
 	RETURN_TOKEN(T_WHILE);
 }
 
-<ST_IN_SCRIPTING>"endwhile" {
-	RETURN_TOKEN(T_ENDWHILE);
-}
-
-<ST_IN_SCRIPTING>"do" {
+<ST_IN_SCRIPTING>"kerjakan" {
 	RETURN_TOKEN(T_DO);
 }
 
-<ST_IN_SCRIPTING>"for" {
+<ST_IN_SCRIPTING>"untuk" {
 	RETURN_TOKEN(T_FOR);
 }
 
-<ST_IN_SCRIPTING>"endfor" {
-	RETURN_TOKEN(T_ENDFOR);
-}
-
-<ST_IN_SCRIPTING>"foreach" {
+<ST_IN_SCRIPTING>"untuksetiap" {
 	RETURN_TOKEN(T_FOREACH);
 }
 
-<ST_IN_SCRIPTING>"endforeach" {
-	RETURN_TOKEN(T_ENDFOREACH);
-}
-
-<ST_IN_SCRIPTING>"declare" {
+<ST_IN_SCRIPTING>"deklarasikan" {
 	RETURN_TOKEN(T_DECLARE);
 }
 
-<ST_IN_SCRIPTING>"enddeclare" {
-	RETURN_TOKEN(T_ENDDECLARE);
-}
-
-<ST_IN_SCRIPTING>"instanceof" {
+<ST_IN_SCRIPTING>"merupakansuatu" {
 	RETURN_TOKEN(T_INSTANCEOF);
 }
 
-<ST_IN_SCRIPTING>"as" {
+<ST_IN_SCRIPTING>"sebagai" {
 	RETURN_TOKEN(T_AS);
 }
 
-<ST_IN_SCRIPTING>"switch" {
+<ST_IN_SCRIPTING>"pilihan" {
 	RETURN_TOKEN(T_SWITCH);
 }
 
-<ST_IN_SCRIPTING>"endswitch" {
-	RETURN_TOKEN(T_ENDSWITCH);
-}
-
-<ST_IN_SCRIPTING>"case" {
+<ST_IN_SCRIPTING>"jikanilai" {
 	RETURN_TOKEN(T_CASE);
 }
 
@@ -1244,27 +1216,27 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_DEFAULT);
 }
 
-<ST_IN_SCRIPTING>"break" {
+<ST_IN_SCRIPTING>"berhenti" {
 	RETURN_TOKEN(T_BREAK);
 }
 
-<ST_IN_SCRIPTING>"continue" {
+<ST_IN_SCRIPTING>"lanjutkan" {
 	RETURN_TOKEN(T_CONTINUE);
 }
 
-<ST_IN_SCRIPTING>"goto" {
+<ST_IN_SCRIPTING>"lompatke" {
 	RETURN_TOKEN(T_GOTO);
 }
 
-<ST_IN_SCRIPTING>"echo" {
+<ST_IN_SCRIPTING>"tampilkan" {
 	RETURN_TOKEN(T_ECHO);
 }
 
-<ST_IN_SCRIPTING>"print" {
+<ST_IN_SCRIPTING>"cetak" {
 	RETURN_TOKEN(T_PRINT);
 }
 
-<ST_IN_SCRIPTING>"class" {
+<ST_IN_SCRIPTING>"kelas" {
 	RETURN_TOKEN(T_CLASS);
 }
 
@@ -1276,11 +1248,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_TRAIT);
 }
 
-<ST_IN_SCRIPTING>"extends" {
+<ST_IN_SCRIPTING>"turunan" {
 	RETURN_TOKEN(T_EXTENDS);
 }
 
-<ST_IN_SCRIPTING>"implements" {
+<ST_IN_SCRIPTING>"mengimplementasikan" {
 	RETURN_TOKEN(T_IMPLEMENTS);
 }
 
@@ -1326,15 +1298,15 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_COALESCE);
 }
 
-<ST_IN_SCRIPTING>"new" {
+<ST_IN_SCRIPTING>"buat" {
 	RETURN_TOKEN(T_NEW);
 }
 
-<ST_IN_SCRIPTING>"clone" {
+<ST_IN_SCRIPTING>"salin" {
 	RETURN_TOKEN(T_CLONE);
 }
 
-<ST_IN_SCRIPTING>"var" {
+<ST_IN_SCRIPTING>"variabel" {
 	RETURN_TOKEN(T_VAR);
 }
 
@@ -1366,23 +1338,23 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_UNSET_CAST);
 }
 
-<ST_IN_SCRIPTING>"eval" {
+<ST_IN_SCRIPTING>"jalankan" {
 	RETURN_TOKEN(T_EVAL);
 }
 
-<ST_IN_SCRIPTING>"include" {
+<ST_IN_SCRIPTING>"sertakan" {
 	RETURN_TOKEN(T_INCLUDE);
 }
 
-<ST_IN_SCRIPTING>"include_once" {
+<ST_IN_SCRIPTING>"sertakan_satu_kali" {
 	RETURN_TOKEN(T_INCLUDE_ONCE);
 }
 
-<ST_IN_SCRIPTING>"require" {
+<ST_IN_SCRIPTING>"membutuhkan" {
 	RETURN_TOKEN(T_REQUIRE);
 }
 
-<ST_IN_SCRIPTING>"require_once" {
+<ST_IN_SCRIPTING>"membutuhkan_satu_kali" {
 	RETURN_TOKEN(T_REQUIRE_ONCE);
 }
 
@@ -1390,11 +1362,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_NAMESPACE);
 }
 
-<ST_IN_SCRIPTING>"use" {
+<ST_IN_SCRIPTING>"gunakan" {
 	RETURN_TOKEN(T_USE);
 }
 
-<ST_IN_SCRIPTING>"insteadof" {
+<ST_IN_SCRIPTING>"alihalih" {
     RETURN_TOKEN(T_INSTEADOF);
 }
 
@@ -1402,11 +1374,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_GLOBAL);
 }
 
-<ST_IN_SCRIPTING>"isset" {
+<ST_IN_SCRIPTING>"diset" {
 	RETURN_TOKEN(T_ISSET);
 }
 
-<ST_IN_SCRIPTING>"empty" {
+<ST_IN_SCRIPTING>"kosong" {
 	RETURN_TOKEN(T_EMPTY);
 }
 
@@ -1414,11 +1386,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_HALT_COMPILER);
 }
 
-<ST_IN_SCRIPTING>"static" {
+<ST_IN_SCRIPTING>"statis" {
 	RETURN_TOKEN(T_STATIC);
 }
 
-<ST_IN_SCRIPTING>"abstract" {
+<ST_IN_SCRIPTING>"abstrak" {
 	RETURN_TOKEN(T_ABSTRACT);
 }
 
@@ -1426,19 +1398,19 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_FINAL);
 }
 
-<ST_IN_SCRIPTING>"private" {
+<ST_IN_SCRIPTING>"privat" {
 	RETURN_TOKEN(T_PRIVATE);
 }
 
-<ST_IN_SCRIPTING>"protected" {
+<ST_IN_SCRIPTING>"terproteksi" {
 	RETURN_TOKEN(T_PROTECTED);
 }
 
-<ST_IN_SCRIPTING>"public" {
+<ST_IN_SCRIPTING>"publik" {
 	RETURN_TOKEN(T_PUBLIC);
 }
 
-<ST_IN_SCRIPTING>"unset" {
+<ST_IN_SCRIPTING>"hapus" {
 	RETURN_TOKEN(T_UNSET);
 }
 
@@ -1446,11 +1418,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_DOUBLE_ARROW);
 }
 
-<ST_IN_SCRIPTING>"list" {
+<ST_IN_SCRIPTING>"daftar" {
 	RETURN_TOKEN(T_LIST);
 }
 
-<ST_IN_SCRIPTING>"array" {
+<ST_IN_SCRIPTING>"larik" {
 	RETURN_TOKEN(T_ARRAY);
 }
 
@@ -1554,11 +1526,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_BOOLEAN_AND);
 }
 
-<ST_IN_SCRIPTING>"OR" {
+<ST_IN_SCRIPTING>"ATAU" {
 	RETURN_TOKEN(T_LOGICAL_OR);
 }
 
-<ST_IN_SCRIPTING>"AND" {
+<ST_IN_SCRIPTING>"DAN" {
 	RETURN_TOKEN(T_LOGICAL_AND);
 }
 
@@ -1784,7 +1756,7 @@ string:
 }
 
 
-<INITIAL>"<?php"([ \t]|{NEWLINE}) {
+<INITIAL>"<?phpid"([ \t]|{NEWLINE}) {
 	HANDLE_NEWLINE(yytext[yyleng-1]);
 	BEGIN(ST_IN_SCRIPTING);
 	RETURN_TOKEN(T_OPEN_TAG);
