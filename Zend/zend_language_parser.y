@@ -430,6 +430,8 @@ statement:
 	|	T_RETURN optional_expr ';'		{ $$ = zend_ast_create(ZEND_AST_RETURN, $2); }
 	|	T_GLOBAL global_var_list ';'	{ $$ = $2; }
 	|	T_STATIC static_var_list ';'	{ $$ = $2; }
+	|	T_VAR T_GLOBAL global_var_list ';'	{ $$ = $3; }
+	|	T_VAR T_STATIC static_var_list ';'	{ $$ = $3; }
 	|	T_ECHO echo_expr_list ';'		{ $$ = $2; }
 	|	T_INLINE_HTML { $$ = zend_ast_create(ZEND_AST_ECHO, $1); }
 	|	expr ';' { $$ = $1; }
