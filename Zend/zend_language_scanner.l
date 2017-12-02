@@ -1302,6 +1302,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_NEW);
 }
 
+<ST_IN_SCRIPTING>"baru" {
+	RETURN_TOKEN(T_BARU);
+}
+
 <ST_IN_SCRIPTING>"salin" {
 	RETURN_TOKEN(T_CLONE);
 }

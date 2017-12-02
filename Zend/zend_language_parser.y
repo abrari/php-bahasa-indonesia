@@ -80,6 +80,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %right T_POW
 %right '['
 %nonassoc T_NEW T_CLONE
+%nonassoc T_BARU
 %left T_NOELSE
 %left T_ELSEIF
 %left T_ELSE
@@ -141,6 +142,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token T_BOOL_CAST   "(bool) (T_BOOL_CAST)"
 %token T_UNSET_CAST  "(unset) (T_UNSET_CAST)"
 %token T_NEW       "new (T_NEW)"
+%token T_BARU      "baru (T_BARU)"
 %token T_CLONE     "clone (T_CLONE)"
 %token T_EXIT      "exit (T_EXIT)"
 %token T_IF        "if (T_IF)"
@@ -229,7 +231,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> extends_from parameter optional_type argument expr_without_variable global_var
 %type <ast> static_var class_statement trait_adaptation trait_precedence trait_alias
 %type <ast> absolute_trait_method_reference trait_method_reference property echo_expr
-%type <ast> new_expr anonymous_class class_name class_name_reference simple_variable
+%type <ast> new_expr baru_expr anonymous_class class_name class_name_reference simple_variable
 %type <ast> internal_functions_in_yacc
 %type <ast> exit_expr scalar backticks_expr lexical_var function_call member_name property_name
 %type <ast> variable_class_name dereferencable_scalar constant dereferencable
@@ -832,6 +834,11 @@ new_expr:
 			{ $$ = $2; }
 ;
 
+baru_expr:
+		class_name T_BARU ctor_arguments
+			{ $$ = zend_ast_create(ZEND_AST_NEW, $1, $3); }
+;
+
 expr_without_variable:
 		T_LIST '(' array_pair_list ')' '=' expr
 			{ $3->attr = ZEND_ARRAY_SYNTAX_LIST; $$ = zend_ast_create(ZEND_AST_ASSIGN, $3, $6); }
@@ -918,6 +925,7 @@ expr_without_variable:
 			{ $$ = zend_ast_create(ZEND_AST_INSTANCEOF, $1, $3); }
 	|	'(' expr ')' { $$ = $2; }
 	|	new_expr { $$ = $1; }
+	|	baru_expr { $$ = $1; }
 	|	expr '?' expr ':' expr
 			{ $$ = zend_ast_create(ZEND_AST_CONDITIONAL, $1, $3, $5); }
 	|	expr '?' ':' expr
