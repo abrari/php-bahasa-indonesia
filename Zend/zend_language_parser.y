@@ -144,22 +144,15 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token T_CLONE     "clone (T_CLONE)"
 %token T_EXIT      "exit (T_EXIT)"
 %token T_IF        "if (T_IF)"
-%token T_ELSEIF    "elseif (T_ELSEIF)"
 %token T_ELSE      "else (T_ELSE)"
-%token T_ENDIF     "endif (T_ENDIF)"
 %token T_ECHO       "echo (T_ECHO)"
 %token T_DO         "do (T_DO)"
 %token T_WHILE      "while (T_WHILE)"
-%token T_ENDWHILE   "endwhile (T_ENDWHILE)"
 %token T_FOR        "for (T_FOR)"
-%token T_ENDFOR     "endfor (T_ENDFOR)"
 %token T_FOREACH    "foreach (T_FOREACH)"
-%token T_ENDFOREACH "endforeach (T_ENDFOREACH)"
 %token T_DECLARE    "declare (T_DECLARE)"
-%token T_ENDDECLARE "enddeclare (T_ENDDECLARE)"
 %token T_AS         "as (T_AS)"
 %token T_SWITCH     "switch (T_SWITCH)"
-%token T_ENDSWITCH  "endswitch (T_ENDSWITCH)"
 %token T_CASE       "case (T_CASE)"
 %token T_DEFAULT    "default (T_DEFAULT)"
 %token T_BREAK      "break (T_BREAK)"
@@ -243,12 +236,12 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> callable_expr callable_variable static_member new_variable
 %type <ast> encaps_var encaps_var_offset isset_variables
 %type <ast> top_statement_list use_declarations const_list inner_statement_list if_stmt
-%type <ast> alt_if_stmt for_exprs switch_case_list global_var_list static_var_list
+%type <ast> for_exprs switch_case_list global_var_list static_var_list
 %type <ast> echo_expr_list unset_variables catch_name_list catch_list parameter_list class_statement_list
 %type <ast> implements_list case_list if_stmt_without_else
 %type <ast> non_empty_parameter_list argument_list non_empty_argument_list property_list
 %type <ast> class_const_list class_const_decl name_list trait_adaptations method_body non_empty_for_exprs
-%type <ast> ctor_arguments alt_if_stmt_without_else trait_adaptation_list lexical_vars
+%type <ast> ctor_arguments trait_adaptation_list lexical_vars
 %type <ast> lexical_var_list encaps_list
 %type <ast> array_pair non_empty_array_pair_list array_pair_list possible_array_pair
 %type <ast> isset_variable type return_type type_expr
@@ -268,10 +261,10 @@ start:
 
 reserved_non_modifiers:
 	  T_INCLUDE | T_INCLUDE_ONCE | T_EVAL | T_REQUIRE | T_REQUIRE_ONCE | T_LOGICAL_OR | T_LOGICAL_XOR | T_LOGICAL_AND
-	| T_INSTANCEOF | T_NEW | T_CLONE | T_EXIT | T_IF | T_ELSEIF | T_ELSE | T_ENDIF | T_ECHO | T_DO | T_WHILE | T_ENDWHILE
-	| T_FOR | T_ENDFOR | T_FOREACH | T_ENDFOREACH | T_DECLARE | T_ENDDECLARE | T_AS | T_TRY | T_CATCH | T_FINALLY
+	| T_INSTANCEOF | T_NEW | T_CLONE | T_EXIT | T_IF | T_ELSEIF | T_ELSE | T_ECHO | T_DO | T_WHILE
+	| T_FOR | T_FOREACH | T_DECLARE | T_AS | T_TRY | T_CATCH | T_FINALLY
 	| T_THROW | T_USE | T_INSTEADOF | T_GLOBAL | T_VAR | T_UNSET | T_ISSET | T_EMPTY | T_CONTINUE | T_GOTO
-	| T_FUNCTION | T_CONST | T_RETURN | T_PRINT | T_YIELD | T_LIST | T_SWITCH | T_ENDSWITCH | T_CASE | T_DEFAULT | T_BREAK
+	| T_FUNCTION | T_CONST | T_RETURN | T_PRINT | T_YIELD | T_LIST | T_SWITCH | T_CASE | T_DEFAULT | T_BREAK
 	| T_ARRAY | T_CALLABLE | T_EXTENDS | T_IMPLEMENTS | T_NAMESPACE | T_TRAIT | T_INTERFACE | T_CLASS
 	| T_CLASS_C | T_TRAIT_C | T_FUNC_C | T_METHOD_C | T_LINE | T_FILE | T_DIR | T_NS_C
 ;
@@ -422,7 +415,6 @@ inner_statement:
 statement:
 		'{' inner_statement_list '}' { $$ = $2; }
 	|	if_stmt { $$ = $1; }
-	|	alt_if_stmt { $$ = $1; }
 	|	T_WHILE '(' expr ')' while_statement
 			{ $$ = zend_ast_create(ZEND_AST_WHILE, $3, $5); }
 	|	T_DO statement T_WHILE '(' expr ')' ';'
@@ -602,22 +594,6 @@ if_stmt:
 		if_stmt_without_else %prec T_NOELSE { $$ = $1; }
 	|	if_stmt_without_else T_ELSE statement
 			{ $$ = zend_ast_list_add($1, zend_ast_create(ZEND_AST_IF_ELEM, NULL, $3)); }
-;
-
-alt_if_stmt_without_else:
-		T_IF '(' expr ')' ':' inner_statement_list
-			{ $$ = zend_ast_create_list(1, ZEND_AST_IF,
-			      zend_ast_create(ZEND_AST_IF_ELEM, $3, $6)); }
-	|	alt_if_stmt_without_else T_ELSEIF '(' expr ')' ':' inner_statement_list
-			{ $$ = zend_ast_list_add($1,
-			      zend_ast_create(ZEND_AST_IF_ELEM, $4, $7)); }
-;
-
-alt_if_stmt:
-		alt_if_stmt_without_else T_ENDIF ';' { $$ = $1; }
-	|	alt_if_stmt_without_else T_ELSE ':' inner_statement_list T_ENDIF ';'
-			{ $$ = zend_ast_list_add($1,
-			      zend_ast_create(ZEND_AST_IF_ELEM, NULL, $4)); }
 ;
 
 parameter_list:
