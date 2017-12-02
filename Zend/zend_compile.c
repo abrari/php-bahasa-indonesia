@@ -4051,7 +4051,7 @@ void zend_compile_method_call(znode *result, zend_ast *ast, uint32_t type) /* {{
 
 static zend_bool zend_is_constructor(zend_string *name) /* {{{ */
 {
-	return zend_string_equals_literal_ci(name, ZEND_CONSTRUCTOR_FUNC_NAME);
+	return zend_string_equals_literal_ci(name, ZEND_CONSTRUCTOR_FUNC_NAME) || zend_string_equals_literal_ci(name, ZEND_KONSTRUKTOR_FUNC_NAME);
 }
 /* }}} */
 
@@ -5775,7 +5775,7 @@ void zend_begin_method_decl(zend_op_array *op_array, zend_string *name, zend_boo
 			if (!ce->constructor) {
 				ce->constructor = (zend_function *) op_array;
 			}
-		} else if (zend_string_equals_literal(lcname, ZEND_CONSTRUCTOR_FUNC_NAME)) {
+		} else if (zend_string_equals_literal(lcname, ZEND_CONSTRUCTOR_FUNC_NAME) || zend_string_equals_literal(lcname, ZEND_KONSTRUKTOR_FUNC_NAME)) {
 			ce->constructor = (zend_function *) op_array;
 		} else if (zend_string_equals_literal(lcname, ZEND_DESTRUCTOR_FUNC_NAME)) {
 			ce->destructor = (zend_function *) op_array;

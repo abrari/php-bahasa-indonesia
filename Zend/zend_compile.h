@@ -963,6 +963,7 @@ END_EXTERN_C()
 
 #define ZEND_CLONE_FUNC_NAME		"__clone"
 #define ZEND_CONSTRUCTOR_FUNC_NAME	"__construct"
+#define ZEND_KONSTRUKTOR_FUNC_NAME	"__konstruktor"
 #define ZEND_DESTRUCTOR_FUNC_NAME	"__destruct"
 #define ZEND_GET_FUNC_NAME          "__get"
 #define ZEND_SET_FUNC_NAME          "__set"

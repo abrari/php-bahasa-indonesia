@@ -2260,7 +2260,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 			 */
 			if ((fname_len == class_name_len) && !ctor && !memcmp(ZSTR_VAL(lowercase_name), lc_class_name, class_name_len+1)) {
 				ctor = reg_function;
-			} else if (zend_string_equals_literal(lowercase_name, ZEND_CONSTRUCTOR_FUNC_NAME)) {
+			} else if (zend_string_equals_literal(lowercase_name, ZEND_CONSTRUCTOR_FUNC_NAME) || zend_string_equals_literal(lowercase_name, ZEND_KONSTRUKTOR_FUNC_NAME)) {
 				ctor = reg_function;
 			} else if (zend_string_equals_literal(lowercase_name, ZEND_DESTRUCTOR_FUNC_NAME)) {
 				dtor = reg_function;
@@ -3003,7 +3003,7 @@ static int zend_is_callable_check_func(int check_flags, zval *callable, zend_fca
 	lmname = zend_string_tolower(mname);
 	if (strict_class &&
 	    fcc->calling_scope &&
-		zend_string_equals_literal(lmname, ZEND_CONSTRUCTOR_FUNC_NAME)) {
+		(zend_string_equals_literal(lmname, ZEND_CONSTRUCTOR_FUNC_NAME) || zend_string_equals_literal(lmname, ZEND_KONSTRUKTOR_FUNC_NAME))) {
 		fcc->function_handler = fcc->calling_scope->constructor;
 		if (fcc->function_handler) {
 			retval = 1;
