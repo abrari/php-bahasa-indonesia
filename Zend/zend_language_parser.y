@@ -686,8 +686,8 @@ class_statement_list:
 
 
 class_statement:
-		variable_modifiers property_list ';'
-			{ $$ = $2; $$->attr = $1; }
+		T_VAR variable_modifiers property_list ';'
+			{ $$ = $3; $$->attr = $2; }
 	|	T_CONST non_empty_member_modifiers class_const_list ';'
 			{ $$ = $3; $$->attr = $2; }
 	|	T_USE name_list trait_adaptations
@@ -754,8 +754,7 @@ method_body:
 ;
 
 variable_modifiers:
-		non_empty_member_modifiers		{ $$ = $1; }
-	|	T_VAR							{ $$ = ZEND_ACC_PUBLIC; }
+	non_empty_member_modifiers		{ $$ = $1; }
 ;
 
 non_empty_member_modifiers:
