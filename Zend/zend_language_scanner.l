@@ -1362,7 +1362,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_REQUIRE_ONCE);
 }
 
-<ST_IN_SCRIPTING>"namespace" {
+<ST_IN_SCRIPTING>"ruangnama" {
 	RETURN_TOKEN(T_NAMESPACE);
 }
 
