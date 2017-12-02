@@ -255,7 +255,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> identifier
 
 %type <num> returns_ref function is_reference is_variadic variable_modifiers
-%type <num> method_modifiers non_empty_member_modifiers member_modifier
+%type <num> non_empty_member_modifiers member_modifier
 %type <num> class_modifiers class_modifier use_type backup_fn_flags
 
 %type <str> backup_doc_comment
@@ -501,9 +501,9 @@ is_variadic:
 ;
 
 class_declaration_statement:
-		class_modifiers T_CLASS { $<num>$ = CG(zend_lineno); }
+		T_CLASS class_modifiers { $<num>$ = CG(zend_lineno); }
 		T_STRING extends_from implements_list backup_doc_comment '{' class_statement_list '}'
-			{ $$ = zend_ast_create_decl(ZEND_AST_CLASS, $1, $<num>3, $7, zend_ast_get_str($4), $5, $6, $9, NULL); }
+			{ $$ = zend_ast_create_decl(ZEND_AST_CLASS, $2, $<num>3, $7, zend_ast_get_str($4), $5, $6, $9, NULL); }
 	|	T_CLASS { $<num>$ = CG(zend_lineno); }
 		T_STRING extends_from implements_list backup_doc_comment '{' class_statement_list '}'
 			{ $$ = zend_ast_create_decl(ZEND_AST_CLASS, 0, $<num>2, $6, zend_ast_get_str($3), $4, $5, $8, NULL); }
@@ -554,25 +554,20 @@ foreach_variable:
 ;
 
 for_statement:
-		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDFOR ';' { $$ = $2; }
+	statement { $$ = $1; }
 ;
 
 foreach_statement:
-		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDFOREACH ';' { $$ = $2; }
+	statement { $$ = $1; }
 ;
 
 declare_statement:
-		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDDECLARE ';' { $$ = $2; }
+	statement { $$ = $1; }
 ;
 
 switch_case_list:
 		'{' case_list '}'					{ $$ = $2; }
 	|	'{' ';' case_list '}'				{ $$ = $3; }
-	|	':' case_list T_ENDSWITCH ';'		{ $$ = $2; }
-	|	':' ';' case_list T_ENDSWITCH ';'	{ $$ = $3; }
 ;
 
 case_list:
@@ -590,8 +585,7 @@ case_separator:
 
 
 while_statement:
-		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDWHILE ';' { $$ = $2; }
+	statement { $$ = $1; }
 ;
 
 
@@ -718,14 +712,14 @@ class_statement_list:
 class_statement:
 		variable_modifiers property_list ';'
 			{ $$ = $2; $$->attr = $1; }
-	|	method_modifiers T_CONST class_const_list ';'
-			{ $$ = $3; $$->attr = $1; }
+	|	T_CONST non_empty_member_modifiers class_const_list ';'
+			{ $$ = $3; $$->attr = $2; }
 	|	T_USE name_list trait_adaptations
 			{ $$ = zend_ast_create(ZEND_AST_USE_TRAIT, $2, $3); }
-	|	method_modifiers function returns_ref identifier backup_doc_comment '(' parameter_list ')'
+	|	function non_empty_member_modifiers identifier backup_doc_comment '(' parameter_list ')'
 		return_type backup_fn_flags method_body backup_fn_flags
-			{ $$ = zend_ast_create_decl(ZEND_AST_METHOD, $3 | $1 | $12, $2, $5,
-				  zend_ast_get_str($4), $7, NULL, $11, $9); CG(extra_fn_flags) = $10; }
+			{ $$ = zend_ast_create_decl(ZEND_AST_METHOD, $2 | $11, $1, $4,
+				  zend_ast_get_str($3), $6, NULL, $10, $8); CG(extra_fn_flags) = $9; }
 ;
 
 name_list:
@@ -786,12 +780,6 @@ method_body:
 variable_modifiers:
 		non_empty_member_modifiers		{ $$ = $1; }
 	|	T_VAR							{ $$ = ZEND_ACC_PUBLIC; }
-;
-
-method_modifiers:
-		/* empty */						{ $$ = ZEND_ACC_PUBLIC; }
-	|	non_empty_member_modifiers
-			{ $$ = $1; if (!($$ & ZEND_ACC_PPP_MASK)) { $$ |= ZEND_ACC_PUBLIC; } }
 ;
 
 non_empty_member_modifiers:
