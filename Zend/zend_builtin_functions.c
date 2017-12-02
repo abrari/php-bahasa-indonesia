@@ -40,8 +40,8 @@ static ZEND_FUNCTION(strcasecmp);
 static ZEND_FUNCTION(strncasecmp);
 static ZEND_FUNCTION(each);
 static ZEND_FUNCTION(error_reporting);
-static ZEND_FUNCTION(define);
-static ZEND_FUNCTION(defined);
+static ZEND_FUNCTION(definisikan);
+static ZEND_FUNCTION(terdefinisi);
 static ZEND_FUNCTION(get_class);
 static ZEND_FUNCTION(get_called_class);
 static ZEND_FUNCTION(get_parent_class);
@@ -246,8 +246,8 @@ static const zend_function_entry builtin_functions[] = { /* {{{ */
 	ZEND_FE(strncasecmp,		arginfo_strncmp)
 	ZEND_FE(each,			arginfo_each)
 	ZEND_FE(error_reporting,	arginfo_error_reporting)
-	ZEND_FE(define,			arginfo_define)
-	ZEND_FE(defined,		arginfo_defined)
+	ZEND_FE(definisikan,			arginfo_define)
+	ZEND_FE(terdefinisi,		arginfo_defined)
 	ZEND_FE(get_class,		arginfo_get_class)
 	ZEND_FE(get_called_class,	arginfo_zend__void)
 	ZEND_FE(get_parent_class,	arginfo_get_class)
@@ -780,7 +780,7 @@ static void copy_constant_array(zval *dst, zval *src) /* {{{ */
 
 /* {{{ proto bool define(string constant_name, mixed value[, boolean case_insensitive])
    Define a new constant */
-ZEND_FUNCTION(define)
+ZEND_FUNCTION(definisikan)
 {
 	zend_string *name;
 	zval *val, val_free;
@@ -865,7 +865,7 @@ register_constant:
 /* {{{ proto bool defined(string constant_name)
    Check whether a constant exists
    Warning: This function is special-cased by zend_compile.c and so is usually bypassed */
-ZEND_FUNCTION(defined)
+ZEND_FUNCTION(terdefinisi)
 {
 	zend_string *name;
 
