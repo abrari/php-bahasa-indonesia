@@ -32,6 +32,7 @@ untuksetiap ($a => $b dalam $l) {
     tampil $a, $b . "\n";
 }
 
-untuksetiap ($i dalam range(1, 5)) {
+// range -> rentang
+untuksetiap ($i dalam rentang(1, 5)) {
     cetak $i;
 }

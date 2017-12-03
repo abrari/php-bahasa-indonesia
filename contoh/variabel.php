@@ -10,6 +10,9 @@ cetak 10 modulo 3 . "\n";
 cetak 2 pangkat 10 . "\n";
 cetak 2 pangkat 9 modulo 7 . "\n";
 
+// strlen -> panjang
+cetak panjang("HELLO WORLD") . "\n";
+
 // unset
 hapus($s);
 
