@@ -5,6 +5,11 @@ $b = benar;
 $s = salah;
 cetak_variabel($b, $s);
 
+// operator % dan pangkat
+cetak 10 modulo 3 . "\n";
+cetak 2 pangkat 10 . "\n";
+cetak 2 pangkat 9 modulo 7 . "\n";
+
 // unset
 hapus($s);
 

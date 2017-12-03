@@ -27,3 +27,11 @@ untuksetiap ($l sebagai $a => $b) {
     cetak $a . "\n";
 }
 
+// alternatif foreach
+untuksetiap ($a => $b dalam $l) {
+    tampil $a, $b . "\n";
+}
+
+untuksetiap ($i dalam range(1, 5)) {
+    cetak $i;
+}
