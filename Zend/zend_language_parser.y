@@ -73,11 +73,11 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %nonassoc '<' T_IS_SMALLER_OR_EQUAL '>' T_IS_GREATER_OR_EQUAL
 %left T_SL T_SR
 %left '+' '-' '.'
-%left '*' '/' '%'
+%left '*' '/' '%' T_MODULO
 %right '!'
 %nonassoc T_INSTANCEOF
 %right '~' T_INC T_DEC T_INT_CAST T_DOUBLE_CAST T_STRING_CAST T_ARRAY_CAST T_OBJECT_CAST T_BOOL_CAST T_UNSET_CAST '@'
-%right T_POW
+%right T_POW T_PANGKAT
 %right '['
 %nonassoc T_NEW T_CLONE
 %nonassoc T_BARU
@@ -214,6 +214,8 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token T_NS_SEPARATOR    "\\ (T_NS_SEPARATOR)"
 %token T_ELLIPSIS        "... (T_ELLIPSIS)"
 %token T_COALESCE        "?? (T_COALESCE)"
+%token T_MODULO          "modulo (T_MODULO)"
+%token T_PANGKAT         "pangkat (T_PANGKAT)"
 %token T_POW             "** (T_POW)"
 %token T_POW_EQUAL       "**= (T_POW_EQUAL)"
 
@@ -897,8 +899,10 @@ expr_without_variable:
 	|	expr '-' expr 	{ $$ = zend_ast_create_binary_op(ZEND_SUB, $1, $3); }
 	|	expr '*' expr	{ $$ = zend_ast_create_binary_op(ZEND_MUL, $1, $3); }
 	|	expr T_POW expr	{ $$ = zend_ast_create_binary_op(ZEND_POW, $1, $3); }
+	|	expr T_PANGKAT expr	{ $$ = zend_ast_create_binary_op(ZEND_POW, $1, $3); }
 	|	expr '/' expr	{ $$ = zend_ast_create_binary_op(ZEND_DIV, $1, $3); }
 	|	expr '%' expr 	{ $$ = zend_ast_create_binary_op(ZEND_MOD, $1, $3); }
+	|	expr T_MODULO expr { $$ = zend_ast_create_binary_op(ZEND_MOD, $1, $3); }
 	| 	expr T_SL expr	{ $$ = zend_ast_create_binary_op(ZEND_SL, $1, $3); }
 	|	expr T_SR expr	{ $$ = zend_ast_create_binary_op(ZEND_SR, $1, $3); }
 	|	'+' expr %prec T_INC { $$ = zend_ast_create(ZEND_AST_UNARY_PLUS, $2); }

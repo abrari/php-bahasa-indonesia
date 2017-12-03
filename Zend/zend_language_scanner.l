@@ -1486,6 +1486,14 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_POW);
 }
 
+<ST_IN_SCRIPTING>"modulo" {
+	RETURN_TOKEN(T_MODULO);
+}
+
+<ST_IN_SCRIPTING>"pangkat" {
+	RETURN_TOKEN(T_PANGKAT);
+}
+
 <ST_IN_SCRIPTING>"*\*=" {
 	RETURN_TOKEN(T_POW_EQUAL);
 }
