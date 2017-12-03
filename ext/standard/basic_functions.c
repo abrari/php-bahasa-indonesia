@@ -3387,9 +3387,14 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 	PHP_FALIAS(pos,					current,								arginfo_current)
 	PHP_FALIAS(sizeof,				count,									arginfo_count)
 	PHP_FALIAS(key_exists,			array_key_exists,						arginfo_array_key_exists)
+
+	/* aliases for phpid */
 	PHP_FALIAS(hitung,				count,									arginfo_count)
 	PHP_FALIAS(ukuran,				count,									arginfo_count)	
-
+	PHP_FALIAS(rentang,				range,									arginfo_range)	
+	PHP_FALIAS(akhir,				end,									arginfo_end)	
+	PHP_FALIAS(awal,				reset,									arginfo_reset)	
+	
 	/* functions from assert.c */
 	PHP_FE(assert,															arginfo_assert)
 	PHP_FE(assert_options,													arginfo_assert_options)

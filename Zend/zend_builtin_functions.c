@@ -240,6 +240,7 @@ static const zend_function_entry builtin_functions[] = { /* {{{ */
 	ZEND_FE(func_get_arg,		arginfo_func_get_arg)
 	ZEND_FE(func_get_args,		arginfo_zend__void)
 	ZEND_FE(strlen,			arginfo_strlen)
+	ZEND_FALIAS(panjang,	strlen,		arginfo_strlen)
 	ZEND_FE(strcmp,			arginfo_strcmp)
 	ZEND_FE(strncmp,		arginfo_strncmp)
 	ZEND_FE(strcasecmp,		arginfo_strcmp)
