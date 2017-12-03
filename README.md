@@ -35,7 +35,7 @@ Zend Engine v3.3.0-dev, Copyright (c) 1998-2017 Zend Technologies
 Secara umum, beberapa hal yang berbeda dari PHP asli antara lain:
 
  - Tag pembuka menggunakan `<?phpid`
- - Function reference di method class (simbol `&` tidak didukung)
+ - Function reference di method class (simbol `&`) tidak didukung
  - Sintaks alternatif (`endif`, `endforeach`, dll) tidak didukung
  - Seluruh member class (variabel, konstanta, fungsi) harus punya  modifier (`publik`, `terproteksi`, `privat`)
  - Variabel di dalam class harus diawali `variabel`
@@ -370,3 +370,9 @@ ruangnama {
     $contoh->test();
 }
 ```
+
+## Catatan
+
+Kode-kode program ini menggunakan ekstensi `.php` namun sudah bukan merupakan sintaks PHP yang valid.
+Jika dibuka di IDE atau editor, *linter* pasti akan melaporkan kesalahan sintaks.
+
