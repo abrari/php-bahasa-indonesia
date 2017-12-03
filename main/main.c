@@ -1116,27 +1116,27 @@ static ZEND_COLD void php_error_cb(int type, const char *error_filename, const u
 			case E_CORE_ERROR:
 			case E_COMPILE_ERROR:
 			case E_USER_ERROR:
-				error_type_str = "Fatal error";
+				error_type_str = "Kesalahan fatal";
 				syslog_type_int = LOG_ERR;
 				break;
 			case E_RECOVERABLE_ERROR:
-				error_type_str = "Recoverable fatal error";
+				error_type_str = "Kesalahan fatal recoverable";
 				syslog_type_int = LOG_ERR;
 				break;
 			case E_WARNING:
 			case E_CORE_WARNING:
 			case E_COMPILE_WARNING:
 			case E_USER_WARNING:
-				error_type_str = "Warning";
+				error_type_str = "Peringatan";
 				syslog_type_int = LOG_WARNING;
 				break;
 			case E_PARSE:
-				error_type_str = "Parse error";
+				error_type_str = "Kesalahan parsing";
 				syslog_type_int = LOG_EMERG;
 				break;
 			case E_NOTICE:
 			case E_USER_NOTICE:
-				error_type_str = "Notice";
+				error_type_str = "Catatan";
 				syslog_type_int = LOG_NOTICE;
 				break;
 			case E_STRICT:
@@ -1149,7 +1149,7 @@ static ZEND_COLD void php_error_cb(int type, const char *error_filename, const u
 				syslog_type_int = LOG_INFO;
 				break;
 			default:
-				error_type_str = "Unknown error";
+				error_type_str = "Kesalahan yang tidak diketahui";
 				break;
 		}
 
@@ -1160,7 +1160,7 @@ static ZEND_COLD void php_error_cb(int type, const char *error_filename, const u
 				syslog(LOG_ALERT, "PHP %s: %s (%s)", error_type_str, buffer, GetCommandLine());
 			}
 #endif
-			spprintf(&log_buffer, 0, "PHP %s:  %s in %s on line %" PRIu32, error_type_str, buffer, error_filename, error_lineno);
+			spprintf(&log_buffer, 0, "PHP %s:  %s di %s pada baris %" PRIu32, error_type_str, buffer, error_filename, error_lineno);
 			php_log_err_with_severity(log_buffer, syslog_type_int);
 			efree(log_buffer);
 		}
@@ -1175,22 +1175,22 @@ static ZEND_COLD void php_error_cb(int type, const char *error_filename, const u
 				if (PG(html_errors)) {
 					if (type == E_ERROR || type == E_PARSE) {
 						zend_string *buf = php_escape_html_entities((unsigned char*)buffer, buffer_len, 0, ENT_COMPAT, get_safe_charset_hint());
-						php_printf("%s<br />\n<b>%s</b>:  %s in <b>%s</b> on line <b>%" PRIu32 "</b><br />\n%s", STR_PRINT(prepend_string), error_type_str, ZSTR_VAL(buf), error_filename, error_lineno, STR_PRINT(append_string));
+						php_printf("%s<br />\n<b>%s</b>:  %s di <b>%s</b> pada baris <b>%" PRIu32 "</b><br />\n%s", STR_PRINT(prepend_string), error_type_str, ZSTR_VAL(buf), error_filename, error_lineno, STR_PRINT(append_string));
 						zend_string_free(buf);
 					} else {
-						php_printf("%s<br />\n<b>%s</b>:  %s in <b>%s</b> on line <b>%" PRIu32 "</b><br />\n%s", STR_PRINT(prepend_string), error_type_str, buffer, error_filename, error_lineno, STR_PRINT(append_string));
+						php_printf("%s<br />\n<b>%s</b>:  %s di <b>%s</b> pada baris <b>%" PRIu32 "</b><br />\n%s", STR_PRINT(prepend_string), error_type_str, buffer, error_filename, error_lineno, STR_PRINT(append_string));
 					}
 				} else {
 					/* Write CLI/CGI errors to stderr if display_errors = "stderr" */
 					if ((!strcmp(sapi_module.name, "cli") || !strcmp(sapi_module.name, "cgi")) &&
 						PG(display_errors) == PHP_DISPLAY_ERRORS_STDERR
 					) {
-						fprintf(stderr, "%s: %s in %s on line %" PRIu32 "\n", error_type_str, buffer, error_filename, error_lineno);
+						fprintf(stderr, "%s: %s di %s pada baris %" PRIu32 "\n", error_type_str, buffer, error_filename, error_lineno);
 #ifdef PHP_WIN32
 						fflush(stderr);
 #endif
 					} else {
-						php_printf("%s\n%s: %s in %s on line %" PRIu32 "\n%s", STR_PRINT(prepend_string), error_type_str, buffer, error_filename, error_lineno, STR_PRINT(append_string));
+						php_printf("%s\n%s: %s di %s pada baris %" PRIu32 "\n%s", STR_PRINT(prepend_string), error_type_str, buffer, error_filename, error_lineno, STR_PRINT(append_string));
 					}
 				}
 			}
