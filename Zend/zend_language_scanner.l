@@ -1204,6 +1204,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_AS);
 }
 
+<ST_IN_SCRIPTING>"dalam" {
+	RETURN_TOKEN(T_DALAM);
+}
+
 <ST_IN_SCRIPTING>"pilihan" {
 	RETURN_TOKEN(T_SWITCH);
 }

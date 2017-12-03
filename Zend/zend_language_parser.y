@@ -154,6 +154,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token T_FOREACH    "foreach (T_FOREACH)"
 %token T_DECLARE    "declare (T_DECLARE)"
 %token T_AS         "as (T_AS)"
+%token T_DALAM      "dalam (T_DALAM)"
 %token T_SWITCH     "switch (T_SWITCH)"
 %token T_CASE       "case (T_CASE)"
 %token T_DEFAULT    "default (T_DEFAULT)"
@@ -265,8 +266,8 @@ start:
 
 reserved_non_modifiers:
 	  T_INCLUDE | T_INCLUDE_ONCE | T_EVAL | T_REQUIRE | T_REQUIRE_ONCE | T_LOGICAL_OR | T_LOGICAL_XOR | T_LOGICAL_AND
-	| T_INSTANCEOF | T_NEW | T_CLONE | T_EXIT | T_IF | T_ELSEIF | T_ELSE | T_ECHO | T_DO | T_WHILE
-	| T_FOR | T_FOREACH | T_DECLARE | T_AS | T_TRY | T_CATCH | T_FINALLY
+	| T_INSTANCEOF | T_NEW | T_CLONE | T_EXIT | T_IF | T_ELSE | T_ECHO | T_DO | T_WHILE
+	| T_FOR | T_FOREACH | T_DECLARE | T_AS | T_DALAM | T_TRY | T_CATCH | T_FINALLY
 	| T_THROW | T_USE | T_INSTEADOF | T_GLOBAL | T_VAR | T_UNSET | T_ISSET | T_EMPTY | T_CONTINUE | T_GOTO
 	| T_FUNCTION | T_CONST | T_RETURN | T_PRINT | T_YIELD | T_LIST | T_SWITCH | T_CASE | T_DEFAULT | T_BREAK
 	| T_ARRAY | T_CALLABLE | T_EXTENDS | T_IMPLEMENTS | T_NAMESPACE | T_TRAIT | T_INTERFACE | T_CLASS
@@ -440,9 +441,14 @@ statement:
 	|	T_UNSET '(' unset_variables possible_comma ')' ';' { $$ = $3; }
 	|	T_FOREACH '(' expr T_AS foreach_variable ')' foreach_statement
 			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $5, NULL, $7); }
+	|	T_FOREACH '(' foreach_variable T_DALAM expr ')' foreach_statement
+			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $5, $3, NULL, $7); }
 	|	T_FOREACH '(' expr T_AS foreach_variable T_DOUBLE_ARROW foreach_variable ')'
 		foreach_statement
 			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $7, $5, $9); }
+	|	T_FOREACH '(' foreach_variable T_DOUBLE_ARROW foreach_variable T_DALAM expr ')'
+		foreach_statement
+			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $7, $5, $3, $9); }
 	|	T_DECLARE '(' const_list ')'
 			{ zend_handle_encoding_declaration($3); }
 		declare_statement
