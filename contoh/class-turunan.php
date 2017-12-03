@@ -9,7 +9,7 @@ interface Test {
 }
 
 // class, extends, implements
-kelas Pegawai turunan Orang mengimplementasikan Test {
+kelas Pegawai turunan Orang mengimplementasi Test {
     variabel publik $unit;
     fungsi publik __konstruktor($n, $u) {
         // parent -> induk :)

@@ -23,7 +23,7 @@ kerjakan {
 // foreach, as, continue
 $l = ['satu' => 1, 'dua' => 2, 'tiga' => 3, 'empat' => 4];
 untuksetiap ($l sebagai $a => $b) {
-    jika ($b == 2) lanjutkan;
+    jika ($b == 2) lanjut;
     cetak $a . "\n";
 }
 

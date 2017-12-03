@@ -1126,7 +1126,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_EXIT);
 }
 
-<ST_IN_SCRIPTING>"matikan" {
+<ST_IN_SCRIPTING>"mati" {
 	RETURN_TOKEN(T_EXIT);
 }
 
@@ -1164,7 +1164,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_FINALLY);
 }
 
-<ST_IN_SCRIPTING>"lemparkan" {
+<ST_IN_SCRIPTING>"lempar" {
 	RETURN_TOKEN(T_THROW);
 }
 
@@ -1192,7 +1192,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_FOREACH);
 }
 
-<ST_IN_SCRIPTING>"deklarasikan" {
+<ST_IN_SCRIPTING>"deklarasi" {
 	RETURN_TOKEN(T_DECLARE);
 }
 
@@ -1208,7 +1208,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_SWITCH);
 }
 
-<ST_IN_SCRIPTING>"jikanilai" {
+<ST_IN_SCRIPTING>"kalau" {
 	RETURN_TOKEN(T_CASE);
 }
 
@@ -1220,7 +1220,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_BREAK);
 }
 
-<ST_IN_SCRIPTING>"lanjutkan" {
+<ST_IN_SCRIPTING>"lanjut" {
 	RETURN_TOKEN(T_CONTINUE);
 }
 
@@ -1252,7 +1252,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_EXTENDS);
 }
 
-<ST_IN_SCRIPTING>"mengimplementasikan" {
+<ST_IN_SCRIPTING>"mengimplementasi" {
 	RETURN_TOKEN(T_IMPLEMENTS);
 }
 
@@ -1354,11 +1354,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
 	RETURN_TOKEN(T_INCLUDE_ONCE);
 }
 
-<ST_IN_SCRIPTING>"membutuhkan" {
+<ST_IN_SCRIPTING>"butuh" {
 	RETURN_TOKEN(T_REQUIRE);
 }
 
-<ST_IN_SCRIPTING>"membutuhkan_satu_kali" {
+<ST_IN_SCRIPTING>"butuh_satu_kali" {
 	RETURN_TOKEN(T_REQUIRE_ONCE);
 }
 

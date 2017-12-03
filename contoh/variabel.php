@@ -19,5 +19,5 @@ variabel statis $stat = 20;
 definisikan('SESUATU', 123);
 
 // defined, die
-terdefinisi('KOSONG') atau matikan('definisi tidak ada');
+terdefinisi('KOSONG') atau mati('definisi tidak ada');
 

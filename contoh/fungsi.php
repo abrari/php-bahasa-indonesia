@@ -31,5 +31,5 @@ jalankan("cetak 'ini dievaluasi';");
 // include, include_once, require, require_once
 sertakan 'hello-world.php';
 sertakan_satu_kali 'hello-world.php';
-membutuhkan 'hello-world.php';
-membutuhkan_satu_kali 'hello-world.php';
+butuh 'hello-world.php';
+butuh_satu_kali 'hello-world.php';

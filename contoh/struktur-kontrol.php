@@ -16,10 +16,10 @@ jika ($p == benar && $a == 10) cetak "yes\n";
 // switch, case, break
 $b = 2;
 pilihan($b) {
-    jikanilai 1: 
+    kalau 1: 
         $c = "satu"; 
         berhenti;
-    jikanilai 2:
+    kalau 2:
         $c = "dua";
         berhenti;
     default:
@@ -35,7 +35,7 @@ bawah:
 
 // try, catch, finally
 coba {
-    lemparkan Exception baru("error!");
+    lempar Exception baru("error!");
 } tangkap (Exception $e) {
     cetak_variabel($e);
 } akhirnya {
