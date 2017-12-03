@@ -3321,7 +3321,7 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 	PHP_FE(shuffle,															arginfo_shuffle)
 	PHP_FE(array_walk,														arginfo_array_walk)
 	PHP_FE(array_walk_recursive,											arginfo_array_walk_recursive)
-	PHP_FE(hitung,															arginfo_count)
+	PHP_FE(count,															arginfo_count)
 	PHP_FE(end,																arginfo_end)
 	PHP_FE(prev,															arginfo_prev)
 	PHP_FE(next,															arginfo_next)
@@ -3385,8 +3385,10 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 
 	/* aliases from array.c */
 	PHP_FALIAS(pos,					current,								arginfo_current)
-	PHP_FALIAS(ukuran,				hitung,									arginfo_count)
+	PHP_FALIAS(sizeof,				count,									arginfo_count)
 	PHP_FALIAS(key_exists,			array_key_exists,						arginfo_array_key_exists)
+	PHP_FALIAS(hitung,				count,									arginfo_count)
+	PHP_FALIAS(ukuran,				count,									arginfo_count)	
 
 	/* functions from assert.c */
 	PHP_FE(assert,															arginfo_assert)

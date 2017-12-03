@@ -775,7 +775,7 @@ PHPAPI zend_long php_count_recursive(HashTable *ht) /* {{{ */
 
 /* {{{ proto int count(mixed var [, int mode])
    Count the number of elements in a variable (usually an array) */
-PHP_FUNCTION(hitung)
+PHP_FUNCTION(count)
 {
 	zval *array;
 	zend_long mode = COUNT_NORMAL;
