@@ -22,7 +22,7 @@ contexts:
         2: entity.name.interface.php
       push:
         - meta_scope: meta.interface.php
-        - match: \b(extends)\b\s*
+        - match: \b(turunan)\b\s*
           scope: storage.modifier.extends.php
           set:
             - match: '(?={{path}})'
@@ -39,7 +39,7 @@ contexts:
               pop: true
         - match: '(?=\S)'
           pop: true
-    - match: '(?i)^\s*(namespace)\b\s*'
+    - match: '(?i)^\s*(ruangnama)\b\s*'
       captures:
         1: keyword.other.namespace.php
       push:
@@ -51,12 +51,12 @@ contexts:
             1: punctuation.separator.namespace.php
         - match: ''
           pop: true
-    - match: '(?i)^\s*(trait)\s+({{identifier}})\s*'
+    - match: '(?i)^\s*(sifat)\s+({{identifier}})\s*'
       captures:
         1: storage.type.trait.php
         2: entity.name.trait.php
     - include: function
-    - match: '^\s*((?!default|else){{identifier}})\s*(:)(?!:)'
+    - match: '^\s*((?!default|selainnya){{identifier}})\s*(:)(?!:)'
       captures:
         1: entity.name.label.php
         2: punctuation.separator.php
@@ -84,19 +84,19 @@ contexts:
       push:
         - meta_scope: embedding.php text.html.basic
         - clear_scopes: true
-        - match: '<\?(?i:php)?'
+        - match: '<\?(?i:phpid)?'
           scope: meta.embedded.block.php punctuation.section.embedded.begin.php
           pop: true
         - match: ''
           with_prototype:
             - include: single-line-php-tag
-            - match: '(?=<\?(?i:php)?)'
+            - match: '(?=<\?(?i:phpid)?)'
               pop: true
           push:
             - include: scope:text.html.basic
 
   single-line-php-tag:
-    - match: '(<\?=|<\?(?i:php)?(?=.*\?>))'
+    - match: '(<\?=|<\?(?i:phpid)?(?=.*\?>))'
       scope: punctuation.section.embedded.begin.php
       push:
         - meta_scope: meta.embedded.line.nested.php
@@ -110,7 +110,7 @@ contexts:
 
   expressions:
     - include: comments
-    - match: (?i)\b((?:require|include)(?:_once)?)\b\s*
+    - match: (?i)\b((?:butuh|sertakan)(?:_satu_kali)?)\b\s*
       captures:
         1: keyword.control.import.include.php
       push:
@@ -118,9 +118,9 @@ contexts:
         - match: (?=;|\)|\])
           pop: true
         - include: expressions
-    - match: \b(break|c(ase|ontinue)|d(e(clare|fault)|ie|o)|e(lse(if)?|nd(declare|for(each)?|if|switch|while)|xit)|for(each)?|if|return|yield|switch|use|while)\b
+    - match: \b(berhenti|kalau|lanjut|deklarasikan|default|mati|kerjakan|selainnya|jika|pilihan|selama|keluar|untuk|untuksetiap|kembalikan|hasilkan|gunakan)\b
       scope: keyword.control.php
-    - match: \b(catch)\b\s*\(\s*
+    - match: \b(tangkap)\b\s*\(\s*
       captures:
         1: keyword.control.exception.catch.php
       push:
@@ -138,7 +138,7 @@ contexts:
             1: variable.other.php
             2: punctuation.definition.variable.php
           pop: true
-    - match: \b(catch|try|throw|finally)\b
+    - match: \b(tangkap|coba|lempar|akhirnya)\b
       scope: keyword.control.exception.php
     - include: closure
     - include: invoke-call
@@ -171,19 +171,19 @@ contexts:
             4: punctuation.definition.variable.php
             5: constant.other.class.php
           set: after-identifier
-        - match: (self|static|parent)\b
+        - match: (diri|statis|induk)\b
           scope: variable.language.php
         - include: class-name
         - include: variables
     - include: variables
     - include: strings
-    - match: (array)(\()(\))
+    - match: (larik)(\()(\))
       scope: meta.array.empty.php
       captures:
         1: support.function.construct.php
         2: punctuation.section.array.begin.php
         3: punctuation.section.array.end.php
-    - match: (array)(\()
+    - match: (larik)(\()
       captures:
         1: support.function.construct.php
         2: punctuation.section.array.begin.php
@@ -193,14 +193,14 @@ contexts:
           scope: punctuation.section.array.end.php
           pop: true
         - include: expressions
-    - match: (?i)\s*\(\s*(array|real|double|float|int(eger)?|bool(ean)?|string|object|binary|unset)\s*\)
+    - match: (?i)\s*\(\s*(larik|real|double|float|int(eger)?|bool(ean)?|string|objek|binary|hapus)\s*\)
       captures:
         1: storage.type.php
-    - match: (?i)\b(array|real|double|float|int(eger)?|bool(ean)?|string|class|clone|var|function|interface|object)\b
+    - match: (?i)\b(larik|real|double|float|int(eger)?|bool(ean)?|string|class|salin|variabel|fungsi|interface|objek)\b
       scope: storage.type.php
-    - match: (?i)\b(parent|self)\b
+    - match: (?i)\b(induk|diri)\b
       scope: variable.language.php
-    - match: (?i)\b(global|abstract|const|extends|implements|final|p(r(ivate|otected)|ublic)|static)\b
+    - match: (?i)\b(global|abstrak|konstanta|turunan|mengimplementasi|final|privat|terproteksi|publik|statis)\b
       scope: storage.modifier.php
     - include: object
     - match: ;
@@ -220,20 +220,20 @@ contexts:
       scope: keyword.operator.error-control.php
     - match: (\-\-|\+\+)
       scope: keyword.operator.increment-decrement.php
-    - match: (\-|\+|\*|/|%)
+    - match: (\-|\+|\*|/|%|modulo|pangkat)
       scope: keyword.operator.arithmetic.php
     - match: '<<|>>|~|\^|&|\|'
       scope: keyword.operator.bitwise.php
     - match: (===|==|!==|!=|<=>|<=|>=|<>|<|>)
       scope: keyword.operator.comparison.php
-    - match: (?i)(!|&&|\|\|)|\b(and|or|xor|as)\b
+    - match: (?i)(!|&&|\|\|)|\b(dan|atau|xor|sebagai|dalam)\b
       scope: keyword.operator.logical.php
     - include: function-call
     - match: \.
       scope: keyword.operator.string.php
     - match: "="
       scope: keyword.operator.assignment.php
-    - match: '(?i)\b(instanceof)\s+(?=[[:alpha:]\\$_])'
+    - match: '(?i)\b(merupakansuatu)\s+(?=[[:alpha:]\\$_])'
       captures:
         1: keyword.operator.type.php
       push:
@@ -242,7 +242,7 @@ contexts:
         - include: class-name
         - include: variables
     - include: instantiation
-    - match: '(?i)(goto)\s+({{identifier}})'
+    - match: '(?i)(lompatke)\s+({{identifier}})'
       captures:
         1: keyword.control.goto.php
         2: support.other.php
@@ -297,15 +297,15 @@ contexts:
         2: support.class.builtin.php
 
   use-statement:
-    - match: (?i)\b(use)\b\s*
+    - match: (?i)\b(gunakan)\b\s*
       captures:
         1: keyword.other.use.php
       push:
         - meta_scope: meta.use.php
-        - match: \bfunction\b
+        - match: \bfungsi\b
           scope: storage.type.php
           set: use-statement-function
-        - match: \bconst\b
+        - match: \bkonstanta\b
           scope: storage.type.php
           set: use-statement-const
         - match: '(?=\S)'
@@ -316,7 +316,7 @@ contexts:
 
   use-statement-common:
     - include: comments
-    - match: (?i)\bas\b
+    - match: (?i)\bsebagai\b
       scope: keyword.other.use-as.php
     - match: ','
       scope: punctuation.separator.php
@@ -329,7 +329,7 @@ contexts:
         # gets put into the index. This will be incorrect sometimes (because it
         # will sometimes be a namespace identifier), but the distinction
         # shouldn't be a huge deal.
-        - match: '(?i)\b(as)\b'
+        - match: '(?i)\b(sebagai)\b'
           scope: keyword.other.use-as.php
           push:
             - include: comments
@@ -369,7 +369,7 @@ contexts:
     - match: '(?={{path}})'
       push:
         - include: comments
-        - match: '(?i)\b(as)\b'
+        - match: '(?i)\b(sebagai)\b'
           scope: keyword.other.use-as.php
           push:
             - include: comments
@@ -421,7 +421,7 @@ contexts:
     - include: identifier-constant-pop
 
   class:
-    - match: '(?i)(\b(?:abstract|final)\s+)?\b(class)\s+({{identifier}})\s*'
+    - match: '(?i)\b(kelas)\s+(\b(?:abstrak|final)\s+)?({{identifier}})\s*'
       captures:
         1: storage.modifier.abstract.php
         2: storage.type.class.php
@@ -436,11 +436,11 @@ contexts:
       scope: meta.block.php punctuation.section.block.php
       set: class-body
     - include: comments
-    - match: (?i)(extends)\b\s*
+    - match: (?i)(turunan)\b\s*
       captures:
         1: storage.modifier.extends.php
       push:
-        - match: '(?=implements)'
+        - match: '(?=mengimplementasi)'
           pop: true
         - include: comments
         - match: '(?={{path}})'
@@ -456,7 +456,7 @@ contexts:
               pop: true
         - match: '(?=\S)'
           pop: true
-    - match: (?i)(implements)\b\s*
+    - match: (?i)(mengimplementasi)\b\s*
       captures:
         1: storage.modifier.implements.php
       push:
@@ -483,7 +483,7 @@ contexts:
     - match: '\}'
       scope: meta.class.php meta.block.php punctuation.section.block.php
       pop: true
-    - match: (?i)\b(use)\b\s*
+    - match: (?i)\b(gunakan)\b\s*
       captures:
         1: keyword.other.use.php
       push:
@@ -498,9 +498,9 @@ contexts:
               scope: punctuation.section.block.php
               pop: true
             - include: comments
-            - match: \b(as)\b
+            - match: \b(sebagai)\b
               scope: keyword.other.use-as.php
-            - match: \b(insteadof)\b
+            - match: \b(alihalih)\b
               scope: keyword.other.insteadof.php
             - include: class-builtin
             - match: '::'
@@ -530,17 +530,17 @@ contexts:
     - include: statements
 
   function:
-    - match: (?i)(?=(?:\b(?:final|abstract|public|private|protected|static)\s+)*\bfunction\b\s*(&\s*)?{{identifier_start}})
+    - match: (?i)(?=\bfungsi\b(?:\b(?:final|abstrak|publik|privat|terproteksi|statis)\s+)*\s*(&\s*)?{{identifier_start}})
       push:
         - meta_content_scope: meta.function.php
         - include: comments
-        - match: '(?i)\b(final|abstract|public|private|protected|static)\b'
+        - match: '(?i)\b(final|abstrak|publik|privat|terproteksi|statis)\b'
           scope: storage.modifier.php
-        - match: (?i)\bfunction\b
+        - match: (?i)\bfungsi\b
           scope: storage.type.function.php
         - match: '&'
           scope: storage.modifier.reference.php
-        - match: '(__(?:callStatic|call|construct|destruct|get|set|isset|unset|toString|clone|set_state|sleep|wakeup|autoload|invoke|debugInfo))\b'
+        - match: '(__(?:callStatic|call|construct|konstruktor|destruct|get|set|isset|unset|toString|clone|set_state|sleep|wakeup|autoload|invoke|debugInfo))\b'
           scope: entity.name.function.php support.function.magic.php
         - match: '{{identifier}}'
           scope: entity.name.function.php
@@ -555,7 +555,7 @@ contexts:
           pop: true
 
   closure:
-    - match: (?i)\b(function)\s*(&)?\s*(?=\()
+    - match: (?i)\b(fungsi)\s*(&)?\s*(?=\()
       scope: meta.function.closure.php
       captures:
         1: storage.type.function.php
@@ -571,7 +571,7 @@ contexts:
       scope: punctuation.section.group.end.php
       set:
         - meta_content_scope: meta.function.php
-        - match: '\b(use)\b\s*(\()'
+        - match: '\b(gunakan)\b\s*(\()'
           scope: meta.function.closure.use.php
           captures:
             1: keyword.other.function.use.php
@@ -586,7 +586,7 @@ contexts:
         - match: (?=\S)
           pop: true
     - include: comments
-    - match: \b(array|callable|int|string|bool|float)\b
+    - match: \b(larik|callable|int|string|bool|float)\b
       scope: storage.type.php
     # Class name type hint
     - match: '{{identifier}}'
@@ -643,7 +643,7 @@ contexts:
       scope: punctuation.separator.php
     - match: '\?'
       scope: storage.type.nullable.php
-    - match: \b(array|bool|int|float|string)\b
+    - match: \b(larik|bool|int|float|string)\b
       scope: storage.type.php
     - include: class-builtin
     - include: identifier-parts-as-path
@@ -718,7 +718,7 @@ contexts:
         - match: \n
           pop: true
   constants:
-    - match: (?i)\b(TRUE|FALSE|NULL|__(FILE|DIR|FUNCTION|CLASS|METHOD|LINE|NAMESPACE)__|ON|OFF|YES|NO|NL|BR|TAB)\b
+    - match: (?i)\b(BENAR|SALAH|NULL|__(FILE|DIR|FUNCTION|CLASS|METHOD|LINE|NAMESPACE)__|ON|OFF|YES|NO|NL|BR|TAB)\b
       scope: constant.language.php
     - match: (?=\\?{{identifier}}\\{{path}})
       push:
@@ -765,7 +765,7 @@ contexts:
         - match: '{{identifier}}(?=\s*\()'
           scope: variable.function.php
           set: function-call-parameters
-    - match: (?i)\b(print|echo)\b
+    - match: (?i)\b(cetak|tampil)\b
       scope: support.function.construct.php
     # Root namespace function calls may be a built-in or user
     - match: '(\\)?(?={{identifier}}\s*\()'
@@ -775,7 +775,7 @@ contexts:
         - meta_scope: meta.function-call.php
         - match: (?=\s*\()
           set: function-call-parameters
-        - match: (?i)\b(isset|unset|e(val|mpty)|list)\b
+        - match: (?i)\b(diset|hapus|jalankan|kosong|daftar)\b
           scope: support.function.construct.php
         - include: support
         - match: '{{identifier}}'
@@ -937,21 +937,24 @@ contexts:
             - match: (?=^\2\b)
               pop: true
   instantiation:
-    - match: '(?i)(new)\s+(class)\b\s*'
+    - match: '(?i)(buat)\s+(kelas)\b\s*'
       captures:
         1: keyword.other.new.php
         2: storage.type.class.php
       push: class-definition
-    - match: (?i)(new)\s+
+    - match: (?i)(buat)\s+
       captures:
         1: keyword.other.new.php
       push:
         - match: '(?=[^[:alnum:]$_\\])'
           pop: true
-        - match: '(parent|static|self)\b'
+        - match: '(induk|statis|diri)\b'
           scope: variable.language.php
         - include: class-name
         - include: variables
+    - match: (?i)\s+(baru)\s*
+      captures:
+        1: keyword.other.new.php
   interpolation:
     - match: '\\[0-7]{1,3}'
       scope: constant.character.escape.octal.php
@@ -1081,7 +1084,7 @@ contexts:
       scope: keyword.operator.assignment.php
     - match: '&(?=\s*\$)'
       scope: storage.modifier.reference.php
-    - match: (array)\s*(\()
+    - match: (larik)\s*(\()
       captures:
         1: support.function.construct.php
         2: punctuation.section.array.begin.php
@@ -1262,9 +1265,9 @@ contexts:
   support:
     - match: (?i)\bapc_(s(tore|ma_info)|c(ompile_file|lear_cache|a(s|che_info))|inc|de(c|fine_constants|lete(_file)?)|exists|fetch|load_constants|add|bin_(dump(file)?|load(file)?))\b
       scope: support.function.apc.php
-    - match: (?i)\b(s(huffle|izeof|ort)|n(ext|at(sort|casesort))|c(o(unt|mpact)|urrent)|in_array|u(sort|ksort|asort)|p(os|rev)|e(nd|ach|xtract)|k(sort|ey|rsort)|list|a(sort|r(sort|ray(_(s(hift|um|plice|earch|lice)|c(h(unk|ange_key_case)|o(unt_values|mbine))|intersect(_(u(key|assoc)|key|assoc))?|diff(_(u(key|assoc)|key|assoc))?|u(n(shift|ique)|intersect(_(uassoc|assoc))?|diff(_(uassoc|assoc))?)|p(op|ush|ad|roduct)|values|key(s|_exists)|f(il(ter|l(_keys)?)|lip)|walk(_recursive)?|r(e(duce|place(_recursive)?|verse)|and)|m(ultisort|erge(_recursive)?|ap)))?))|r(sort|eset|ange))\b
+    - match: (?i)\b(hitung|ukuran|s(huffle|izeof|ort)|n(ext|at(sort|casesort))|c(o(unt|mpact)|urrent)|in_array|u(sort|ksort|asort)|p(os|rev)|e(nd|ach|xtract)|k(sort|ey|rsort)|list|a(sort|r(sort|ray(_(s(hift|um|plice|earch|lice)|c(h(unk|ange_key_case)|o(unt_values|mbine))|intersect(_(u(key|assoc)|key|assoc))?|diff(_(u(key|assoc)|key|assoc))?|u(n(shift|ique)|intersect(_(uassoc|assoc))?|diff(_(uassoc|assoc))?)|p(op|ush|ad|roduct)|values|key(s|_exists)|f(il(ter|l(_keys)?)|lip)|walk(_recursive)?|r(e(duce|place(_recursive)?|verse)|and)|m(ultisort|erge(_recursive)?|ap)))?))|r(sort|eset|ange))\b
       scope: support.function.array.php
-    - match: (?i)\b(s(how_source|ys_getloadavg|leep)|highlight_(string|file)|con(stant|nection_(status|timeout|aborted))|time_(sleep_until|nanosleep)|ignore_user_abort|d(ie|efine(d)?)|u(sleep|n(iqid|pack))|__halt_compiler|p(hp_(strip_whitespace|check_syntax)|ack)|e(val|xit)|get_browser)\b
+    - match: (?i)\b(panjang|cetak_variabel|cetak_rekursif|rentang|s(how_source|ys_getloadavg|leep)|highlight_(string|file)|con(stant|nection_(status|timeout|aborted))|time_(sleep_until|nanosleep)|ignore_user_abort|d(ie|efine(d)?)|u(sleep|n(iqid|pack))|__halt_compiler|p(hp_(strip_whitespace|check_syntax)|ack)|e(val|xit)|get_browser)\b
       scope: support.function.basic_functions.php
     - match: (?i)\bbc(s(cale|ub|qrt)|comp|div|pow(mod)?|add|m(od|ul))\b
       scope: support.function.bcmath.php
@@ -1468,7 +1471,7 @@ contexts:
       captures:
         1: punctuation.definition.variable.php
       push: after-identifier
-    - match: '(\$)this\b'
+    - match: '(\$)ini\b'
       scope: variable.language.php
       captures:
         1: punctuation.definition.variable.php
@@ -1488,7 +1491,7 @@ contexts:
       scope: variable.other.global.safer.php
       captures:
         1: punctuation.definition.variable.php
-    - match: '(\$)this\b'
+    - match: '(\$)ini\b'
       scope: variable.language.php
       captures:
         1: punctuation.definition.variable.php

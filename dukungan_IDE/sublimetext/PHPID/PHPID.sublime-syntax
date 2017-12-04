@@ -2,7 +2,6 @@
 ---
 name: PHPID
 file_extensions:
-  - php
   - phpid
 first_line_match: '^(#!.*[^-]php[0-9]?|<\?phpid)\b'
 scope: embedding.php
