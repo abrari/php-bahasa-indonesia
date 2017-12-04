@@ -158,7 +158,7 @@ contexts:
         - match: |-
             (?x)(::)
             (?:
-                (class)\b
+                (kelas)\b
                 |
                 ((\$+){{identifier}})
                 |
@@ -423,8 +423,8 @@ contexts:
   class:
     - match: '(?i)\b(kelas)\s+(\b(?:abstrak|final)\s+)?({{identifier}})\s*'
       captures:
-        1: storage.modifier.abstract.php
-        2: storage.type.class.php
+        1: storage.type.class.php
+        2: storage.modifier.abstract.php
         3: entity.name.class.php
       push: class-definition
 
@@ -534,10 +534,10 @@ contexts:
       push:
         - meta_content_scope: meta.function.php
         - include: comments
-        - match: '(?i)\b(final|abstrak|publik|privat|terproteksi|statis)\b'
-          scope: storage.modifier.php
         - match: (?i)\bfungsi\b
           scope: storage.type.function.php
+        - match: '(?i)\b(final|abstrak|publik|privat|terproteksi|statis)\b'
+          scope: storage.modifier.php
         - match: '&'
           scope: storage.modifier.reference.php
         - match: '(__(?:callStatic|call|construct|konstruktor|destruct|get|set|isset|unset|toString|clone|set_state|sleep|wakeup|autoload|invoke|debugInfo))\b'
