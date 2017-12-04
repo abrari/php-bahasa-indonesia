@@ -2,33 +2,34 @@
 ---
 name: PHPID
 file_extensions:
+  - php
   - phpid
-first_line_match: '^(#!.*[^-]php[0-9]?|<\?phpid)\b'
-scope: embedding.php
+first_line_match: '^(#!.*[^-]phpid[0-9]?|<\?phpid)\b'
+scope: embedding.phpid
 contexts:
   main:
     - match: ''
       push: 'scope:text.html.basic'
       with_prototype:
         - match: '<\?(?i:phpid|=)?(?![^?]*\?>)'
-          scope: punctuation.section.embedded.begin.php
+          scope: punctuation.section.embedded.begin.phpid
           push:
-            - meta_scope: meta.embedded.block.php
-            - meta_content_scope: source.php
+            - meta_scope: meta.embedded.block.phpid
+            - meta_content_scope: source.phpid
             - match: \?>(\s*\n)?
-              scope: punctuation.section.embedded.end.php
+              scope: punctuation.section.embedded.end.phpid
               captures:
-                1: meta.html-newline-after-php.php
+                1: meta.html-newline-after-php.phpid
               pop: true
-            - include: 'scope:source.php'
+            - include: 'scope:source.phpid'
         - match: <\?(?i:phpid|=)?
-          scope: punctuation.section.embedded.begin.php
+          scope: punctuation.section.embedded.begin.phpid
           push:
-            - meta_scope: meta.embedded.line.php
-            - meta_content_scope: source.php
+            - meta_scope: meta.embedded.line.phpid
+            - meta_content_scope: source.phpid
             - match: \?>(\s*\n)?
-              scope: punctuation.section.embedded.end.php
+              scope: punctuation.section.embedded.end.phpid
               captures:
-                1: meta.html-newline-after-php.php
+                1: meta.html-newline-after-php.phpid
               pop: true
-            - include: 'scope:source.php'
+            - include: 'scope:source.phpid'
