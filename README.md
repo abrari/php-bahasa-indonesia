@@ -376,3 +376,6 @@ ruangnama {
 Kode-kode program ini menggunakan ekstensi `.php` namun sudah bukan merupakan sintaks PHP yang valid.
 Jika dibuka di IDE atau editor, *linter* pasti akan melaporkan kesalahan sintaks.
 
+## Dukungan Text Editor
+
+Telah tersedia package dukungan bahasa ini untuk [Sublime Text 3](https://github.com/abrari/php-bahasa-indonesia/tree/master/dukungan_IDE/sublimetext).
