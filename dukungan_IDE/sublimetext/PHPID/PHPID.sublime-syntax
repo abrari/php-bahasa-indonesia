@@ -1,0 +1,35 @@
+%YAML 1.2
+---
+name: PHPID
+file_extensions:
+  - php
+  - phpid
+first_line_match: '^(#!.*[^-]php[0-9]?|<\?phpid)\b'
+scope: embedding.php
+contexts:
+  main:
+    - match: ''
+      push: 'scope:text.html.basic'
+      with_prototype:
+        - match: '<\?(?i:phpid|=)?(?![^?]*\?>)'
+          scope: punctuation.section.embedded.begin.php
+          push:
+            - meta_scope: meta.embedded.block.php
+            - meta_content_scope: source.php
+            - match: \?>(\s*\n)?
+              scope: punctuation.section.embedded.end.php
+              captures:
+                1: meta.html-newline-after-php.php
+              pop: true
+            - include: 'scope:source.php'
+        - match: <\?(?i:phpid|=)?
+          scope: punctuation.section.embedded.begin.php
+          push:
+            - meta_scope: meta.embedded.line.php
+            - meta_content_scope: source.php
+            - match: \?>(\s*\n)?
+              scope: punctuation.section.embedded.end.php
+              captures:
+                1: meta.html-newline-after-php.php
+              pop: true
+            - include: 'scope:source.php'
