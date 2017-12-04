@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[untuksetiap (\$${2:key}${3: => \$${4:value}} dalam \$${1:variable}) {
+	${0:# kode...}
+}]]></content>
+	<tabTrigger>untuksetiap dalam</tabTrigger>
+	<scope>source.phpid - string - comment</scope>
+	<description>untuksetiap … dalam …</description>
+</snippet>

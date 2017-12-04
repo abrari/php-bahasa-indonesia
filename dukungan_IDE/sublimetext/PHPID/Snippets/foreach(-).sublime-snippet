@@ -1,8 +1,8 @@
 <snippet>
-	<content><![CDATA[foreach (\$${1:variable} as \$${2:key}${3: => \$${4:value}}) {
-	${0:# code...}
+	<content><![CDATA[untuksetiap (\$${1:variable} sebagai \$${2:key}${3: => \$${4:value}}) {
+	${0:# kode...}
 }]]></content>
-	<tabTrigger>foreach</tabTrigger>
+	<tabTrigger>untuksetiap</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>foreach …</description>
+	<description>untuksetiap …</description>
 </snippet>

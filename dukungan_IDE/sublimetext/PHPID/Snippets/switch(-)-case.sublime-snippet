@@ -1,8 +1,8 @@
 <snippet>
-	<content><![CDATA[case '${1:variable}':
-	${0:# code...}
-	break;]]></content>
-	<tabTrigger>case</tabTrigger>
+	<content><![CDATA[kalau '${1:variabel}':
+	${0:# kode...}
+	berhenti;]]></content>
+	<tabTrigger>kalau</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>case …</description>
+	<description>kalau …</description>
 </snippet>

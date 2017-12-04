@@ -2,16 +2,16 @@
 	<content><![CDATA[/**
 * $1
 */
-class ${2:ClassName}${3: extends ${4:AnotherClass}}
+kelas ${2:NamaKelas}${3: turunan ${4:KelasLain}}
 {
 	$5
-	function ${6:__construct}(${7:argument})
+	fungsi publik ${6:__konstruktor}(${7:parameter})
 	{
-		${0:# code...}
+		${0:# kode...}
 	}
 }
 ]]></content>
-	<tabTrigger>class</tabTrigger>
+	<tabTrigger>kelas</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>class …</description>
+	<description>kelas …</description>
 </snippet>

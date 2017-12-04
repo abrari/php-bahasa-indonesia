@@ -1,8 +1,8 @@
 <snippet>
-	<content><![CDATA[do {
-	${0:# code...}
-} while (${1:$a <= 10});]]></content>
-	<tabTrigger>do</tabTrigger>
+	<content><![CDATA[kerjakan {
+	${0:# kode...}
+} selama (${1:$a <= 10});]]></content>
+	<tabTrigger>kerjakan</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>do … while …</description>
+	<description>kerjakan … selama …</description>
 </snippet>

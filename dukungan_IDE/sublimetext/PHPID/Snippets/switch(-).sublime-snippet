@@ -1,14 +1,14 @@
 <snippet>
-	<content><![CDATA[switch (${1:variable}) {
-	case '${2:value}':
-		${3:# code...}
-		break;
+	<content><![CDATA[pilihan (${1:variabel}) {
+	kalau '${2:nilai}':
+		${3:# kode...}
+		berhenti;
 	$0
 	default:
-		${4:# code...}
-		break;
+		${4:# kode...}
+		berhenti;
 }]]></content>
-	<tabTrigger>switch</tabTrigger>
+	<tabTrigger>pilihan</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>switch …</description>
+	<description>pilihan …</description>
 </snippet>

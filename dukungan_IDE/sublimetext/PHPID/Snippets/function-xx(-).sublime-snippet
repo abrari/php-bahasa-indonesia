@@ -1,9 +1,9 @@
 <snippet>
-	<content><![CDATA[${1:public }function ${2:FunctionName}(${3:\$${4:value}${5:=''}})
+	<content><![CDATA[fungsi ${1:publik} ${2:NamaFungsi}(${3:\$${4:parameter}${5:=''}})
 {
-	${0:# code...}
+	${0:# kode...}
 }]]></content>
 	<tabTrigger>fun</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>function …</description>
+	<description>fungsi …</description>
 </snippet>

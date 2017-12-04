@@ -1,8 +1,8 @@
 <snippet>
-	<content><![CDATA[if (${1:condition}) {
-	${0:# code...}
+	<content><![CDATA[jika (${1:kondisi}) {
+	${0:# kode...}
 }]]></content>
-	<tabTrigger>if</tabTrigger>
+	<tabTrigger>jika</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>if …</description>
+	<description>jika …</description>
 </snippet>

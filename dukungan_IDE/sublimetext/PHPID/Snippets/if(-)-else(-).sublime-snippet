@@ -1,11 +1,11 @@
 <snippet>
-	<content><![CDATA[if (${1:condition}) {
-	${2:# code...}
-} else {
-	${3:# code...}
+	<content><![CDATA[jika (${1:kondisi}) {
+	${2:# kode...}
+} selainnya {
+	${3:# kode...}
 }
 $0]]></content>
-	<tabTrigger>ifelse</tabTrigger>
+	<tabTrigger>jika selainnya</tabTrigger>
 	<scope>source.phpid - string - comment</scope>
-	<description>if … else …</description>
+	<description>jika … selainnya …</description>
 </snippet>
