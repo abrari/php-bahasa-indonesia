@@ -3,6 +3,6 @@
 	${0:# code...}
 }]]></content>
 	<tabTrigger>elseif</tabTrigger>
-	<scope>source.php - string - comment</scope>
+	<scope>source.phpid - string - comment</scope>
 	<description>elseif …</description>
 </snippet>
