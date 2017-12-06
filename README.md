@@ -16,11 +16,11 @@ Clone repositori ini
 ```
 $ git clone --depth=1 https://github.com/abrari/php-bahasa-indonesia.git
 ```
-Konfigurasi (disable phar karena tidak didukung) dan build
+Konfigurasi dan build
 ```
 $ cd php-bahasa-indonesia/
 $ ./buildconf --force
-$ ./configure --disable-phar --with-readline
+$ ./configure --with-readline
 $ make -j 4
 ```
 Hasil build (PHP CLI) akan berada di folder `sapi/cli`.
