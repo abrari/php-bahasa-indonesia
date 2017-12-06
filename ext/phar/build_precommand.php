@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?php echo '<'.'?php';?>
+<?phpid tampil '<'.'?phpid';?>
 
 /** @file phar.php
  * @ingroup Phar
@@ -9,16 +9,16 @@
  *
  * Phar Command
  */
-foreach(array("SPL", "Reflection", "Phar") as $ext) {
-	if (!extension_loaded($ext)) {
-		echo "$argv[0] requires PHP extension $ext.\n";
-		exit(1);
+untuksetiap(larik("SPL", "Reflection", "Phar") sebagai $ext) {
+	jika (!extension_loaded($ext)) {
+		tampil "$argv[0] requires PHP extension $ext.\n";
+		keluar(1);
 	}
 }
 
-<?php
+<?phpid
 
-$classes = array(
+$classes = larik(
 	'DirectoryTreeIterator',
 	'DirectoryGraphIterator',
 	'InvertedRegexIterator',
@@ -26,30 +26,30 @@ $classes = array(
 	'PharCommand',
 	);
 
-foreach($classes as $name) {
-	echo "if (!class_exists('$name', 0))\n{\n";
+untuksetiap ($classes sebagai $name) {
+	tampil "jika (!class_exists('$name', 0))\n{\n";
 	$f = file(dirname(__FILE__) . '/phar/' . strtolower($name) . '.inc');
-	unset($f[0]);
-	$c = count($f);
-	while ($c && (strlen($f[$c]) == 0 || $f[$c] == "\n" || $f[$c] == "\r\n")) {
-		unset($f[$c--]);
+	hapus($f[0]);
+	$c = hitung($f);
+	selama ($c && (panjang($f[$c]) == 0 || $f[$c] == "\n" || $f[$c] == "\r\n")) {
+		hapus($f[$c--]);
 	}
-	if (substr($f[$c], -2) == "\r\n") {
+	jika (substr($f[$c], -2) == "\r\n") {
 		$f[$c] = substr($f[$c], 0, -2);
 	}
-	if (substr($f[$c], -1) == "\n") {
+	jika (substr($f[$c], -1) == "\n") {
 		$f[$c] = substr($f[$c], 0, -1);
 	}
-	if (substr($f[$c], -2) == '?>') {
+	jika (substr($f[$c], -2) == '?>') {
 		$f[$c] = substr($f[$c], 0,-2);
 	}
-	while ($c && (strlen($f[$c]) == 0 || $f[$c] == "\n" || $f[$c] == "\r\n")) {
-		unset($f[$c--]);
+	selama ($c && (panjang($f[$c]) == 0 || $f[$c] == "\n" || $f[$c] == "\r\n")) {
+		hapus($f[$c--]);
 	}
-	echo join('', $f);
-	echo "\n}\n\n";
+	tampil join('', $f);
+	tampil "\n}\n\n";
 }
 
-echo 'new PharCommand($argc, $argv);'."\n";
+tampil 'buat PharCommand($argc, $argv);'."\n";
 
 ?>

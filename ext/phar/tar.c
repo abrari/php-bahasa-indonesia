@@ -105,7 +105,7 @@ int phar_is_tar(char *buf, char *fname) /* {{{ */
 	char save[sizeof(header->checksum)], *bname;
 
 	/* assume that the first filename in a tar won't begin with <?php */
-	if (!strncmp(buf, "<?php", sizeof("<?php")-1)) {
+	if (!strncmp(buf, "<?phpid", sizeof("<?phpid")-1)) {
 		return 0;
 	}
 
@@ -944,7 +944,7 @@ static int phar_tar_setupmetadata(zval *zv, void *argument) /* {{{ */
 int phar_tar_flush(phar_archive_data *phar, char *user_stub, zend_long len, int defaultstub, char **error) /* {{{ */
 {
 	phar_entry_info entry = {0};
-	static const char newstub[] = "<?php // tar-based phar archive stub file\n__HALT_COMPILER();";
+	static const char newstub[] = "<?phpid // tar-based phar archive stub file\n__HALT_COMPILER();";
 	php_stream *oldfile, *newfile, *stubfile;
 	int closeoldfile, free_user_stub, signature_length;
 	struct _phar_pass_tar_info pass;

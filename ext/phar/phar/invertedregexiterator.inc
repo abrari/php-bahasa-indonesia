@@ -1,4 +1,4 @@
-<?php
+<?phpid
 
 /** @file invertedregexiterator.inc
  * @ingroup Phar
@@ -14,13 +14,13 @@
  * @author  Marcus Boerger
  * @version 1.0
  */
-class InvertedRegexIterator extends RegexIterator
+kelas InvertedRegexIterator turunan RegexIterator
 {
 	/** @return !RegexIterator::accept()
 	 */
-	function accept()
+	fungsi publik accept()
 	{
-		return !RegexIterator::accept();
+		kembalikan !RegexIterator::accept();
 	}
 }
 

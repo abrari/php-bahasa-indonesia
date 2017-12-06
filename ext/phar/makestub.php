@@ -1,34 +1,34 @@
-<?php
+<?phpid
 $s = str_replace("\r", '', file_get_contents(dirname(__FILE__) . '/shortarc.php'));
 
 $s .= "\nExtract_Phar::go();\n__HALT_COMPILER();";
 $news = '';
-foreach (token_get_all($s) as $token) {
-	if (is_array($token)) {
-		if ($token[0] == T_COMMENT) {
+untuksetiap (token_get_all($s) sebagai $token) {
+	jika (is_array($token)) {
+		jika ($token[0] == T_COMMENT) {
 			$token[1] = '';
 		}
-		if ($token[0] == T_WHITESPACE) {
+		jika ($token[0] == T_WHITESPACE) {
 			$n = str_repeat("\n", substr_count($token[1], "\n"));
-			$token[1] = strlen($n) ? $n : ' ';
+			$token[1] = panjang($n) ? $n : ' ';
 		}
 		$news .= $token[1];
-	} else {
+	} selainnya {
 		$news .= $token;
 	}
 }
 $s = $news . ' ?>';
-$slen = strlen($s) - strlen('index.php') - strlen("000");
+$slen = panjang($s) - panjang('index.php') - panjang("000");
 $s = str_replace('\\', '\\\\', $s);
 $s = str_replace('"', '\\"', $s);
 $s = str_replace("\n", '\n', $s);
 // now we need to find the location of web index file
 $webs = substr($s, 0, strpos($s, "000"));
-$s = substr($s, strlen($webs) + strlen("000"));
+$s = substr($s, panjang($webs) + panjang("000"));
 $s1 = substr($s, 0, strpos($s, 'index.php'));
-$s2 = substr($s, strlen($s1) + strlen('index.php'));
+$s2 = substr($s, panjang($s1) + panjang('index.php'));
 $s2 = substr($s2, 0, strpos($s2, 'XXXX'));
-$s3 = substr($s, strlen($s2) + 4 + strlen($s1) + strlen('index.php'));
+$s3 = substr($s, panjang($s2) + 4 + panjang($s1) + panjang('index.php'));
 
 $stub = '/*
   +----------------------------------------------------------------------+
@@ -55,37 +55,37 @@ static inline void phar_get_stub(const char *index_php, const char *web, size_t 
 ';
 $s1split = str_split($s1, 2046);
 $s3split = str_split($s3, 2046);
-$took = false;
-foreach ($s1split as $i => $chunk) {
-	if ($took) {
+$took = salah;
+untuksetiap ($s1split sebagai $i => $chunk) {
+	jika ($took) {
 		$s1split[$i] = substr($chunk, 1);
-		$took = false;
+		$took = salah;
 	}
-	if ($chunk[strlen($chunk) - 1] == '\\') {
+	jika ($chunk[panjang($chunk) - 1] == '\\') {
 		$s1split[$i] .= $s1split[$i + 1][0];
-		$took = true;
+		$took = benar;
 	}
 }
-foreach ($s3split as $i => $chunk) {
-	if ($took) {
+untuksetiap ($s3split sebagai $i => $chunk) {
+	jika ($took) {
 		$s3split[$i] = substr($chunk, 1);
-		$took = false;
+		$took = salah;
 	}
-	if ($chunk[strlen($chunk) - 1] == '\\') {
+	jika ($chunk[panjang($chunk) - 1] == '\\') {
 		$s3split[$i] .= $s3split[$i + 1][0];
-		$took = true;
+		$took = benar;
 	}
 }
 $stub .= "\tstatic const char newstub0[] = \"" . $webs . '";
 ';
-foreach ($s1split as $i => $chunk) {
+untuksetiap ($s1split sebagai $i => $chunk) {
 	$s1count = $i + 1;
 	$stub .= "\tstatic const char newstub1_" . $i . '[] = "' . $chunk . '";
 ';
 }
 $stub .= "\tstatic const char newstub2[] = \"" . $s2 . "\";
 ";
-foreach ($s3split as $i => $chunk) {
+untuksetiap ($s3split sebagai $i => $chunk) {
 	$s3count = $i + 1;
 	$stub .= "\tstatic const char newstub3_" . $i . '[] = "' . $chunk . '";
 ';
@@ -94,12 +94,12 @@ $stub .= "\n\tstatic const int newstub_len = " . $slen . ";
 
 \t*len = spprintf(stub, name_len + web_len + newstub_len, \"%s%s" . str_repeat('%s', $s1count) . '%s%s%d'
 	. str_repeat('%s', $s3count) . '", newstub0, web';
-foreach ($s1split as $i => $unused) {
+untuksetiap ($s1split sebagai $i => $unused) {
 	$stub .= ', newstub1_' . $i;
 }
 $stub .= ', index_php, newstub2';
 $stub .= ", name_len + web_len + newstub_len";
-foreach ($s3split as $i => $unused) {
+untuksetiap ($s3split sebagai $i => $unused) {
 	$stub .= ', newstub3_' . $i;
 }
 $stub .= ");

@@ -1,4 +1,4 @@
-<?php
+<?phpid
 
 /** @file directorytreeiterator.inc
  * @ingroup Examples
@@ -14,40 +14,40 @@
  * @author  Marcus Boerger
  * @version 1.1
  */
-class DirectoryTreeIterator extends RecursiveIteratorIterator
+kelas DirectoryTreeIterator turunan RecursiveIteratorIterator
 {
 	/** Construct from a path.
 	 * @param $path directory to iterate
 	 */
-	function __construct($path)
+	fungsi publik __konstruktor($path)
 	{
-		parent::__construct(
-			new RecursiveCachingIterator(
-				new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::KEY_AS_FILENAME
+		induk::__konstruktor(
+			buat RecursiveCachingIterator(
+				buat RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::KEY_AS_FILENAME
 				),
 				CachingIterator::CALL_TOSTRING|CachingIterator::CATCH_GET_CHILD
 			),
-			parent::SELF_FIRST
+			induk::SELF_FIRST
 		);
 	}
 
 	/** @return the current element prefixed with ASCII graphics
 	 */
-	function current()
+	fungsi publik current()
 	{
 		$tree = '';
-		for ($l=0; $l < $this->getDepth(); $l++) {
-			$tree .= $this->getSubIterator($l)->hasNext() ? '| ' : '  ';
+		untuk ($l=0; $l < $ini->getDepth(); $l++) {
+			$tree .= $ini->getSubIterator($l)->hasNext() ? '| ' : '  ';
 		}
-		return $tree . ($this->getSubIterator($l)->hasNext() ? '|-' : '\-')
-					 . $this->getSubIterator($l)->__toString();
+		kembalikan $tree . ($ini->getSubIterator($l)->hasNext() ? '|-' : '\-')
+					 . $ini->getSubIterator($l)->__toString();
 	}
 
 	/** Aggregates the inner iterator
 	 */
-	function __call($func, $params)
+	fungsi publik __call($func, $params)
 	{
-		return call_user_func_array(array($this->getSubIterator(), $func), $params);
+		kembalikan call_user_func_array(larik($ini->getSubIterator(), $func), $params);
 	}
 }
 

@@ -1181,7 +1181,7 @@ int phar_zip_flush(phar_archive_data *phar, char *user_stub, zend_long len, int 
 {
 	char *pos;
 	smart_str main_metadata_str = {0};
-	static const char newstub[] = "<?php // zip-based phar archive stub file\n__HALT_COMPILER();";
+	static const char newstub[] = "<?phpid // zip-based phar archive stub file\n__HALT_COMPILER();";
 	char halt_stub[] = "__HALT_COMPILER();";
 	char *tmp;
 

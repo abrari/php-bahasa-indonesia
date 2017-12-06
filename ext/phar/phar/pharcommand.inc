@@ -1,4 +1,4 @@
-<?php
+<?phpid
 
 /**
  * @file pharcommand.inc
@@ -22,167 +22,167 @@
  * @author  Marcus Boerger
  * @version 1.0
  */
-class PharCommand extends CLICommand
+kelas PharCommand turunan CLICommand
 {
-	// {{{ public function cli_get_SP2
-	public function cli_get_SP2($l1, $arg_inf)
+	// {{{ fungsi publik cli_get_SP2
+	fungsi publik cli_get_SP2($l1, $arg_inf)
 	{
-		return str_repeat(' ', $l1 + 2 + 4 + 9);
+		kembalikan str_repeat(' ', $l1 + 2 + 4 + 9);
 	}
 	// }}}
-	// {{{ public function cli_get_SP3
+	// {{{ fungsi publik cli_get_SP3
 	/**
 	 * Cli Get SP3
 	 *
 	 * @param string $l1      Eleven
 	 * @param string $l2      Twelve
 	 * @param string $arg_inf
-	 * @return string  The repeated string.
+	 * @kembalikan string  The repeated string.
 	 */
-	function cli_get_SP3($l1, $l2, $arg_inf)
+	fungsi publik cli_get_SP3($l1, $l2, $arg_inf)
 	{
-		return str_repeat(' ', $l1 + 2 + 4 + 9 + 2 + $l2 + 2);
+		kembalikan str_repeat(' ', $l1 + 2 + 4 + 9 + 2 + $l2 + 2);
 	}
 	// }}}
-	// {{{ static function phar_args
+	// {{{ fungsi publik statis phar_args
 	/**
 	 * Phar arguments
 	 * 
-	 * This function contains all the phar commands
+	 * This fungsi publik contains all the phar commands
 	 *
 	 * @param  string $which    Which argument is chosen.
 	 * @param  string $phartype The type of phar, specific file to work on
-	 * @return unknown
+	 * @kembalikan unknown
 	 */
-	static function phar_args($which, $phartype)
+	fungsi publik statis phar_args($which, $phartype)
 	{
-		$phar_args = array(
-			'a' => array(
+		$phar_args = larik(
+			'a' => larik(
 				'typ' => 'alias',
 				'val' => NULL,
 				'inf' => '<alias>  Provide an alias name for the phar file.'
 			),
-			'b' => array(
+			'b' => larik(
 				'typ' => 'any',
 				'val' => NULL,
 				'inf' => '<bang>   Hash-bang line to start the archive (e.g. #!/usr/bin/php). The hash '
 						 .'         mark itself \'#!\' and the newline character are optional.'
 			),
-			'c' => array(
+			'c' => larik(
 				'typ' => 'compalg',
 				'val' => NULL,
 				'inf' => '<algo>   Compression algorithm.',
-				'select' => array(
+				'select' => larik(
 					'0'    => 'No compression',
 					'none' => 'No compression',
 					'auto' => 'Automatically select compression algorithm'
 				)
 			),
-			'e' => array(
+			'e' => larik(
 				'typ' => 'entry',
 				'val' => NULL,
 				'inf' => '<entry>  Name of entry to work on (must include PHAR internal directory name if any).'
 			),
-			'f' => array(
+			'f' => larik(
 				'typ' => $phartype,
 				'val' => NULL,
 				'inf' => '<file>   Specifies the phar file to work on.'
 			),
-			'h' => array(
+			'h' => larik(
 				'typ' => 'select',
 				'val' => NULL,
 				'inf' => '<method> Selects the hash algorithm.',
-				'select' => array('md5' => 'MD5','sha1' => 'SHA1')
+				'select' => larik('md5' => 'MD5','sha1' => 'SHA1')
 			),
-			'i' => array(
+			'i' => larik(
 				'typ' => 'regex',
 				'val' => NULL,
 				'inf' => '<regex>  Specifies a regular expression for input files.'
 			),
-			'k' => array(
+			'k' => larik(
 				'typ' => 'any',
 				'val' => NULL,
 				'inf' => '<index>  Subscription index to work on.',
 			),
-			'l' => array(
+			'l' => larik(
 				'typ' => 'int',
 				'val' => 0,
 				'inf' => '<level>  Number of preceding subdirectories to strip from file entries',
 			),
-			'm' => array(
+			'm' => larik(
 				'typ' => 'any',
 				'val' => NULL,
 				'inf' => '<meta>   Meta data to store with entry (serialized php data).'
 			),
-			'p' => array(
+			'p' => larik(
 				'typ' => 'loader',
 				'val' => NULL,
 				'inf' => '<loader> Location of PHP_Archive class file (pear list-files PHP_Archive).'
 						 .'You can use \'0\' or \'1\' to locate it automatically using the mentioned '
 						 .'pear command. When using \'0\' the command does not error out when the '
 						 .'class file cannot be located. This switch also adds some code around the '
-						 .'stub so that class PHP_Archive gets registered as phar:// stream wrapper '
+						 .'stub so that class PHP_Archive gets registered sebagai phar:// stream wrapper '
 						 .'if necessary. And finally this switch will add the file phar.inc from '
 						 .'this package and load it to ensure class Phar is present.'
 						 ,
 			),
-			's' => array(
+			's' => larik(
 				'typ' => 'file',
 				'val' => NULL,
 				'inf' => '<stub>   Select the stub file.'
 			),
-			'x' => array(
+			'x' => larik(
 				'typ' => 'regex',
 				'val' => NULL,
 				'inf' => '<regex>  Regular expression for input files to exclude.'
 			),
-			'y' => array(
+			'y' => larik(
 				'typ' => 'privkey',
 				'val' => NULL,
 				'inf' => '<key>    Private key for OpenSSL signing.',
 			),
 		);
 
-		if (extension_loaded('zlib')) {
+		jika (extension_loaded('zlib')) {
 			$phar_args['c']['select']['gz']    = 'GZip compression';
 			$phar_args['c']['select']['gzip']  = 'GZip compression';
 		}
 
-		if (extension_loaded('bz2')) {
+		jika (extension_loaded('bz2')) {
 			$phar_args['c']['select']['bz2']   = 'BZip2 compression';
 			$phar_args['c']['select']['bzip2'] = 'BZip2 compression';
 		}
 
 		$hash_avail = Phar::getSupportedSignatures();
-		$hash_optional = array('SHA-256' => 'SHA256',
+		$hash_optional = larik('SHA-256' => 'SHA256',
 							   'SHA-512' => 'SHA512',
 							   'OpenSSL' => 'OpenSSL');
-		if (!in_array('OpenSSL', $hash_avail)) {
-			unset($phar_args['y']);
+		jika (!in_array('OpenSSL', $hash_avail)) {
+			hapus($phar_args['y']);
 		}
 
-		foreach($hash_optional as $key => $name) {
-			if (in_array($key, $hash_avail)) {
+		untuksetiap($hash_optional sebagai $key => $name) {
+			jika (in_array($key, $hash_avail)) {
 				$phar_args['h']['select'][strtolower($name)] = $name;
 			}
 		}
 
-		$args = array();
+		$args = larik();
 
-		foreach($phar_args as $lkey => $cfg) {
+		untuksetiap($phar_args sebagai $lkey => $cfg) {
 			$ukey     = strtoupper($lkey);
-			$required = strpos($which, $ukey) !== false;
-			$optional = strpos($which, $lkey) !== false;
+			$required = strpos($which, $ukey) !== salah;
+			$optional = strpos($which, $lkey) !== salah;
 
-			if ($required || $optional) {
+			jika ($required || $optional) {
 				$args[$lkey] = $cfg;
 				$args[$lkey]['required'] = $required;
 			}
 		}
-		return $args;
+		kembalikan $args;
 	}
 	// }}}
-	// {{{ static function strEndsWith
+	// {{{ fungsi publik statis strEndsWith
 	/**
 	 * String Ends With
 	 * 
@@ -190,99 +190,99 @@ class PharCommand extends CLICommand
 	 *
 	 * @param string $haystack  The haystack
 	 * @param string $needle    The needle.
-	 * @return mixed false if doesn't end with anything, the string
+	 * @kembalikan mixed salah if doesn't end with anything, the string
 	 *               substr'ed if the string ends with the needle.
 	 */
-	static function strEndsWith($haystack, $needle)
+	fungsi publik statis strEndsWith($haystack, $needle)
 	{
-		return substr($haystack, -strlen($needle)) == $needle;
+		kembalikan substr($haystack, -strlen($needle)) == $needle;
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_loader
+	// {{{ fungsi publik statis cli_arg_typ_loader
 	/**
 	 * Argument type loader
 	 *
 	 * @param string $arg   Either 'auto', 'optional' or an filename that
 	 *                      contains class PHP_Archive
-	 * @param  string $cfg  Configuration to pass to a new file
+	 * @param  string $cfg  Configuration to pass to a buat file
 	 * @param  string $key  The key
-	 * @return string $arg  The argument.
+	 * @kembalikan string $arg  The argument.
 	 */
-	static function cli_arg_typ_loader($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_loader($arg, $cfg, $key)
 	{
-		if (($arg == '0' || $arg == '1') && !file_exists($arg) && substr(PHP_OS, 0, 3) != 'WIN') {
+		jika (($arg == '0' || $arg == '1') && !file_exists($arg) && substr(PHP_OS, 0, 3) != 'WIN') {
 			$found = NULL;
-			$apiver = false;
+			$apiver = salah;
 			$path = explode(PATH_SEPARATOR, $_ENV['PATH']);
-			$pear = false;
-			foreach ($path as $component) {
-				if (file_exists($component . DIRECTORY_SEPARATOR . 'pear')
+			$pear = salah;
+			untuksetiap ($path sebagai $component) {
+				jika (file_exists($component . DIRECTORY_SEPARATOR . 'pear')
 					&& is_executable($component . DIRECTORY_SEPARATOR . 'pear')) {
-					$pear = true;
-					break;
+					$pear = benar;
+					berhenti;
 				}
 			}
-			if ($pear) {
+			jika ($pear) {
 				$apiver = `pear -q info PHP_Archive 2>/dev/null|grep 'API Version'`;
 				$apiver = trim(substr($apiver, strlen('API Version')));
 			}
-			if ($apiver) {
-				self::notice("PEAR package PHP_Archive: API Version: $apiver.\n");
+			jika ($apiver) {
+				diri::notice("PEAR package PHP_Archive: API Version: $apiver.\n");
 				$files  = explode("\n", `pear list-files PHP_Archive`);
 				$phpdir = `pear config-get php_dir 2>/dev/null`;
 				$phpdir = trim($phpdir);
-				self::notice("PEAR package PHP_Archive: $phpdir.\n");
-				if (is_dir($phpdir)) {
-					foreach($files as $ent) {
+				diri::notice("PEAR package PHP_Archive: $phpdir.\n");
+				jika (is_dir($phpdir)) {
+					untuksetiap($files sebagai $ent) {
 						$matches = NULL;
-						if (preg_match(",^php[ \t]+([^ \t].*[\\\\/]PHP[\\\\/]Archive\.php)$,", $ent, $matches)) {
+						jika (preg_match(",^php[ \t]+([^ \t].*[\\\\/]PHP[\\\\/]Archive\.php)$,", $ent, $matches)) {
 							$sub = $matches[1];
-							if (strpos($sub, $phpdir) !== 0) {
+							jika (strpos($sub, $phpdir) !== 0) {
 								$found = NULL;
-								break;
+								berhenti;
 							}
 							$found = $sub;
-							break;
+							berhenti;
 						}
 					}
-				} else {
-					self::notice("PEAR package PHP_Archive: corrupt or inaccessible base dir: $php_dir.\n");
+				} selainnya {
+					diri::notice("PEAR package PHP_Archive: corrupt or inaccessible base dir: $php_dir.\n");
 				}
 			}
-			if (isset($found)) {
-				self::notice("PEAR package PHP_Archive: $found.\n");
-			} else {
+			jika (diset($found)) {
+				diri::notice("PEAR package PHP_Archive: $found.\n");
+			} selainnya {
 				$msg = "PEAR package PHP_Archive not installed: generated phar will require PHP's phar extension be enabled.\n";
-				if ($arg == '0') {
-					self::notice($msg);
-				} else {
-					self::error($msg);
+				jika ($arg == '0') {
+					diri::notice($msg);
+				} selainnya {
+					diri::error($msg);
 				}
 			}
 			$arg = $found;
 		}
-		return self::cli_arg_typ_file($arg);
+		kembalikan diri::cli_arg_typ_file($arg);
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_pharnew
+	// {{{ fungsi publik statis cli_arg_typ_pharnew
 	/**
-	 * Argument type new phar
+	 * Argument type buat phar
 	 *
-	 * @param  string $arg  The new phar component.
-	 * @param  string $cfg  Configuration to pass to a new file
+	 * @param  string $arg  The buat phar component.
+	 * @param  string $cfg  Configuration to pass to a buat file
 	 * @param  string $key  The key
-	 * @return string $arg  The new argument file.
+	 * @kembalikan string $arg  The buat argument file.
 	 */
-	static function cli_arg_typ_pharnew($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_pharnew($arg, $cfg, $key)
 	{
-		$arg = self::cli_arg_typ_filenew($arg, $cfg, $key);
-		if (!Phar::isValidPharFilename($arg)) {
-			self::error("Phar files must have file extension '.phar', '.phar.php', '.phar.bz2' or '.phar.gz'.\n");
+		$arg = diri::cli_arg_typ_filenew($arg, $cfg, $key);
+		jika (!Phar::isValidPharFilename($arg)) {
+			diri::error("Phar files must have file extension '.phar', '.phar.php', '.phar.bz2' or '.phar.gz'.\n");
 		}
-		return $arg;
+		kembalikan $arg;
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_pharfile
+	// {{{ fungsi publik statis cli_arg_typ_pharfile
 	/**
 	 * Argument type existing Phar file
 	 * 
@@ -291,29 +291,29 @@ class PharCommand extends CLICommand
 	 * @param  string $arg      The file in the phar to open.
 	 * @param  string $cfg      The configuration information
 	 * @param  string $key      The key information.
-	 * @return string $pharfile The name of the loaded Phar file.
+	 * @kembalikan string $pharfile The name of the loaded Phar file.
 	 * @note The Phar will be loaded
 	 */
-	static function cli_arg_typ_pharfile($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_pharfile($arg, $cfg, $key)
 	{
-		try {
-			$pharfile = self::cli_arg_typ_file($arg, $cfg, $key);
+		coba {
+			$pharfile = diri::cli_arg_typ_file($arg, $cfg, $key);
 
-			if (!Phar::loadPhar($pharfile)) {
-				self::error("Unable to open phar '$arg'\n");
+			jika (!Phar::loadPhar($pharfile)) {
+				diri::error("Unable to open phar '$arg'\n");
 			}
 
-			return $pharfile;
-		} catch(Exception $e) {
-			self::error("Exception while opening phar '$arg':\n" . $e->getMessage() . "\n");
+			kembalikan $pharfile;
+		} tangkap (Exception $e) {
+			diri::error("Exception selama opening phar '$arg':\n" . $e->getMessage() . "\n");
 		}
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_pharurl
+	// {{{ fungsi publik statis cli_arg_typ_pharurl
 	/**
 	 * Argument type Phar url-like
 	 * 
-	 * Check the argument as cli_arg_Typ_phar and return its name prefixed
+	 * Check the argument sebagai cli_arg_Typ_phar and kembalikan its name prefixed
 	 * with phar://
 	 * 
 	 * Ex:
@@ -323,299 +323,299 @@ class PharCommand extends CLICommand
 	 * </code>
 	 *
 	 * @param  string $arg The url-like phar archive to retrieve.
-	 * @return string The phar file-archive.
+	 * @kembalikan string The phar file-archive.
 	 */
-	static function cli_arg_typ_pharurl($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_pharurl($arg, $cfg, $key)
 	{
-		return 'phar://' . self::cli_arg_typ_pharfile($arg, $cfg, $key);
+		kembalikan 'phar://' . diri::cli_arg_typ_pharfile($arg, $cfg, $key);
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_phar
+	// {{{ fungsi publik statis cli_arg_typ_phar
 	/**
 	 * Cli argument type phar
 	 *
 	 * @param  string $arg  The phar archive to use.
-	 * @return object new Phar of the passed argument.
+	 * @kembalikan object buat Phar of the passed argument.
 	 */
-	static function cli_arg_typ_phar($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_phar($arg, $cfg, $key)
 	{
-		try {
-			return new Phar(self::cli_arg_typ_pharfile($arg, $cfg, $key));
-		} catch(Exception $e) {
-			self::error("Exception while opening phar '$argv':\n" . $e->getMessage() . "\n");
+		coba {
+			kembalikan buat Phar(diri::cli_arg_typ_pharfile($arg, $cfg, $key));
+		} tangkap(Exception $e) {
+			diri::error("Exception selama opening phar '$argv':\n" . $e->getMessage() . "\n");
 		}
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_entry
+	// {{{ fungsi publik statis cli_arg_typ_entry
 	/**
 	 * Argument type Entry name
 	 *
 	 * @param  string $arg The argument (the entry)
-	 * @return string $arg The entry itself.
+	 * @kembalikan string $arg The entry itself.
 	 */
-	static function cli_arg_typ_entry($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_entry($arg, $cfg, $key)
 	{
 		// no further check atm, maybe check for no '/' at beginning
-		return $arg;
+		kembalikan $arg;
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_compalg
+	// {{{ fungsi publik statis cli_arg_typ_compalg
 	/**
 	 * Argument type compression algorithm
 	 *
 	 * @param  string $arg  The phar selection
 	 * @param  string $cfg  The config option.
 	 * @param  string $key  The key information.
-	 * @return string $arg  The selected algorithm
+	 * @kembalikan string $arg  The selected algorithm
 	 */
-	static function cli_arg_typ_compalg($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_compalg($arg, $cfg, $key)
 	{
-		$arg = self::cli_arg_typ_select($arg, $cfg, $key);
+		$arg = diri::cli_arg_typ_select($arg, $cfg, $key);
 
-		switch($arg) {
-			case 'auto':
-				if (extension_loaded('zlib')) {
+		pilihan($arg) {
+			kalau 'auto':
+				jika (extension_loaded('zlib')) {
 					$arg = 'gz';
-				} elseif (extension_loaded('bz2')) {
+				} selainnya jika (extension_loaded('bz2')) {
 					$arg = 'bz2';
-				} else {
+				} selainnya {
 					$arg = '0';
 				}
-				break;
+				berhenti;
 		}
-		return $arg;
+		kembalikan $arg;
 	}
 	// }}}
-	// {{{ static function cli_arg_typ_privkey
+	// {{{ fungsi publik statis cli_arg_typ_privkey
 	/**
 	 * Argument type private key (for OpenSSL signing)
 	 *
 	 * @param  string $arg  The phar selection
 	 * @param  string $cfg  The config option.
 	 * @param  string $key  The key information.
-	 * @return string $arg  The private key.
+	 * @kembalikan string $arg  The private key.
 	 */
-	static function cli_arg_typ_privkey($arg, $cfg, $key)
+	fungsi publik statis cli_arg_typ_privkey($arg, $cfg, $key)
 	{
-		$arg = self::cli_arg_typ_filecont($arg, $cfg, $key);
+		$arg = diri::cli_arg_typ_filecont($arg, $cfg, $key);
 
 		$hash_avail = Phar::getSupportedSignatures();
-		if ($arg && !in_array('OpenSSL', $hash_avail))
+		jika ($arg && !in_array('OpenSSL', $hash_avail))
 		{
-			self::error("Cannot specifiy private key without OpenSSL support.\n");
+			diri::error("Cannot specifiy private key without OpenSSL support.\n");
 		}
-		return $arg;
+		kembalikan $arg;
 	}
 	// }}}
-	// {{{ static function phar_check_hash
+	// {{{ fungsi publik statis phar_check_hash
 	/**
 	 * Check whether hash method is valid.
 	 *
-	 * @return Hash constant to be used.
+	 * @kembalikan Hash constant to be used.
 	 */
-	function phar_check_hash($hash, $privkey)
+	fungsi publik phar_check_hash($hash, $privkey)
 	{
-		switch($hash) {
-			case 'md5':
-				return Phar::MD5;
-			case 'sha1':
-				return Phar::SHA1;
-			case 'sha256':
-				return Phar::SHA256;
-			case 'sha512':
-				return Phar::SHA512;
-			case 'openssl':
-				if (!$privkey) {
-					self::error("Cannot use OpenSSL signing without key.\n");
+		pilihan($hash) {
+			kalau 'md5':
+				kembalikan Phar::MD5;
+			kalau 'sha1':
+				kembalikan Phar::SHA1;
+			kalau 'sha256':
+				kembalikan Phar::SHA256;
+			kalau 'sha512':
+				kembalikan Phar::SHA512;
+			kalau 'openssl':
+				jika (!$privkey) {
+					diri::error("Cannot use OpenSSL signing without key.\n");
 				}
-				return Phar::OPENSSL;
+				kembalikan Phar::OPENSSL;
 		}
 	}
 	// }}}
-	// {{{ static function cli_cmd_inf_pack
+	// {{{ fungsi publik statis cli_cmd_inf_pack
 	/**
 	 * Information pack
 	 *
-	 * @return string A description about packing files into a Phar archive.
+	 * @kembalikan string A description about packing files into a Phar archive.
 	 */
-	static function cli_cmd_inf_pack()
+	fungsi publik statis cli_cmd_inf_pack()
 	{
-		return "Pack files into a PHAR archive.\n" .
+		kembalikan "Pack files into a PHAR archive.\n" .
 			   "When using -s <stub>, then the stub file is being " .
 			   "excluded from the list of input files/dirs." .
 			   "To create an archive that contains PEAR class PHP_Archive " .
 			   "then point -p argument to PHP/Archive.php.\n";
 	}
 	// }}}
-	// {{{ static function cli_cmd_arg_pack
+	// {{{ fungsi publik statis cli_cmd_arg_pack
 	/**
-	 * Pack a new phar infos
+	 * Pack a buat phar infos
 	 *
-	 * @return array  $args  The arguments for a new Phar archive.
+	 * @kembalikan array  $args  The arguments for a buat Phar archive.
 	 */
-	static function cli_cmd_arg_pack()
+	fungsi publik statis cli_cmd_arg_pack()
 	{
-		$args = self::phar_args('abcFhilpsxy', 'pharnew');
+		$args = diri::phar_args('abcFhilpsxy', 'pharnew');
 
-		$args[''] = array(
+		$args[''] = larik(
 			'typ'     => 'any',
 			'val'      => NULL,
 			'required' => 1,
 			'inf'      => '         Any number of input files and directories. If -i is in use then ONLY files and matching the given regular expression are being packed. If -x is given then files matching that regular expression are NOT being packed.',
 		);
 
-		return $args;
+		kembalikan $args;
 	}
 	// }}}
-	// {{{ function phar_set_stub_begin
+	// {{{ fungsi publik phar_set_stub_begin
 	/**
 	 * Set the stub
 	 */
-	public function phar_set_stub_begin(Phar $phar, $stub, $loader = NULL, $hashbang = NULL)
+	fungsi publik phar_set_stub_begin(Phar $phar, $stub, $loader = NULL, $hashbang = NULL)
 	{
-		if (isset($stub)) {
+		jika (diset($stub)) {
 			$c = file_get_contents($stub);
 
-			if (substr($c, 0, 2) == '#!') {
-				if (strpos($c, "\n") !== false) {
-					if (!isset($hashbang)) {
+			jika (substr($c, 0, 2) == '#!') {
+				jika (strpos($c, "\n") !== salah) {
+					jika (!diset($hashbang)) {
 						$hashbang = substr($c, 0, strpos($c, "\n") + 1);
 					}
 					$c = substr($c, strpos($c, "\n") + 1);
-				} else {
-					if (!isset($hashbang)) {
+				} selainnya {
+					jika (!diset($hashbang)) {
 						$hashbang = $c;
 					}
 					$c = NULL;
 				}
 			}
 
-			if (isset($hashbang)) {
-				if (substr($hashbang, 0, 2) != '#!') {
+			jika (diset($hashbang)) {
+				jika (substr($hashbang, 0, 2) != '#!') {
 					$hashbang = '#!' . $hashbang;
 				}
-				if (substr($hashbang, -1) != "\n") {
+				jika (substr($hashbang, -1) != "\n") {
 					$hashbang .= "\n";
 				}
-			} else {
+			} selainnya {
 				$hashbang = "";
 			}
 
-			if (isset($loader)) {
-				$s = "<?php if (!class_exists('PHP_Archive')) {\n?>";
-				if (is_file($loader)) {
+			jika (diset($loader)) {
+				$s = "<?phpid jika (!class_exists('PHP_Archive')) {\n?>";
+				jika (is_file($loader)) {
 					$s .= file_get_contents($loader);
 				}
-				$s .= "<?php\n";
+				$s .= "<?phpid\n";
 				$s .= "}\n";
-				$s .= "if (!in_array('phar', stream_get_wrappers())) {\n";
+				$s .= "jika (!in_array('phar', stream_get_wrappers())) {\n";
 				$s .= "\tstream_wrapper_register('phar', 'PHP_Archive');\n";
 				$s .= "}\n";
-				$s .= "if (!class_exists('Phar',0)) {\n";
-				$s .= "\tinclude 'phar://'.__FILE__.'/phar.inc';\n";
+				$s .= "jika (!class_exists('Phar',0)) {\n";
+				$s .= "\tsertakan 'phar://'.__FILE__.'/phar.inc';\n";
 				$s .= "}\n";
 				$s .= '?>';
 				$s .= $c;
 
 				$phar->setStub($hashbang . $s);
-			} else {
+			} selainnya {
 				$phar->setStub($hashbang . $c);
 			}
-			return new SplFileInfo($stub);
+			kembalikan buat SplFileInfo($stub);
 		}
-		return NULL;
+		kembalikan NULL;
 	}
 	// }}}
-	// {{{ function phar_set_stub_end
+	// {{{ fungsi publik phar_set_stub_end
 	/**
 	 * Set stub end
 	 */
-	public function phar_set_stub_end(Phar $phar, $stub, $loader = NULL)
+	fungsi publik phar_set_stub_end(Phar $phar, $stub, $loader = NULL)
 	{
-		if (isset($stub) && isset($loader)) {
-			if (substr(__FILE__, -15) == 'pharcommand.inc') {
-				self::phar_add_file($phar, 0, 'phar.inc', 'phar://'.__FILE__.'/phar.inc', NULL);
-			} else {
-				self::phar_add_file($phar, 0, 'phar.inc', dirname(__FILE__).'/phar/phar.inc', NULL);
+		jika (diset($stub) && diset($loader)) {
+			jika (substr(__FILE__, -15) == 'pharcommand.inc') {
+				diri::phar_add_file($phar, 0, 'phar.inc', 'phar://'.__FILE__.'/phar.inc', NULL);
+			} selainnya {
+				diri::phar_add_file($phar, 0, 'phar.inc', dirname(__FILE__).'/phar/phar.inc', NULL);
 			}
 		}
 	}
 	// }}}
-	// {{{ function cli_cmd_run_pack
+	// {{{ fungsi publik cli_cmd_run_pack
 	/**
-	 * Pack a new Phar
+	 * Pack a buat Phar
 	 * 
-	 * This function will try to pack a new Phar archive.
+	 * This fungsi publik will try to pack a buat Phar archive.
 	 * 
 	 * @see Exit to make sure that we are done.
 	 */
-	public function cli_cmd_run_pack()
+	fungsi publik cli_cmd_run_pack()
 	{
-		if (ini_get('phar.readonly')) {
-			self::error("Creating phar files is disabled by ini setting 'phar.readonly'.\n");
+		jika (ini_get('phar.readonly')) {
+			diri::error("Creating phar files is disabled by ini setting 'phar.readonly'.\n");
 		}
 
-		if (!Phar::canWrite()) {
-			self::error("Creating phar files is disabled, Phar::canWrite() returned false.\n");
+		jika (!Phar::canWrite()) {
+			diri::error("Creating phar files is disabled, Phar::canWrite() returned salah.\n");
 		}
 
-		$alias    = $this->args['a']['val'];
-		$hashbang = $this->args['b']['val'];
-		$archive  = $this->args['f']['val'];
-		$hash     = $this->args['h']['val'];
-		$privkey  = $this->args['y']['val'];
-		$regex    = $this->args['i']['val'];
-		$level    = $this->args['l']['val'];
-		$loader   = $this->args['p']['val'];
-		$stub     = $this->args['s']['val'];
-		$invregex = $this->args['x']['val'];
-		$input    = $this->args['']['val'];
+		$alias    = $ini->args['a']['val'];
+		$hashbang = $ini->args['b']['val'];
+		$archive  = $ini->args['f']['val'];
+		$hash     = $ini->args['h']['val'];
+		$privkey  = $ini->args['y']['val'];
+		$regex    = $ini->args['i']['val'];
+		$level    = $ini->args['l']['val'];
+		$loader   = $ini->args['p']['val'];
+		$stub     = $ini->args['s']['val'];
+		$invregex = $ini->args['x']['val'];
+		$input    = $ini->args['']['val'];
 
-		$hash = self::phar_check_hash($hash, $privkey);
+		$hash = diri::phar_check_hash($hash, $privkey);
 
-		$phar  = new Phar($archive, 0, $alias);
+		$phar  = buat Phar($archive, 0, $alias);
 
 		$phar->startBuffering();
 
-		$stub = $this->phar_set_stub_begin($phar, $stub, $loader, $hashbang);
+		$stub = $ini->phar_set_stub_begin($phar, $stub, $loader, $hashbang);
 
-		if (!is_array($input)) {
-			$this->phar_add($phar, $level, $input, $regex, $invregex, $stub, NULL, isset($loader));
-		} else {
-			foreach($input as $i) {
-				$this->phar_add($phar, $level, $i, $regex, $invregex, $stub, NULL, isset($loader));
+		jika (!is_array($input)) {
+			$ini->phar_add($phar, $level, $input, $regex, $invregex, $stub, NULL, diset($loader));
+		} selainnya {
+			untuksetiap($input sebagai $i) {
+				$ini->phar_add($phar, $level, $i, $regex, $invregex, $stub, NULL, diset($loader));
 			}
 		}
 
-		$this->phar_set_stub_end($phar, $stub, $loader);
+		$ini->phar_set_stub_end($phar, $stub, $loader);
 
-		switch($this->args['c']['val']) {
-			case 'gz':
-			case 'gzip':
+		pilihan($ini->args['c']['val']) {
+			kalau 'gz':
+			kalau 'gzip':
 				$phar->compressFiles(Phar::GZ);
-				break;
-			case 'bz2':
-			case 'bzip2':
+				berhenti;
+			kalau 'bz2':
+			kalau 'bzip2':
 				$phar->compressFiles(Phar::BZ2);
-				break;
+				berhenti;
 			default:
 				$phar->decompressFiles();
-				break;
+				berhenti;
 		}
 
-		if ($hash) {
+		jika ($hash) {
 			$phar->setSignatureAlgorithm($hash, $privkey);
 		}
 
 		$phar->stopBuffering();
-		exit(0);
+		keluar(0);
 	}
 	// }}}
-	// {{{ static function phar_add
+	// {{{ fungsi publik statis phar_add
 	/**
 	 * Add files to a phar archive.
 	 *
-	 * This function will take a directory and iterate through
+	 * This fungsi publik will take a directory and iterate through
 	 * it and get the files to insert into the Phar archive.
 	 * 
 	 * @param Phar        $phar      The phar object.
@@ -626,38 +626,38 @@ class PharCommand extends CLICommand
 	 * @param mixed       $compress  Compression algorithm or NULL
 	 * @param boolean     $noloader  Whether to prevent adding the loader
 	 */
-	static function phar_add(Phar $phar, $level, $input, $regex, $invregex, SplFileInfo $stub = NULL, $compress = NULL, $noloader = false)
+	fungsi publik statis phar_add(Phar $phar, $level, $input, $regex, $invregex, SplFileInfo $stub = NULL, $compress = NULL, $noloader = salah)
 	{
-		if ($input && is_file($input) && !is_dir($input)) {
-			return self::phar_add_file($phar, $level, $input, $input, $compress);
+		jika ($input && is_file($input) && !is_dir($input)) {
+			kembalikan diri::phar_add_file($phar, $level, $input, $input, $compress);
 		}
-		$dir   = new RecursiveDirectoryIterator($input);
-		$dir   = new RecursiveIteratorIterator($dir);
+		$dir   = buat RecursiveDirectoryIterator($input);
+		$dir   = buat RecursiveIteratorIterator($dir);
 
-		if (isset($regex)) {
-			$dir = new RegexIterator($dir, $regex);
-		}
-
-		if (isset($invregex)) {
-			$dir = new InvertedRegexIterator($dir, $invregex);
+		jika (diset($regex)) {
+			$dir = buat RegexIterator($dir, $regex);
 		}
 
-		try {
-			foreach($dir as $file) {
-				if ((empty($stub) || $file->getRealPath() != $stub->getRealPath()) && !is_dir($file)) {
-					self::phar_add_file($phar, $level, $dir->getSubPathName(), $file, $compress, $noloader);
+		jika (diset($invregex)) {
+			$dir = buat InvertedRegexIterator($dir, $invregex);
+		}
+
+		coba {
+			untuksetiap($dir sebagai $file) {
+				jika ((kosong($stub) || $file->getRealPath() != $stub->getRealPath()) && !is_dir($file)) {
+					diri::phar_add_file($phar, $level, $dir->getSubPathName(), $file, $compress, $noloader);
 				}
 			}
-		} catch(Excpetion $e) {
-			self::error("Unable to complete operation on file '$file'\n" . $e->getMessage() . "\n");
+		} tangkap(Exception $e) {
+			diri::error("Unable to complete operation on file '$file'\n" . $e->getMessage() . "\n");
 		}
 	}
 	// }}}
-	// {{{ static function phar_add_file
+	// {{{ fungsi publik statis phar_add_file
 	/**
 	 * Add a phar file
 	 *
-	 * This function adds a file to a phar archive.
+	 * This fungsi publik adds a file to a phar archive.
 	 *
 	 * @param Phar    $phar      The phar object
 	 * @param string  $level     The level of the file.
@@ -666,50 +666,50 @@ class PharCommand extends CLICommand
 	 * @param string  $compress  The compression scheme for the file.
 	 * @param boolean $noloader  Whether to prevent adding the loader
 	 */
-	static function phar_add_file(Phar $phar, $level, $entry, $file, $compress, $noloader = false)
+	fungsi publik statis phar_add_file(Phar $phar, $level, $entry, $file, $compress, $noloader = salah)
 	{
 		$entry = str_replace('//', '/', $entry);
-		while($level-- > 0 && ($p = strpos($entry, '/')) !== false) {
+		selama($level-- > 0 && ($p = strpos($entry, '/')) !== salah) {
 			$entry = substr($entry, $p+1);
 		}
 
-	if ($noloader && $entry == 'phar.inc') {
-		return;
+	jika ($noloader && $entry == 'phar.inc') {
+		kembalikan;
 	}
 
-		echo "$entry\n";
+		tampil "$entry\n";
 
 		$phar[$entry] = file_get_contents($file);
-		switch($compress) {
-			case 'gz':
-			case 'gzip':
+		pilihan($compress) {
+			kalau 'gz':
+			kalau 'gzip':
 				$phar[$entry]->compress(Phar::GZ);
-				break;
-			case 'bz2':
-			case 'bzip2':
+				berhenti;
+			kalau 'bz2':
+			kalau 'bzip2':
 				$phar[$entry]->compress(Phar::BZ2);
-				break;
-			case '0':
+				berhenti;
+			kalau '0':
 				$phar[$entry]->decompress();
-				break;
+				berhenti;
 			default:
-				break;
+				berhenti;
 		}
 	}
 	// }}}
-	// {{{ public function phar_dir_echo
+	// {{{ fungsi publik phar_dir_echo
 	/**
 	 * Echo directory
 	 *
 	 * @param string $pn
 	 * @param unknown_type $f
 	 */
-	public function phar_dir_echo($pn, $f)
+	fungsi publik phar_dir_echo($pn, $f)
 	{
-		echo "$f\n";
+		tampil "$f\n";
 	}
 	// }}}
-	// {{{ public function phar_dir_operation
+	// {{{ fungsi publik phar_dir_operation
 	/**
 	 * Directory operations
 	 * 
@@ -719,104 +719,104 @@ class PharCommand extends CLICommand
 	 * @param string                    $func Function to call on the iterations
 	 * @param array                     $args Function arguments.
 	 */
-	public function phar_dir_operation(RecursiveIteratorIterator $dir, $func, array $args = array())
+	fungsi publik phar_dir_operation(RecursiveIteratorIterator $dir, $func, $args = larik())
 	{
-		$regex   = $this->args['i']['val'];
-		$invregex= $this->args['x']['val'];
+		$regex   = $ini->args['i']['val'];
+		$invregex= $ini->args['x']['val'];
 
-		if (isset($regex)) {
-			$dir = new RegexIterator($dir, $regex);
+		jika (diset($regex)) {
+			$dir = buat RegexIterator($dir, $regex);
 		}
 
-		if (isset($invregex)) {
-			$dir = new InvertedRegexIterator($dir, $invregex);
+		jika (diset($invregex)) {
+			$dir = buat InvertedRegexIterator($dir, $invregex);
 		}
 
-		$any = false;
-		foreach($dir as $pn => $f) {
-			$any = true;
+		$any = salah;
+		untuksetiap($dir sebagai $pn => $f) {
+			$any = benar;
 			call_user_func($func, $pn, $f, $args);
 		}
-		return $any;
+		kembalikan $any;
 	}
-	// {{{ static function cli_cmd_inf_list
+	// {{{ fungsi publik statis cli_cmd_inf_list
 	/**
 	 * Cli Command Info List
 	 *
-	 * @return string What inf does
+	 * @kembalikan string What inf does
 	 */
-	static function cli_cmd_inf_list()
+	fungsi publik statis cli_cmd_inf_list()
 	{
-		return "List contents of a PHAR archive.";
+		kembalikan "List contents of a PHAR archive.";
 	}
 	// }}}
-	// {{{ static function cli_cmd_arg_list
+	// {{{ fungsi publik statis cli_cmd_arg_list
 	/**
 	 * Cli Command Argument List
 	 *
-	 * @return arguments list
+	 * @kembalikan arguments list
 	 */
-	static function cli_cmd_arg_list()
+	fungsi publik statis cli_cmd_arg_list()
 	{
-		return self::phar_args('Fix', 'pharurl');
+		kembalikan diri::phar_args('Fix', 'pharurl');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_list
+	// {{{ fungsi publik cli_cmd_run_list
 	/**
 	 * Cli Command Run List
 	 *
-	 * @see $this->phar_dir_operation
+	 * @see $ini->phar_dir_operation
 	 */
-	public function cli_cmd_run_list()
+	fungsi publik cli_cmd_run_list()
 	{
-		$this->phar_dir_operation(
-			new DirectoryTreeIterator(
-				$this->args['f']['val']),
-				array($this, 'phar_dir_echo')
+		$ini->phar_dir_operation(
+			buat DirectoryTreeIterator(
+				$ini->args['f']['val']),
+				larik($ini, 'phar_dir_echo')
 			);
 	}
 	// }}}
-	// {{{ static function cli_command_inf_tree
+	// {{{ fungsi publik statis cli_command_inf_tree
 	/**
 	 * Cli Command Inf Tree
 	 *
-	 * @return string  The description of a directory tree for a Phar archive.
+	 * @kembalikan string  The description of a directory tree for a Phar archive.
 	 */
-	static function cli_cmd_inf_tree()
+	fungsi publik statis cli_cmd_inf_tree()
 	{
-		return "Get a directory tree for a PHAR archive.";
+		kembalikan "Get a directory tree for a PHAR archive.";
 	}
 	// }}}
-	// {{{ static function cli_cmd_arg_tree
+	// {{{ fungsi publik statis cli_cmd_arg_tree
 	/**
 	 * Cli Command Argument Tree
 	 *
-	 * @return string Arguments in URL format.
+	 * @kembalikan string Arguments in URL format.
 	 */
-	static function cli_cmd_arg_tree()
+	fungsi publik statis cli_cmd_arg_tree()
 	{
-		return self::phar_args('Fix', 'pharurl');
+		kembalikan diri::phar_args('Fix', 'pharurl');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_tree
+	// {{{ fungsi publik cli_cmd_run_tree
 	/**
 	 * Cli Command Run Tree
 	 * 
 	 * Set the phar_dir_operation with a directorygraphiterator.
 	 * 
 	 * @see DirectoryGraphIterator
-	 * @see $this->phar_dir_operation
+	 * @see $ini->phar_dir_operation
 	 *
 	 */
-	public function cli_cmd_run_tree()
+	fungsi publik cli_cmd_run_tree()
 	{
-		$a = $this->phar_dir_operation(
-			new DirectoryGraphIterator(
-				$this->args['f']['val']),
-				array($this, 'phar_dir_echo')
+		$a = $ini->phar_dir_operation(
+			buat DirectoryGraphIterator(
+				$ini->args['f']['val']),
+				larik($ini, 'phar_dir_echo')
 			);
-		if (!$a) {
-			echo "|-<root directory>\n";
+		jika (!$a) {
+			tampil "|-<root directory>\n";
 		}
 	}
 	// }}}
@@ -824,166 +824,166 @@ class PharCommand extends CLICommand
 	/**
 	 * Cli Command Inf Extract
 	 *
-	 * @return string The description of the command extra to a directory.
+	 * @kembalikan string The description of the command extra to a directory.
 	 */
-	static function cli_cmd_inf_extract()
+	fungsi publik statis cli_cmd_inf_extract()
 	{
-		return "Extract a PHAR package to a directory.";
+		kembalikan "Extract a PHAR package to a directory.";
 	}
 	// }}}
-	// {{{ static function cli_cmd_arg_extract
+	// {{{ fungsi publik statis cli_cmd_arg_extract
 	/**
 	 * Cli Command Arguments Extract
 	 * 
 	 * The arguments for the extract function.
 	 *
-	 * @return array  The arguments for the extraction.
+	 * @kembalikan array  The arguments for the extraction.
 	 */
-	static function cli_cmd_arg_extract()
+	fungsi publik statis cli_cmd_arg_extract()
 	{
-		$args = self::phar_args('Fix', 'phar');
+		$args = diri::phar_args('Fix', 'phar');
 
-		$args[''] = array(
+		$args[''] = larik(
 			'type' => 'dir',
 			'val' => '.',
 			'inf' => '         Directory to extract to (defaults to \'.\').',
 		);
 
-		return $args;
+		kembalikan $args;
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_extract
+	// {{{ fungsi publik cli_cmd_run_extract
 	/**
 	 * Run Extract
 	 * 
 	 * Run the extraction of a phar Archive.
 	 *
-	 * @see $this->phar_dir_operation
+	 * @see $ini->phar_dir_operation
 	 */
-	public function cli_cmd_run_extract()
+	fungsi publik cli_cmd_run_extract()
 	{
-		$dir = $this->args['']['val'];
+		$dir = $ini->args['']['val'];
 
-		if (is_array($dir)) {
-			if (count($dir) != 1) {
-				self::error("Only one target directory allowed.\n");
-			} else {
+		jika (is_array($dir)) {
+			jika (count($dir) != 1) {
+				diri::error("Only one target directory allowed.\n");
+			} selainnya {
 				$dir = $dir[0];
 			}
 		}
 
-		$phar = $this->args['f']['val'];
+		$phar = $ini->args['f']['val'];
 		$base = $phar->getPathname();
 		$bend = strpos($base, '.phar');
 		$bend = strpos($base, '/', $bend);
 		$base = substr($base, 0, $bend + 1);
 		$blen = strlen($base);
 
-		$this->phar_dir_operation(
-			new RecursiveIteratorIterator($phar),
-			array($this, 'phar_dir_extract'),
-			array($blen, $dir)
+		$ini->phar_dir_operation(
+			buat RecursiveIteratorIterator($phar),
+			larik($ini, 'phar_dir_extract'),
+			larik($blen, $dir)
 		);
 	}
 	// }}}
-	// {{{ public function phar_dir_extract
+	// {{{ fungsi publik phar_dir_extract
 	/**
 	 * Extract to a directory
 	 * 
-	 * This function will extract the content of a Phar
-	 * to a directory and create new files and directories
+	 * This fungsi publik will extract the content of a Phar
+	 * to a directory and create buat files and directories
 	 * depending on the permissions on that folder.
 	 *
 	 * @param string $pn
 	 * @param string $f     The file name
 	 * @param array $args   The directory and Blen informations
 	 */
-	public function phar_dir_extract($pn, $f, $args)
+	fungsi publik phar_dir_extract($pn, $f, $args)
 	{
 		$blen   = $args[0];
 		$dir    = $args[1];
 		$sub    = substr($pn, $blen);
 		$target = $dir . '/' . $sub;
 
-		if (!file_exists(dirname($target))) {
-			@mkdir(dirname($target), 0777, true);
+		jika (!file_exists(dirname($target))) {
+			@mkdir(dirname($target), 0777, benar);
 		}
-		if (!file_exists(dirname($target))) {
-			self::error("Operation could not be completed\n");
+		jika (!file_exists(dirname($target))) {
+			diri::error("Operation could not be completed\n");
 		}
 
-		echo "$sub";
+		tampil "$sub";
 
-		if (!@copy($f, $target)) {
-			echo " ...error\n";
-		} else {
-			echo " ...ok\n";
+		jika (!@copy($f, $target)) {
+			tampil " ...error\n";
+		} selainnya {
+			tampil " ...ok\n";
 		}
 	}
 	// }}}
-	// {{{ static function cli_cmd_inf_delete
+	// {{{ fungsi publik statis cli_cmd_inf_delete
 	/**
 	 * Delete an entry from a phar information.
 	 *
-	 * @return string The information
+	 * @kembalikan string The information
 	 */
-	static function cli_cmd_inf_delete()
+	fungsi publik statis cli_cmd_inf_delete()
 	{
-		return 'Delete entry from a PHAR archive';
+		kembalikan 'Delete entry from a PHAR archive';
 	}
 	// }}}
-	// {{{ static function cli_cmd_arg_delete
+	// {{{ fungsi publik statis cli_cmd_arg_delete
 	/**
 	 * The cli command argument for deleting.
 	 *
-	 * @return array informations about the arguments to use.
+	 * @kembalikan array informations about the arguments to use.
 	 */
-	static function cli_cmd_arg_delete()
+	fungsi publik statis cli_cmd_arg_delete()
 	{
-		return self::phar_args('FE', 'phar');
+		kembalikan diri::phar_args('FE', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_delete
+	// {{{ fungsi publik cli_cmd_run_delete
 	/**
 	 * Deleting execution
 	 *
 	 * Execute the deleting of the file from the phar archive.
 	 */
-	public function cli_cmd_run_delete()
+	fungsi publik cli_cmd_run_delete()
 	{
-		$phar  = $this->args['f']['val'];
-		$entry = $this->args['e']['val'];
+		$phar  = $ini->args['f']['val'];
+		$entry = $ini->args['e']['val'];
 
 		$phar->startBuffering();
-		unset($phar[$entry]);
+		hapus($phar[$entry]);
 		$phar->stopBuffering();
 	}
 	// }}}
-	// {{{ static function cli_cmd_inf_add
+	// {{{ fungsi publik statis cli_cmd_inf_add
 	/**
 	 * Client comment add file information
 	 *
-	 * @return string The description of the feature
+	 * @kembalikan string The description of the feature
 	 */
-	static function cli_cmd_inf_add()
+	fungsi publik statis cli_cmd_inf_add()
 	{
-		return "Add entries to a PHAR package.";
+		kembalikan "Add entries to a PHAR package.";
 	}
 	// }}}
-	// {{{ static function cli_cmd_arg_add
+	// {{{ fungsi publik statis cli_cmd_arg_add
 	/**
 	 * Add a file arguments
 	 */
-	static function cli_cmd_arg_add()
+	fungsi publik statis cli_cmd_arg_add()
 	{
-		$args = self::phar_args('acFilx', 'phar');
-		$args[''] = array(
+		$args = diri::phar_args('acFilx', 'phar');
+		$args[''] = larik(
 			'type'     => 'any',
 			'val'      => NULL,
 			'required' => 1,
 			'inf'      => '         Any number of input files and directories. If -i is in use then ONLY files and matching the given regular expression are being packed. If -x is given then files matching that regular expression are NOT being packed.',
 		);
-		return $args;
+		kembalikan $args;
 	}
 	// }}}
 	// {{{ public functio cli_cmd_run_add
@@ -993,242 +993,242 @@ class PharCommand extends CLICommand
 	 * Run the action of adding a file to
 	 * a phar archive.
 	 */
-	public function cli_cmd_run_add()
+	fungsi publik cli_cmd_run_add()
 	{
-		$compress= $this->args['c']['val'];
-		$phar    = $this->args['f']['val'];
-		$regex   = $this->args['i']['val'];
-		$level   = $this->args['l']['val'];
-		$invregex= $this->args['x']['val'];
-		$input   = $this->args['']['val'];
+		$compress= $ini->args['c']['val'];
+		$phar    = $ini->args['f']['val'];
+		$regex   = $ini->args['i']['val'];
+		$level   = $ini->args['l']['val'];
+		$invregex= $ini->args['x']['val'];
+		$input   = $ini->args['']['val'];
 
 		$phar->startBuffering();
 
-		if (!is_array($input)) {
-			$this->phar_add($phar, $level, $input, $regex, $invregex, NULL, $compress);
-		} else {
-			foreach($input as $i) {
-				$this->phar_add($phar, $level, $i, $regex, $invregex, NULL, $compress);
+		jika (!is_array($input)) {
+			$ini->phar_add($phar, $level, $input, $regex, $invregex, NULL, $compress);
+		} selainnya {
+			untuksetiap($input sebagai $i) {
+				$ini->phar_add($phar, $level, $i, $regex, $invregex, NULL, $compress);
 			}
 		}
 		$phar->stopBuffering();
-		exit(0);
+		keluar(0);
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_stub_set
+	// {{{ fungsi publik cli_cmd_inf_stub_set
 	/**
 	 * Set the stup of a phar file.
 	 *
-	 * @return string The stub set description.
+	 * @kembalikan string The stub set description.
 	 */
-	public function cli_cmd_inf_stub_set()
+	fungsi publik cli_cmd_inf_stub_set()
 	{
-		return "Set the stub of a PHAR file. " .
-			   "If no input file is specified as stub then stdin is being used.";
+		kembalikan "Set the stub of a PHAR file. " .
+			   "If no input file is specified sebagai stub then stdin is being used.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_stub_set
+	// {{{ fungsi publik cli_cmd_arg_stub_set
 	/**
 	 * Set the argument stub
 	 *
-	 * @return string arguments for a stub
+	 * @kembalikan string arguments for a stub
 	 */
-	public function cli_cmd_arg_stub_set()
+	fungsi publik cli_cmd_arg_stub_set()
 	{
-		$args = self::phar_args('bFps', 'phar');
+		$args = diri::phar_args('bFps', 'phar');
 		$args['s']['val'] = 'php://stdin';
-		return $args;
+		kembalikan $args;
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_stub_set
+	// {{{ fungsi publik cli_cmd_run_stub_set
 	/**
 	 * Cli Command run stub set
 	 *
 	 * @see   $phar->setStub()
 	 */
-	public function cli_cmd_run_stub_set()
+	fungsi publik cli_cmd_run_stub_set()
 	{
-		$hashbang = $this->args['b']['val'];
-		$phar     = $this->args['f']['val'];
-		$stub     = $this->args['s']['val'];
-		$loader   = $this->args['p']['val'];
+		$hashbang = $ini->args['b']['val'];
+		$phar     = $ini->args['f']['val'];
+		$stub     = $ini->args['s']['val'];
+		$loader   = $ini->args['p']['val'];
 
-		$this->phar_set_stub_begin($phar, $stub, $loader, $hashbang);
-		$this->phar_set_stub_end($phar, $stub, $loader);
+		$ini->phar_set_stub_begin($phar, $stub, $loader, $hashbang);
+		$ini->phar_set_stub_end($phar, $stub, $loader);
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_stub_get
+	// {{{ fungsi publik cli_cmd_inf_stub_get
 	/**
 	 * Get the command stub infos.
 	 *
-	 * @return string a description of the stub of a Phar file.
+	 * @kembalikan string a description of the stub of a Phar file.
 	 */
-	public function cli_cmd_inf_stub_get()
+	fungsi publik cli_cmd_inf_stub_get()
 	{
-		return "Get the stub of a PHAR file. " .
-			   "If no output file is specified as stub then stdout is being used.";
+		kembalikan "Get the stub of a PHAR file. " .
+			   "If no output file is specified sebagai stub then stdout is being used.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_stub_get
+	// {{{ fungsi publik cli_cmd_arg_stub_get
 	/**
 	 * Get the argument stub
 	 *
-	 * @return array $args The arguments passed to the stub.
+	 * @kembalikan array $args The arguments passed to the stub.
 	 */
-	public function cli_cmd_arg_stub_get()
+	fungsi publik cli_cmd_arg_stub_get()
 	{
-		$args = self::phar_args('Fs', 'phar');
+		$args = diri::phar_args('Fs', 'phar');
 		$args['s']['val'] = 'php://stdin';
-		return $args;
+		kembalikan $args;
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_stub_get
+	// {{{ fungsi publik cli_cmd_run_stub_get
 	/**
 	 * Cli Command Run Stub
 	 * 
 	 * Get arguments and store them into a stub.
 	 *
 	 * @param arguments $args
-	 * @see   $this->args
+	 * @see   $ini->args
 	 */
-	public function cli_cmd_run_stub_get($args)
+	fungsi publik cli_cmd_run_stub_get($args)
 	{
-		$phar = $this->args['f']['val'];
-		$stub = $this->args['s']['val'];
+		$phar = $ini->args['f']['val'];
+		$stub = $ini->args['s']['val'];
 
 		file_put_contents($stub, $phar->getStub());
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_compress
+	// {{{ fungsi publik cli_cmd_inf_compress
 	/**
 	 * Cli Command Inf Compress
 	 * 
 	 * Cli Command compress informations
 	 *
-	 * @return string A description of the command.
+	 * @kembalikan string A description of the command.
 	 */
-	public function cli_cmd_inf_compress()
+	fungsi publik cli_cmd_inf_compress()
 	{
-		return "Compress or uncompress all files or a selected entry.";
+		kembalikan "Compress or uncompress all files or a selected entry.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_cmpress
+	// {{{ fungsi publik cli_cmd_arg_cmpress
 	/**
 	 * Cli Command Arg Compress
 	 *
-	 * @return array The arguments for compress
+	 * @kembalikan array The arguments for compress
 	 */
-	public function cli_cmd_arg_compress()
+	fungsi publik cli_cmd_arg_compress()
 	{
-		return self::phar_args('FCe', 'phar');
+		kembalikan diri::phar_args('FCe', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_compress
+	// {{{ fungsi publik cli_cmd_run_compress
 	/**
 	 * Cli Command Run Compress
 	 *
-	 * @see $this->args
+	 * @see $ini->args
 	 */
-	public function cli_cmd_run_compress()
+	fungsi publik cli_cmd_run_compress()
 	{
-		$phar  = $this->args['f']['val'];
-		$entry = $this->args['e']['val'];
+		$phar  = $ini->args['f']['val'];
+		$entry = $ini->args['e']['val'];
 
-		switch($this->args['c']['val']) {
-			case 'gz':
-			case 'gzip':
-				if (isset($entry)) {
+		pilihan($ini->args['c']['val']) {
+			kalau 'gz':
+			kalau 'gzip':
+				jika (diset($entry)) {
 					$phar[$entry]->compress(Phar::GZ);
-				} else {
+				} selainnya {
 					$phar->compressFiles(Phar::GZ);
 				}
-				break;
-			case 'bz2':
-			case 'bzip2':
-				if (isset($entry)) {
+				berhenti;
+			kalau 'bz2':
+			kalau 'bzip2':
+				jika (diset($entry)) {
 					$phar[$entry]->compress(Phar::BZ2);
-				} else {
+				} selainnya {
 					$phar->compressFiles(Phar::BZ2);
 				}
-				break;
+				berhenti;
 			default:
-				if (isset($entry)) {
+				jika (diset($entry)) {
 					$phar[$entry]->decompress();
-				} else {
+				} selainnya {
 					$phar->decompressFiles();
 				}
-				break;
+				berhenti;
 		}
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_sign
+	// {{{ fungsi publik cli_cmd_inf_sign
 	/**
 	 * Cli Command Info Signature
 	 *
-	 * @return string A description of the signature arguments.
+	 * @kembalikan string A description of the signature arguments.
 	 */
-	public function cli_cmd_inf_sign()
+	fungsi publik cli_cmd_inf_sign()
 	{
-		return "Set signature hash algorithm.";
+		kembalikan "Set signature hash algorithm.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_sign
+	// {{{ fungsi publik cli_cmd_arg_sign
 	/**
 	 * Cli Command Argument Sign
 	 *
-	 * @return array Arguments for Signature
+	 * @kembalikan array Arguments for Signature
 	 */
-	public function cli_cmd_arg_sign()
+	fungsi publik cli_cmd_arg_sign()
 	{
-		return self::phar_args('FHy', 'phar');
+		kembalikan diri::phar_args('FHy', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_sign
+	// {{{ fungsi publik cli_cmd_run_sign
 	/**
 	 * Cli Command Run Signature
 	 *
 	 * @see $phar->setSignaturealgorithm
 	 */
-	public function cli_cmd_run_sign()
+	fungsi publik cli_cmd_run_sign()
 	{
-		$phar     = $this->args['f']['val'];
-		$hash     = $this->args['h']['val'];
-		$privkey  = $this->args['y']['val'];
+		$phar     = $ini->args['f']['val'];
+		$hash     = $ini->args['h']['val'];
+		$privkey  = $ini->args['y']['val'];
 
-		$hash = self::phar_check_hash($hash, $privkey);
+		$hash = diri::phar_check_hash($hash, $privkey);
 
 		$phar->setSignatureAlgorithm($hash, $privkey);
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_meta_set
+	// {{{ fungsi publik cli_cmd_inf_meta_set
 	/**
 	 * Cli Command Inf Meta Set
 	 *
-	 * @return string A description
+	 * @kembalikan string A description
 	 */
-	public function cli_cmd_inf_meta_set()
+	fungsi publik cli_cmd_inf_meta_set()
 	{
-		return "Set meta data of a PHAR entry or a PHAR package using serialized input. " .
+		kembalikan "Set meta data of a PHAR entry or a PHAR package using serialized input. " .
 			   "If no input file is specified for meta data then stdin is being used." .
-			   "You can also specify a particular index using -k. In that case the metadata is " .
+			   "You can also specify a particular index using -k. In that kalau the metadata is " .
 			   "expected to be an array and the value of the given index is being set. If " .
-			   "the metadata is not present or empty a new array will be created. If the " .
-			   "metadata is present and a flat value then the return value is 1. Also using -k " .
+			   "the metadata is not present or empty a buat array will be created. If the " .
+			   "metadata is present and a flat value then the kembalikan value is 1. Also using -k " .
 			   "the input is been taken directly rather then being serialized.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_meta_set
+	// {{{ fungsi publik cli_cmd_arg_meta_set
 	/**
 	 * Cli Command Argument Meta Set
 	 *
-	 * @return array  The arguments for meta set
+	 * @kembalikan array  The arguments for meta set
 	 */
-	public function cli_cmd_arg_meta_set()
+	fungsi publik cli_cmd_arg_meta_set()
 	{
-		return self::phar_args('FekM', 'phar');
+		kembalikan diri::phar_args('FekM', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_met_set
+	// {{{ fungsi publik cli_cmd_run_met_set
 	/**
 	 * Cli Command Run Metaset
 	 *
@@ -1236,238 +1236,238 @@ class PharCommand extends CLICommand
 	 * @see $phar->setMetadata
 	 * @see $phar->stopBuffering
 	 */
-	public function cli_cmd_run_meta_set()
+	fungsi publik cli_cmd_run_meta_set()
 	{
-		$phar  = $this->args['f']['val'];
-		$entry = $this->args['e']['val'];
-		$index = $this->args['k']['val'];
-		$meta  = $this->args['m']['val'];
+		$phar  = $ini->args['f']['val'];
+		$entry = $ini->args['e']['val'];
+		$index = $ini->args['k']['val'];
+		$meta  = $ini->args['m']['val'];
 
 		$phar->startBuffering();
 
-		if (isset($index)) {
-			if (isset($entry)) {
-				if ($phar[$entry]->hasMetadata()) {
+		jika (diset($index)) {
+			jika (diset($entry)) {
+				jika ($phar[$entry]->hasMetadata()) {
 					$old = $phar[$entry]->getMetadata();
-				} else {
-					$old = array();
+				} selainnya {
+					$old = larik();
 				}
-			} else {
-				if ($phar->hasMetadata()) {
+			} selainnya {
+				jika ($phar->hasMetadata()) {
 					$old = $phar->getMetadata();
-				} else {
-					$old = array();
+				} selainnya {
+					$old = larik();
 				}
 			}
 
-			if (!is_array($old)) {
-				self::error('Metadata is a flat value while an index operation was issued.');
+			jika (!is_array($old)) {
+				diri::error('Metadata is a flat value selama an index operation was issued.');
 			}
 
 			$old[$index] = $meta;
 			$meta = $old;
-		} else {
+		} selainnya {
 			$meta = unserialize($meta);
 		}
 
-		if (isset($entry)) {
+		jika (diset($entry)) {
 			$phar[$entry]->setMetadata($meta);
-		} else {
+		} selainnya {
 			$phar->setMetadata($meta);
 		}
 		$phar->stopBuffering();
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_met_get
+	// {{{ fungsi publik cli_cmd_inf_met_get
 	/**
 	 * Cli Command Inf Metaget
 	 *
-	 * @return string A description of the metaget arguments
+	 * @kembalikan string A description of the metaget arguments
 	 */
-	public function cli_cmd_inf_meta_get()
+	fungsi publik cli_cmd_inf_meta_get()
 	{
-		return "Get meta information of a PHAR entry or a PHAR package in serialized from. " .
+		kembalikan "Get meta information of a PHAR entry or a PHAR package in serialized from. " .
 			   "If no output file is specified for meta data then stdout is being used.\n" .
-			   "You can also specify a particular index using -k. In that case the metadata is " .
+			   "You can also specify a particular index using -k. In that kalau the metadata is " .
 			   "expected to be an array and the value of the given index is returned using echo " .
 			   "rather than using serialize. If that index does not exist or no meta data is " .
-			   "present then the return value is 1.";
+			   "present then the kembalikan value is 1.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_meta_get
+	// {{{ fungsi publik cli_cmd_arg_meta_get
 	/**
 	 * Cli Command arg metaget
 	 *
-	 * @return array  The arguments for meta get.
+	 * @kembalikan array  The arguments for meta get.
 	 */
-	public function cli_cmd_arg_meta_get()
+	fungsi publik cli_cmd_arg_meta_get()
 	{
-		return self::phar_args('Fek', 'phar');
+		kembalikan diri::phar_args('Fek', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_meta_get
+	// {{{ fungsi publik cli_cmd_run_meta_get
 	/**
 	 * Cli Command Run Metaget
 	 *
-	 * @see $this->args
+	 * @see $ini->args
 	 * @see $phar[$x]->hasMetadata()
 	 * @see $phar->getMetadata()
 	 */
-	public function cli_cmd_run_meta_get()
+	fungsi publik cli_cmd_run_meta_get()
 	{
-		$phar  = $this->args['f']['val'];
-		$entry = $this->args['e']['val'];
-		$index = $this->args['k']['val'];
+		$phar  = $ini->args['f']['val'];
+		$entry = $ini->args['e']['val'];
+		$index = $ini->args['k']['val'];
 
-		if (isset($entry)) {
-			if (!$phar[$entry]->hasMetadata()) {
-				echo "No Metadata\n";
-				exit(1);
+		jika (diset($entry)) {
+			jika (!$phar[$entry]->hasMetadata()) {
+				tampil "No Metadata\n";
+				keluar(1);
 			}
-			echo serialize($phar[$entry]->getMetadata());
-		} else {
-			if (!$phar->hasMetadata()) {
-				echo "No Metadata\n";
-				exit(1);
+			tampil serialize($phar[$entry]->getMetadata());
+		} selainnya {
+			jika (!$phar->hasMetadata()) {
+				tampil "No Metadata\n";
+				keluar(1);
 			}
 			$meta = $phar->getMetadata();
 		}
 
-		if (isset($index)) {
-			if (isset($index)) {
-				if (isset($meta[$index])) {
-					echo $meta[$index];
-					exit(0);
-				} else {
-					echo "No Metadata\n";
-					exit(1);
+		jika (diset($index)) {
+			jika (diset($index)) {
+				jika (diset($meta[$index])) {
+					tampil $meta[$index];
+					keluar(0);
+				} selainnya {
+					tampil "No Metadata\n";
+					keluar(1);
 				}
-			} else {
-				echo serialize($meta);
+			} selainnya {
+				tampil serialize($meta);
 			}
 		}
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_meta_del
+	// {{{ fungsi publik cli_cmd_inf_meta_del
 	/**
 	 * Cli Command Inf Metadel
 	 *
-	 * @return string A description of the metadel function
+	 * @kembalikan string A description of the metadel function
 	 */
-	public function cli_cmd_inf_meta_del()
+	fungsi publik cli_cmd_inf_meta_del()
 	{
-		return "Delete meta information of a PHAR entry or a PHAR package.\n" .
+		kembalikan "Delete meta information of a PHAR entry or a PHAR package.\n" .
 			   "If -k is given then the metadata is expected to be an array " .
 			   "and the given index is being deleted.\n" .
-			   "If something was deleted the return value is 0 otherwise it is 1.";
+			   "If something was deleted the kembalikan value is 0 otherwise it is 1.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_meta_del
+	// {{{ fungsi publik cli_cmd_arg_meta_del
 	/**
 	 * CliC ommand Arg Metadelete
 	 *
-	 * @return array The arguments for metadel
+	 * @kembalikan array The arguments for metadel
 	 */
-	public function cli_cmd_arg_meta_del()
+	fungsi publik cli_cmd_arg_meta_del()
 	{
-		return self::phar_args('Fek', 'phar');
+		kembalikan diri::phar_args('Fek', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_meta_del
+	// {{{ fungsi publik cli_cmd_run_meta_del
 	/**
 	 * Cli Command Run MetaDel
 	 *
 	 * @see $phar[$x]->delMetadata()
 	 * @see $phar->delMetadata()
 	 */
-	public function cli_cmd_run_meta_del()
+	fungsi publik cli_cmd_run_meta_del()
 	{
-		$phar  = $this->args['f']['val'];
-		$entry = $this->args['e']['val'];
-		$index = $this->args['k']['val'];
+		$phar  = $ini->args['f']['val'];
+		$entry = $ini->args['e']['val'];
+		$index = $ini->args['k']['val'];
 
-		if (isset($entry)) {
-			if (isset($index)) {
-				if (!$phar[$entry]->hasMetadata()) {
-					exit(1);
+		jika (diset($entry)) {
+			jika (diset($index)) {
+				jika (!$phar[$entry]->hasMetadata()) {
+					keluar(1);
 				}
 				$meta = $phar[$entry]->getMetadata();
 
 				// @todo add error message here.
-				if (!is_array($meta)) {
-					exit(1);
+				jika (!is_array($meta)) {
+					keluar(1);
 				}
 
-				unset($meta[$index]);
+				hapus($meta[$index]);
 				$phar[$entry]->setMetadata($meta);
-			} else {
-				exit($phar[$entry]->delMetadata() ? 0 : 1);
+			} selainnya {
+				keluar($phar[$entry]->delMetadata() ? 0 : 1);
 			}
-		} else {
-			if (isset($index)) {
-				if (!$phar->hasMetadata()) {
-					exit(1);
+		} selainnya {
+			jika (diset($index)) {
+				jika (!$phar->hasMetadata()) {
+					keluar(1);
 				}
 
 				$meta = $phar->getMetadata();
 
 				// @todo Add error message
-				if (!is_array($meta)) {
-					exit(1);
+				jika (!is_array($meta)) {
+					keluar(1);
 				}
 
-				unset($meta[$index]);
+				hapus($meta[$index]);
 				$phar->setMetadata($meta);
-			} else {
-				exit($phar->delMetadata() ? 0 : 1);
+			} selainnya {
+				keluar($phar->delMetadata() ? 0 : 1);
 			}
 		}
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_info
+	// {{{ fungsi publik cli_cmd_inf_info
 	/**
 	 * CLi Command Inf Info
 	 *
-	 * @return string A description about the info commands.
+	 * @kembalikan string A description about the info commands.
 	 */
-	public function cli_cmd_inf_info()
+	fungsi publik cli_cmd_inf_info()
 	{
-		return "Get information about a PHAR package.\n" .
-			   "By using -k it is possible to return a single value.";
+		kembalikan "Get information about a PHAR package.\n" .
+			   "By using -k it is possible to kembalikan a single value.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_info
+	// {{{ fungsi publik cli_cmd_arg_info
 	/**
 	 * Cli Command Arg Infos
 	 *
-	 * @return array The arguments for info command.
+	 * @kembalikan array The arguments for info command.
 	 */
-	public function cli_cmd_arg_info()
+	fungsi publik cli_cmd_arg_info()
 	{
-		return self::phar_args('Fk', 'phar');
+		kembalikan diri::phar_args('Fk', 'phar');
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_info
+	// {{{ fungsi publik cli_cmd_run_info
 	/**
 	 * Cli Command Run Info
 	 *
 	 * @param args $args
 	 */
-	public function cli_cmd_run_info()
+	fungsi publik cli_cmd_run_info()
 	{
-		$phar  = $this->args['f']['val'];
-		$index = $this->args['k']['val'];
+		$phar  = $ini->args['f']['val'];
+		$index = $ini->args['k']['val'];
 
 		$hash  = $phar->getSignature();
-		$infos = array();
+		$infos = larik();
 
-		if ($phar->getAlias()) {
+		jika ($phar->getAlias()) {
 			$infos['Alias'] = $phar->getAlias();
 		}
 
-		if (!$hash) {
+		jika (!$hash) {
 			$infos['Hash-type'] = 'NONE';
-		} else {
+		} selainnya {
 			$infos['Hash-type'] = $hash['hash_type'];
 			$infos['Hash'] = $hash['hash'];
 		}
@@ -1478,26 +1478,26 @@ class PharCommand extends CLICommand
 		$ccount  = 0;
 		$ucount  = 0;
 		$mcount  = 0;
-		$compalg = array('GZ'=>0, 'BZ2'=>0);
+		$compalg = larik('GZ'=>0, 'BZ2'=>0);
 
-		foreach(new RecursiveIteratorIterator($phar) as $ent) {
+		untuksetiap(buat RecursiveIteratorIterator($phar) sebagai $ent) {
 			$count++;
-			if ($ent->isCompressed()) {
+			jika ($ent->isCompressed()) {
 				$ccount++;
 				$csize += $ent->getCompressedSize();
-				if ($ent->isCompressed(Phar::GZ)) {
+				jika ($ent->isCompressed(Phar::GZ)) {
 					$compalg['GZ']++;
-				} elseif ($ent->isCompressed(Phar::BZ2)) {
+				} selainnya jika ($ent->isCompressed(Phar::BZ2)) {
 					$compalg['BZ2']++;
 				}
-			} else {
+			} selainnya {
 				$ucount++;
 				$csize += $ent->getSize();
 			}
 
 			$usize += $ent->getSize();
 
-			if ($ent->hasMetadata()) {
+			jika ($ent->hasMetadata()) {
 				$mcount++;
 			}
 		}
@@ -1514,62 +1514,62 @@ class PharCommand extends CLICommand
 		$infos['Metadata-files']     = $mcount;
 		$infos['Stub-size']          = strlen($phar->getStub());
 
-		if (isset($index)) {
-			if (!isset($infos[$index])) {
-				self::error("Requested value does not exist.\n");
+		jika (diset($index)) {
+			jika (!diset($infos[$index])) {
+				diri::error("Requested value does not exist.\n");
 			}
 
-			echo $infos[$index];
-			exit(0);
+			tampil $infos[$index];
+			keluar(0);
 		}
 
 		$l = 0;
-		foreach($infos as $which => $val) {
+		untuksetiap($infos sebagai $which => $val) {
 			$l = max(strlen($which), $l);
 		}
 
-		foreach($infos as $which => $val) {
-			echo $which . ':' . str_repeat(' ', $l + 1 - strlen($which)) . $val . "\n";
+		untuksetiap($infos sebagai $which => $val) {
+			tampil $which . ':' . str_repeat(' ', $l + 1 - strlen($which)) . $val . "\n";
 		}
 	}
 	// }}}
-	// {{{ public function cli_cmd_inf_version
+	// {{{ fungsi publik cli_cmd_inf_version
 	/**
 	 * CLi Command Inf Version
 	 *
-	 * @return string A description about the info commands.
+	 * @kembalikan string A description about the info commands.
 	 */
-	public function cli_cmd_inf_version()
+	fungsi publik cli_cmd_inf_version()
 	{
-		return "Get information about the PHAR environment and the tool version.";
+		kembalikan "Get information about the PHAR environment and the tool version.";
 	}
 	// }}}
-	// {{{ public function cli_cmd_arg_version
+	// {{{ fungsi publik cli_cmd_arg_version
 	/**
 	 * Cli Command Arg Version
 	 *
-	 * @return array The arguments for version command.
+	 * @kembalikan array The arguments for version command.
 	 */
-	public function cli_cmd_arg_version()
+	fungsi publik cli_cmd_arg_version()
 	{
-		return self::phar_args('', NULL);
+		kembalikan diri::phar_args('', NULL);
 	}
 	// }}}
-	// {{{ public function cli_cmd_run_info
+	// {{{ fungsi publik cli_cmd_run_info
 	/**
 	 * Cli Command Run Info
 	 *
 	 * @param args $args
 	 */
-	public function cli_cmd_run_version()
+	fungsi publik cli_cmd_run_version()
 	{
 		$use_ext = extension_loaded('phar');
-		$version = array(
+		$version = larik(
 			'PHP Version' => phpversion(),
 			'phar.phar version' => '$Id$',
 			'Phar EXT version' => $use_ext ? phpversion('phar') : 'Not available',
 			'Phar API version' => Phar::apiVersion(),
-			'Phar-based phar archives' => true,
+			'Phar-based phar archives' => benar,
 			'Tar-based phar archives' => $use_ext,
 			'ZIP-based phar archives' => $use_ext,
 			'gzip compression' => extension_loaded('zlib'),
@@ -1577,13 +1577,13 @@ class PharCommand extends CLICommand
 			'supported signatures' => $use_ext ? join(', ', Phar::getSupportedSignatures()) : '',
 			);
 		$klen = 0;
-		foreach($version as $k => $v)
+		untuksetiap($version sebagai $k => $v)
 		{
 			$klen = max($klen, strlen($k));
 		}
 		++$klen;
-		foreach($version as $k => $v) {
-			if (is_bool($v)) {
+		untuksetiap($version sebagai $k => $v) {
+			jika (is_bool($v)) {
 				$v = $v ? 'enabled' : 'disabled';
 			}
 			printf("%-${klen}s  %s\n", $k.':', $v);

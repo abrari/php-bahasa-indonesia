@@ -1,18 +1,18 @@
-<?php
+<?phpid
 
 $web = '000';
 
-if (in_array('phar', stream_get_wrappers()) && class_exists('Phar', 0)) {
+jika (in_array('phar', stream_get_wrappers()) && class_exists('Phar', 0)) {
     Phar::interceptFileFuncs();
     set_include_path('phar://' . __FILE__ . PATH_SEPARATOR . get_include_path());
     Phar::webPhar(null, $web);
-    include 'phar://' . __FILE__ . '/' . Extract_Phar::START;
-    return;
+    sertakan 'phar://' . __FILE__ . '/' . Extract_Phar::START;
+    kembalikan;
 }
 
-if (@(isset($_SERVER['REQUEST_URI']) && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'))) {
-    Extract_Phar::go(true);
-    $mimes = array(
+jika (@(diset($_SERVER['REQUEST_URI']) && diset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'POST'))) {
+    Extract_Phar::go(benar);
+    $mimes = larik(
         'phps' => 2,
         'c' => 'text/plain',
         'cc' => 'text/plain',
@@ -59,128 +59,128 @@ if (@(isset($_SERVER['REQUEST_URI']) && isset($_SERVER['REQUEST_METHOD']) && ($_
     header("Pragma: no-cache");
 
     $basename = basename(__FILE__);
-    if (!strpos($_SERVER['REQUEST_URI'], $basename)) {
+    jika (!strpos($_SERVER['REQUEST_URI'], $basename)) {
         chdir(Extract_Phar::$temp);
-        include $web;
-        return;
+        sertakan $web;
+        kembalikan;
     }
     $pt = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], $basename) + strlen($basename));
-    if (!$pt || $pt == '/') {
+    jika (!$pt || $pt == '/') {
         $pt = $web;
         header('HTTP/1.1 301 Moved Permanently');
         header('Location: ' . $_SERVER['REQUEST_URI'] . '/' . $pt);
-        exit;
+        keluar;
     }
     $a = realpath(Extract_Phar::$temp . DIRECTORY_SEPARATOR . $pt);
-    if (!$a || strlen(dirname($a)) < strlen(Extract_Phar::$temp)) {
+    jika (!$a || strlen(dirname($a)) < strlen(Extract_Phar::$temp)) {
         header('HTTP/1.0 404 Not Found');
-        echo "<html>\n <head>\n  <title>File Not Found<title>\n </head>\n <body>\n  <h1>404 - File ", $pt, " Not Found</h1>\n </body>\n</html>";
-        exit;
+        tampil "<html>\n <head>\n  <title>File Not Found<title>\n </head>\n <body>\n  <h1>404 - File ", $pt, " Not Found</h1>\n </body>\n</html>";
+        keluar;
     }
     $b = pathinfo($a);
-    if (!isset($b['extension'])) {
+    jika (!diset($b['extension'])) {
         header('Content-Type: text/plain');
         header('Content-Length: ' . filesize($a));
         readfile($a);
-        exit;
+        keluar;
     }
-    if (isset($mimes[$b['extension']])) {
-        if ($mimes[$b['extension']] === 1) {
-            include $a;
-            exit;
+    jika (diset($mimes[$b['extension']])) {
+        jika ($mimes[$b['extension']] === 1) {
+            sertakan $a;
+            keluar;
         }
-        if ($mimes[$b['extension']] === 2) {
+        jika ($mimes[$b['extension']] === 2) {
             highlight_file($a);
-            exit;
+            keluar;
         }
         header('Content-Type: ' .$mimes[$b['extension']]);
         header('Content-Length: ' . filesize($a));
         readfile($a);
-        exit;
+        keluar;
     }
 }
 
-class Extract_Phar
+kelas Extract_Phar
 {
-    static $temp;
-    static $origdir;
-    const GZ = 0x1000;
-    const BZ2 = 0x2000;
-    const MASK = 0x3000;
-    const START = 'index.php';
-    const LEN = XXXX;
+    variabel publik statis $temp;
+    variabel publik statis $origdir;
+    konstanta publik GZ = 0x1000;
+    konstanta publik BZ2 = 0x2000;
+    konstanta publik MASK = 0x3000;
+    konstanta publik START = 'index.php';
+    konstanta publik LEN = XXXX;
 
-    static function go($return  = false)
+    fungsi publik statis go($return  = salah)
     {
         $fp = fopen(__FILE__, 'rb');
-        fseek($fp, self::LEN);
+        fseek($fp, diri::LEN);
         $L = unpack('V', $a = (binary)fread($fp, 4));
         $m = (binary)'';
 
-        do {
+        kerjakan {
             $read = 8192;
-            if ($L[1] - strlen($m) < 8192) {
+            jika ($L[1] - strlen($m) < 8192) {
                 $read = $L[1] - strlen($m);
             }
             $last = (binary)fread($fp, $read);
             $m .= $last;
-        } while (strlen($last) && strlen($m) < $L[1]);
+        } selama (strlen($last) && strlen($m) < $L[1]);
 
-        if (strlen($m) < $L[1]) {
-            die('ERROR: manifest length read was "' . 
+        jika (strlen($m) < $L[1]) {
+            mati('ERROR: manifest length read was "' . 
                 strlen($m) .'" should be "' .
                 $L[1] . '"');
         }
 
-        $info = self::_unpack($m);
+        $info = diri::_unpack($m);
         $f = $info['c'];
 
-        if ($f & self::GZ) {
-            if (!function_exists('gzinflate')) {
-                die('Error: zlib extension is not enabled -' .
+        jika ($f & diri::GZ) {
+            jika (!function_exists('gzinflate')) {
+                mati('Error: zlib extension is not enabled -' .
                     ' gzinflate() function needed for zlib-compressed .phars');
             }
         }
 
-        if ($f & self::BZ2) {
-            if (!function_exists('bzdecompress')) {
-                die('Error: bzip2 extension is not enabled -' .
+        jika ($f & diri::BZ2) {
+            jika (!function_exists('bzdecompress')) {
+                mati('Error: bzip2 extension is not enabled -' .
                     ' bzdecompress() function needed for bz2-compressed .phars');
             }
         }
 
-        $temp = self::tmpdir();
+        $temp = diri::tmpdir();
 
-        if (!$temp || !is_writable($temp)) {
+        jika (!$temp || !is_writable($temp)) {
             $sessionpath = session_save_path();
-            if (strpos ($sessionpath, ";") !== false)
+            jika (strpos ($sessionpath, ";") !== salah)
                 $sessionpath = substr ($sessionpath, strpos ($sessionpath, ";")+1);
-            if (!file_exists($sessionpath) || !is_dir($sessionpath)) {
-                die('Could not locate temporary directory to extract phar');
+            jika (!file_exists($sessionpath) || !is_dir($sessionpath)) {
+                mati('Could not locate temporary directory to extract phar');
             }
             $temp = $sessionpath;
         }
 
         $temp .= '/pharextract/'.basename(__FILE__, '.phar');
-        self::$temp = $temp;
-        self::$origdir = getcwd();
-        @mkdir($temp, 0777, true);
+        diri::$temp = $temp;
+        diri::$origdir = getcwd();
+        @mkdir($temp, 0777, benar);
         $temp = realpath($temp);
 
-        if (!file_exists($temp . DIRECTORY_SEPARATOR . md5_file(__FILE__))) {
-            self::_removeTmpFiles($temp, getcwd());
-            @mkdir($temp, 0777, true);
+        jika (!file_exists($temp . DIRECTORY_SEPARATOR . md5_file(__FILE__))) {
+            diri::_removeTmpFiles($temp, getcwd());
+            @mkdir($temp, 0777, benar);
             @file_put_contents($temp . '/' . md5_file(__FILE__), '');
 
-            foreach ($info['m'] as $path => $file) {
+            untuksetiap ($info['m'] sebagai $path => $file) {
                 $a = !file_exists(dirname($temp . '/' . $path));
-                @mkdir(dirname($temp . '/' . $path), 0777, true);
+                @mkdir(dirname($temp . '/' . $path), 0777, benar);
                 clearstatcache();
 
-                if ($path[strlen($path) - 1] == '/') {
+                jika ($path[strlen($path) - 1] == '/') {
                     @mkdir($temp . '/' . $path, 0777);
-                } else {
-                    file_put_contents($temp . '/' . $path, self::extractFile($path, $file, $fp));
+                } selainnya {
+                    file_put_contents($temp . '/' . $path, diri::extractFile($path, $file, $fp));
                     @chmod($temp . '/' . $path, 0666);
                 }
             }
@@ -188,29 +188,29 @@ class Extract_Phar
 
         chdir($temp);
 
-        if (!$return) {
-            include self::START;
+        jika (!$return) {
+            sertakan diri::START;
         }
     }
 
-    static function tmpdir()
+    fungsi publik statis tmpdir()
     {
-        if (strpos(PHP_OS, 'WIN') !== false) {
-            if ($var = getenv('TMP') ? getenv('TMP') : getenv('TEMP')) {
-                return $var;
+        jika (strpos(PHP_OS, 'WIN') !== salah) {
+            jika ($var = getenv('TMP') ? getenv('TMP') : getenv('TEMP')) {
+                kembalikan $var;
             }
-            if (is_dir('/temp') || mkdir('/temp')) {
-                return realpath('/temp');
+            jika (is_dir('/temp') || mkdir('/temp')) {
+                kembalikan realpath('/temp');
             }
-            return false;
+            kembalikan salah;
         }
-        if ($var = getenv('TMPDIR')) {
-            return $var;
+        jika ($var = getenv('TMPDIR')) {
+            kembalikan $var;
         }
-        return realpath('/tmp');
+        kembalikan realpath('/tmp');
     }
 
-    static function _unpack($m)
+    fungsi publik statis _unpack($m)
     {
         $info = unpack('V', substr($m, 0, 4));
         // skip API version, phar flags, alias, metadata
@@ -221,7 +221,7 @@ class Extract_Phar
         $start = 4 + $s[1];
         $ret['c'] = 0;
 
-        for ($i = 0; $i < $info[1]; $i++) {
+        untuk ($i = 0; $i < $info[1]; $i++) {
             // length of the file name
             $len = unpack('V', substr($m, $start, 4));
             $start += 4;
@@ -237,53 +237,53 @@ class Extract_Phar
             $ret['m'][$savepath][7] = $o;
             $o += $ret['m'][$savepath][2];
             $start += 24 + $ret['m'][$savepath][5];
-            $ret['c'] |= $ret['m'][$savepath][4] & self::MASK;
+            $ret['c'] |= $ret['m'][$savepath][4] & diri::MASK;
         }
-        return $ret;
+        kembalikan $ret;
     }
 
-    static function extractFile($path, $entry, $fp)
+    fungsi publik statis extractFile($path, $entry, $fp)
     {
         $data = '';
         $c = $entry[2];
 
-        while ($c) {
-            if ($c < 8192) {
+        selama ($c) {
+            jika ($c < 8192) {
                 $data .= @fread($fp, $c);
                 $c = 0;
-            } else {
+            } selainnya {
                 $c -= 8192;
                 $data .= @fread($fp, 8192);
             }
         }
 
-        if ($entry[4] & self::GZ) {
+        jika ($entry[4] & diri::GZ) {
             $data = gzinflate($data);
-        } elseif ($entry[4] & self::BZ2) {
+        } selainnya jika ($entry[4] & diri::BZ2) {
             $data = bzdecompress($data);
         }
 
-        if (strlen($data) != $entry[0]) {
-            die("Invalid internal .phar file (size error " . strlen($data) . " != " .
+        jika (strlen($data) != $entry[0]) {
+            mati("Invalid internal .phar file (size error " . strlen($data) . " != " .
                 $stat[7] . ")");
         }
 
-        if ($entry[3] != sprintf("%u", crc32((binary)$data) & 0xffffffff)) {
-            die("Invalid internal .phar file (checksum error)");
+        jika ($entry[3] != sprintf("%u", crc32((binary)$data) & 0xffffffff)) {
+            mati("Invalid internal .phar file (checksum error)");
         }
 
-        return $data;
+        kembalikan $data;
     }
 
-    static function _removeTmpFiles($temp, $origdir)
+    fungsi publik statis _removeTmpFiles($temp, $origdir)
     {
         chdir($temp);
 
-        foreach (glob('*') as $f) {
-            if (file_exists($f)) {
+        untuksetiap (glob('*') sebagai $f) {
+            jika (file_exists($f)) {
                 is_dir($f) ? @rmdir($f) : @unlink($f);
-                if (file_exists($f) && is_dir($f)) {
-                    self::_removeTmpFiles($f, getcwd());
+                jika (file_exists($f) && is_dir($f)) {
+                    diri::_removeTmpFiles($f, getcwd());
                 }
             }
         }

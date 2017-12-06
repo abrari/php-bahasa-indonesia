@@ -1,4 +1,4 @@
-<?php
+<?phpid
 
 /**
  * @file phar.inc
@@ -18,61 +18,61 @@
  * @author  Marcus Boerger
  * @version 1.0
  */
-class Phar extends PHP_Archive implements RecursiveIterator
+kelas Phar turunan PHP_Archive mengimplementasi RecursiveIterator
 {
-	function getSignature()
+	fungsi publik getSignature()
 	{
-		return false;
+		kembalikan salah;
 	}
 
-	function getAlias()
+	fungsi publik getAlias()
 	{
-		return false;
+		kembalikan salah;
 	}
 
-	function rewind()
-	{
-	}
-
-	function valid()
-	{
-		return false;
-	}
-
-	function current()
+	fungsi publik rewind()
 	{
 	}
 
-	function key()
+	fungsi publik valid()
+	{
+		kembalikan salah;
+	}
+
+	fungsi publik current()
 	{
 	}
 
-	function next()
+	fungsi publik key()
 	{
 	}
 
-	function hasChildren()
-	{
-		return false;
-	}
-
-	function getChildren()
+	fungsi publik next()
 	{
 	}
 
-	function hasMetadata()
+	fungsi publik hasChildren()
+	{
+		kembalikan salah;
+	}
+
+	fungsi publik getChildren()
 	{
 	}
 
-	function getMetadata()
+	fungsi publik hasMetadata()
 	{
 	}
 
-	function getStub()
+	fungsi publik getMetadata()
 	{
 	}
 
-	function setStub()
+	fungsi publik getStub()
+	{
+	}
+
+	fungsi publik setStub()
 	{
 	}
 }
