@@ -1,0 +1,26 @@
+{
+    "name": "phpid",
+    "displayName": "PHPID",
+    "description": "PHP Bahasa Indonesia",
+    "version": "0.0.1",
+    "publisher": "abrari",
+    "engines": {
+        "vscode": "^1.18.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "phpid",
+            "aliases": ["PHPID", "phpid"],
+            "extensions": [".php", ".phpid"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "phpid",
+            "scopeName": "text.html.phpid",
+            "path": "./syntaxes/phpid.tmLanguage.json"
+        }]
+    }
+}
