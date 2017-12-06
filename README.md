@@ -379,5 +379,5 @@ Jika dibuka di IDE atau editor, *linter* pasti akan melaporkan kesalahan sintaks
 ## Dukungan Text Editor
 
 Telah tersedia package dukungan bahasa ini (syntax highlighting dan snippet) untuk:
-- [Sublime Text 3](https://github.com/abrari/php-bahasa-indonesia/tree/master/dukungan_IDE/sublimetext).
+- [Sublime Text 3](https://github.com/abrari/php-bahasa-indonesia/tree/master/dukungan_IDE/sublimetext)
 - [Visual Studio Code](https://github.com/abrari/php-bahasa-indonesia/tree/master/dukungan_IDE/vscode)
