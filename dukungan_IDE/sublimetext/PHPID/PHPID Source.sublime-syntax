@@ -144,7 +144,7 @@ contexts:
     - include: invoke-call
     - match: |-
         (?x)\s*(?=
-            [[:alnum:]_$\\]+(::)
+            [[:alnum:]_$\\]+\s*(::)
             (?:
                 ({{identifier}})\s*\(
                 |
@@ -173,6 +173,26 @@ contexts:
           set: after-identifier
         - match: (diri|statis|induk)\b
           scope: variable.language.phpid
+        - include: class-name
+        - include: variables
+    - match: |-
+        (?x)\s*(?=
+            [[:alnum:]_$\\]+\s+(baru)
+            (?:
+                ({{identifier}})\s*\(
+                |
+                ((\$+){{identifier}})
+                |
+                ({{identifier}})
+            )?
+        )
+      push:
+        - include: function-call-static
+        - match: |-
+            (?x)(baru)
+          captures:
+            1: keyword.other.new.phpid
+          set: after-identifier
         - include: class-name
         - include: variables
     - include: variables
@@ -952,9 +972,6 @@ contexts:
           scope: variable.language.phpid
         - include: class-name
         - include: variables
-    - match: (?i)\s+(baru)\s*
-      captures:
-        1: keyword.other.new.phpid
   interpolation:
     - match: '\\[0-7]{1,3}'
       scope: constant.character.escape.octal.phpid
