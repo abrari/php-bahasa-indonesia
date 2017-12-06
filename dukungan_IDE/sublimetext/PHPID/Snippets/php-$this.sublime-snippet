@@ -1,6 +1,0 @@
-<snippet>
-	<content><![CDATA[<?${TM_PHP_OPEN_TAG:phpid} \$ini->$0 ?>]]></content>
-	<tabTrigger>ini</tabTrigger>
-	<scope>embedding.phpid text.html - source.phpid</scope>
-	<description>&lt;?php $ini-&gt;… ?&gt;</description>
-</snippet>

@@ -1,0 +1,230 @@
+{
+	"globals": {
+		"prefix": "globals",
+		"body": "\\$GLOBALS['${1:variable}']${2: = }${3:something}${4:;}$0",
+		"description": "$GLOBALS['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_": {
+		"prefix": "$_",
+		"body": "\\$_COOKIE['${1:variable}']",
+		"description": "COOKIE['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_1": {
+		"prefix": "$_",
+		"body": "\\$_ENV['${1:variable}']",
+		"description": "ENV['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_2": {
+		"prefix": "$_",
+		"body": "\\$_FILES['${1:variable}']",
+		"description": "FILES['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_3": {
+		"prefix": "$_",
+		"body": "\\$_GET['${1:variable}']",
+		"description": "GET['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_4": {
+		"prefix": "$_",
+		"body": "\\$_POST['${1:variable}']",
+		"description": "POST['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_5": {
+		"prefix": "$_",
+		"body": "\\$_REQUEST['${1:variable}']",
+		"description": "REQUEST['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_6": {
+		"prefix": "$_",
+		"body": "\\$_SERVER['${1:variable}']",
+		"description": "SERVER['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"$_7": {
+		"prefix": "$_",
+		"body": "\\$_SESSION['${1:variable}']",
+		"description": "SESSION['…']",
+		"scope": "source.phpid - string.quoted.single - comment"
+	},
+	"kon": {
+		"prefix": "kon",
+		"body": "fungsi publik __konstruktor(${1:\\$${2:foo}${3: = ${4:null}}})\n{\n\t${2/.+/$ini->$0 = \\$$0;/}$0\n}",
+		"description": "fungsi konstruktor",
+		"scope": "source.phpid - string - comment"
+	},
+	"/**": {
+		"prefix": "/**",
+		"body": "/**\n * $0\n */",
+		"description": "Start Docblock",
+		"scope": "source.phpid comment"
+	},
+	"kelas": {
+		"prefix": "kelas",
+		"body": "/**\n* $1\n*/\nkelas ${2:NamaKelas}${3: turunan ${4:KelasLain}}\n{\n\t$5\n\tfungsi publik ${6:__konstruktor}(${7:parameter})\n\t{\n\t\t${0:# kode...}\n\t}\n}\n",
+		"description": "kelas …",
+		"scope": "source.phpid - string - comment"
+	},
+	"def": {
+		"prefix": "def",
+		"body": "definisikan('$1', ${2:'$3'});\n$0",
+		"description": "definisikan(…, …)",
+		"scope": "source.phpid - string - comment"
+	},
+	"def?": {
+		"prefix": "def?",
+		"body": "$1terdefinisi('$2')$0",
+		"description": "terdefinisi?(…)",
+		"scope": "source.phpid - string - comment"
+	},
+	"kerjakan": {
+		"prefix": "kerjakan",
+		"body": "kerjakan {\n\t${0:# kode...}\n} selama (${1:$a <= 10});",
+		"description": "kerjakan … selama …",
+		"scope": "source.phpid - string - comment"
+	},
+	"tampil": {
+		"prefix": "tampil",
+		"body": "tampil \"${1:string}\"${0};",
+		"description": "tampil \"…\"",
+		"scope": "source.phpid - string - comment"
+	},
+	"selainnya jika": {
+		"prefix": "selainnya jika",
+		"body": "selainnya jika (${1:kondisi}) {\n\t${0:# kode...}\n}",
+		"description": "selainnya jika …",
+		"scope": "source.phpid - string - comment"
+	},
+	"untuk": {
+		"prefix": "untuk",
+		"body": "untuk (\\$${1:i}=${2:0}; \\$${1:i} < $3; \\$${1:i}++) { \n\t${0:# kode...}\n}",
+		"description": "untuk …",
+		"scope": "source.phpid - string - comment"
+	},
+	"untuksetiap": {
+		"prefix": "untuksetiap",
+		"body": "untuksetiap (\\$${1:variable} sebagai \\$${2:key}${3: => \\$${4:value}}) {\n\t${0:# kode...}\n}",
+		"description": "untuksetiap …",
+		"scope": "source.phpid - string - comment"
+	},
+	"untuksetiap dalam": {
+		"prefix": "untuksetiap dalam",
+		"body": "untuksetiap (\\$${2:key}${3: => \\$${4:value}} dalam \\$${1:variable}) {\n\t${0:# kode...}\n}",
+		"description": "untuksetiap … dalam …",
+		"scope": "source.phpid - string - comment"
+	},
+	"fun": {
+		"prefix": "fun",
+		"body": "fungsi ${1:publik} ${2:NamaFungsi}(${3:\\$${4:parameter}${5:=''}})\n{\n\t${0:# kode...}\n}",
+		"description": "fungsi …",
+		"scope": "source.phpid - string - comment"
+	},
+	"jika selainnya": {
+		"prefix": "jika selainnya",
+		"body": "jika (${1:kondisi}) {\n\t${2:# kode...}\n} selainnya {\n\t${3:# kode...}\n}\n$0",
+		"description": "jika … selainnya …",
+		"scope": "source.phpid - string - comment"
+	},
+	"jika": {
+		"prefix": "jika",
+		"body": "jika (${1:kondisi}) {\n\t${0:# kode...}\n}",
+		"description": "jika …",
+		"scope": "source.phpid - string - comment"
+	},
+	"if?": {
+		"prefix": "if?",
+		"body": "\\$${1:retVal} = (${2:condition}) ? ${3:a} : ${4:b} ;",
+		"description": "$… = ( … ) ? … : …",
+		"scope": "source.phpid - string - comment"
+	},
+	"sertakan": {
+		"prefix": "sertakan",
+		"body": "sertakan '${1:file}';$0",
+		"description": "sertakan …",
+		"scope": "source.phpid - string - comment"
+	},
+	"sertakan1": {
+		"prefix": "sertakan1",
+		"body": "sertakan_satu_kali '${1:file}';$0",
+		"description": "sertakan_satu_kali …",
+		"scope": "source.phpid - string - comment"
+	},
+	"larik": {
+		"prefix": "larik",
+		"body": "\\$${1:var} = larik('$2' => $3${4:,} $0);",
+		"description": "$… = larik (…)",
+		"scope": "source.phpid - variable.other.phpid"
+	},
+	"php": {
+		"prefix": "php",
+		"body": "<?${TM_PHP_OPEN_TAG:phpid} $0 ?>",
+		"description": "<?phpid … ?>",
+		"scope": "embedding.phpid text.html - source.phpid"
+	},
+	"butuh": {
+		"prefix": "butuh",
+		"body": "butuh '${1:file}';$0",
+		"description": "butuh …",
+		"scope": "source.phpid - string - comment"
+	},
+	"butuh1": {
+		"prefix": "butuh1",
+		"body": "butuh_satu_kali '${1:file}';$0",
+		"description": "butuh_satu_kali …",
+		"scope": "source.phpid - string - comment"
+	},
+	"kembali": {
+		"prefix": "kembali",
+		"body": "kembalikan$1;$0",
+		"description": "kembalikan",
+		"scope": "source.phpid - string - comment"
+	},
+	"kembali0": {
+		"prefix": "kembali0",
+		"body": "kembalikan salah;$0",
+		"description": "kembalikan salah",
+		"scope": "source.phpid - string - comment"
+	},
+	"kembali1": {
+		"prefix": "kembali1",
+		"body": "kembalikan benar;$0",
+		"description": "kembalikan benar",
+		"scope": "source.phpid - string - comment"
+	},
+	"kalau": {
+		"prefix": "kalau",
+		"body": "kalau '${1:variabel}':\n\t${0:# kode...}\n\tberhenti;",
+		"description": "kalau …",
+		"scope": "source.phpid - string - comment"
+	},
+	"pilihan": {
+		"prefix": "pilihan",
+		"body": "pilihan (${1:variabel}) {\n\tkalau '${2:nilai}':\n\t\t${3:# kode...}\n\t\tberhenti;\n\t$0\n\tdefault:\n\t\t${4:# kode...}\n\t\tberhenti;\n}",
+		"description": "pilihan …",
+		"scope": "source.phpid - string - comment"
+	},
+	"lempar": {
+		"prefix": "lempar",
+		"body": "lempar $1Exception baru (${2:\"${3:Error Processing Request}\"}${4:, ${5:1}});\n$0",
+		"description": "lempar Exception",
+		"scope": "source.phpid - string - comment"
+	},
+	"coba": {
+		"prefix": "coba",
+		"body": "${TM_SELECTED_TEXT/([\\t ]*).*/$1/m}coba {\n\t${3:${TM_SELECTED_TEXT/(\\A.*)|(.+)|\\n\\z/(?1:$0:(?2:\\t$0))/g}}\n${TM_SELECTED_TEXT/([\\t ]*).*/$1/m}} tangkap (${1:Exception} ${2:\\$e}) {\n${TM_SELECTED_TEXT/([\\t ]*).*/$1/m}\t$0\n${TM_SELECTED_TEXT/([\\t ]*).*/$1/m}}",
+		"description": "coba { … } tangkap (…) { … }",
+		"scope": "source.phpid - string - comment"
+	},
+	"selama": {
+		"prefix": "selama",
+		"body": "selama (${1:$a <= 10}) {\n\t${0:# kode...}\n}",
+		"description": "selama …",
+		"scope": "source.phpid - string - comment"
+	}
+}

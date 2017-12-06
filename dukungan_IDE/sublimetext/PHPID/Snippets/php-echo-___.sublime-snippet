@@ -1,6 +1,0 @@
-<snippet>
-	<content><![CDATA[<?${TM_PHP_OPEN_TAG_WITH_ECHO:phpid tampil} ${1:\$var} ?>$0]]></content>
-	<tabTrigger>tampil</tabTrigger>
-	<scope>embedding.phpid text.html - source.phpid</scope>
-	<description>&lt;?php tampil … ?&gt;</description>
-</snippet>

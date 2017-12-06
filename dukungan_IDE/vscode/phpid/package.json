@@ -21,6 +21,10 @@
             "language": "phpid",
             "scopeName": "text.html.phpid",
             "path": "./syntaxes/phpid.tmLanguage.json"
-        }]
+        }],
+        "snippets": [{
+                "language": "phpid",
+                "path": "./snippets/snippets.json"
+        }]        
     }
 }

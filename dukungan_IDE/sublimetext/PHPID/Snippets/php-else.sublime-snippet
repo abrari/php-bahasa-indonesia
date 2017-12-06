@@ -1,6 +1,0 @@
-<snippet>
-	<content><![CDATA[<?${TM_PHP_OPEN_TAG:php} else: ?>]]></content>
-	<tabTrigger>else</tabTrigger>
-	<scope>embedding.phpid text.html - source.phpid</scope>
-	<description>&lt;?php else: ?&gt;</description>
-</snippet>
