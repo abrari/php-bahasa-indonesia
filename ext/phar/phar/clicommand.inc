@@ -95,7 +95,7 @@ kelas abstrak CLICommand
 	fungsi publik statis error ($msg, $exit_code = 1)
 	{
 		diri::notice($msg);
-		exit($exit_code);
+		keluar($exit_code);
 	}
 
 	fungsi publik checkArgTyp($arg, $i, $argc, $argv)
