@@ -31,6 +31,9 @@ Copyright (c) 1997-2017 The PHP Group
 Zend Engine v3.3.0-dev, Copyright (c) 1998-2017 Zend Technologies
 ```
 
+## Kompilasi (Windows)
+Untuk kompilasi di Windows, ikuti langkah-langkah pada [link berikut](https://github.com/Microsoft/php-sdk-binary-tools). Sebelumnya Visual Studio 2015 atau 2017 harus sudah terinstal.
+
 ## Perbedaan dengan PHP
 Secara umum, beberapa hal yang berbeda dari PHP asli antara lain:
 
