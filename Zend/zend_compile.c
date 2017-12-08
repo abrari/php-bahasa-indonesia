@@ -170,7 +170,7 @@ void zend_assert_valid_class_name(const zend_string *name) /* {{{ */
 {
 	if (zend_is_reserved_class_name(name)) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"Cannot use '%s' as class name as it is reserved", ZSTR_VAL(name));
+			"Tidak bisa menggunakan '%s' sebagai nama kelas karena sudah reserved", ZSTR_VAL(name));
 	}
 }
 /* }}} */
@@ -801,13 +801,13 @@ uint32_t zend_add_class_modifier(uint32_t flags, uint32_t new_flag) /* {{{ */
 {
 	uint32_t new_flags = flags | new_flag;
 	if ((flags & ZEND_ACC_EXPLICIT_ABSTRACT_CLASS) && (new_flag & ZEND_ACC_EXPLICIT_ABSTRACT_CLASS)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Multiple abstract modifiers are not allowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier abstrak tidak boleh lebih dari satu");
 	}
 	if ((flags & ZEND_ACC_FINAL) && (new_flag & ZEND_ACC_FINAL)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Multiple final modifiers are not allowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier final tidak boleh lebih dari satu");
 	}
 	if ((new_flags & ZEND_ACC_EXPLICIT_ABSTRACT_CLASS) && (new_flags & ZEND_ACC_FINAL)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use the final modifier on an abstract class");
+		zend_error_noreturn(E_COMPILE_ERROR, "Kelas abstrak tidak bisa ditandai final");
 	}
 	return new_flags;
 }
@@ -817,19 +817,19 @@ uint32_t zend_add_member_modifier(uint32_t flags, uint32_t new_flag) /* {{{ */
 {
 	uint32_t new_flags = flags | new_flag;
 	if ((flags & ZEND_ACC_PPP_MASK) && (new_flag & ZEND_ACC_PPP_MASK)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Multiple access type modifiers are not allowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier access type tidak boleh lebih dari satu");
 	}
 	if ((flags & ZEND_ACC_ABSTRACT) && (new_flag & ZEND_ACC_ABSTRACT)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Multiple abstract modifiers are not allowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier abstrak tidak boleh lebih dari satu");
 	}
 	if ((flags & ZEND_ACC_STATIC) && (new_flag & ZEND_ACC_STATIC)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Multiple static modifiers are not allowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier statis tidak boleh lebih dari satu");
 	}
 	if ((flags & ZEND_ACC_FINAL) && (new_flag & ZEND_ACC_FINAL)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Multiple final modifiers are not allowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier final tidak boleh lebih dari satu");
 	}
 	if ((new_flags & ZEND_ACC_ABSTRACT) && (new_flags & ZEND_ACC_FINAL)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use the final modifier on an abstract class member");
+		zend_error_noreturn(E_COMPILE_ERROR, "Anggota kelas yang abstrak tidak bisa ditandai final");
 	}
 	return new_flags;
 }
@@ -962,7 +962,7 @@ zend_string *zend_resolve_class_name(zend_string *name, uint32_t type) /* {{{ */
 		}
 		/* Ensure that \self, \parent and \static are not used */
 		if (ZEND_FETCH_CLASS_DEFAULT != zend_get_class_fetch_type(name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "'\\%s' is an invalid class name", ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "'\\%s' bukan nama kelas yang valid", ZSTR_VAL(name));
 		}
 		return name;
 	}
@@ -999,7 +999,7 @@ zend_string *zend_resolve_class_name_ast(zend_ast *ast) /* {{{ */
 {
 	zval *class_name = zend_ast_get_zval(ast);
 	if (Z_TYPE_P(class_name) != IS_STRING) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Illegal class name");
+		zend_error_noreturn(E_COMPILE_ERROR, "Nama kelas tidak valid");
 	}
 	return zend_resolve_class_name(Z_STR_P(class_name), ast->attr);
 }
@@ -1082,12 +1082,12 @@ ZEND_API int do_bind_function(const zend_op_array *op_array, const zend_op *opli
 		if ((old_function = zend_hash_find_ptr(function_table, Z_STR_P(lcname))) != NULL
 			&& old_function->type == ZEND_USER_FUNCTION
 			&& old_function->op_array.last > 0) {
-			zend_error_noreturn(error_level, "Cannot redeclare %s() (previously declared in %s:%d)",
+			zend_error_noreturn(error_level, "Tidak bisa deklarasi ulang %s() (sebelumnya sudah ada di %s:%d)",
 						ZSTR_VAL(function->common.function_name),
 						ZSTR_VAL(old_function->op_array.filename),
 						old_function->op_array.opcodes[0].lineno);
 		} else {
-			zend_error_noreturn(error_level, "Cannot redeclare %s()", ZSTR_VAL(function->common.function_name));
+			zend_error_noreturn(error_level, "Tidak bisa deklarasi ulang %s()", ZSTR_VAL(function->common.function_name));
 		}
 		return FAILURE;
 	} else {
@@ -1123,7 +1123,7 @@ ZEND_API zend_class_entry *do_bind_class(const zend_op_array* op_array, const ze
 			 * so we shut up about it.  This allows the if (!defined('FOO')) { return; }
 			 * approach to work.
 			 */
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi %s %s, karena nama itu sudah digunakan", zend_get_object_type(ce), ZSTR_VAL(ce->name));
 		}
 		return NULL;
 	} else {
@@ -1157,13 +1157,13 @@ ZEND_API zend_class_entry *do_bind_inherited_class(const zend_op_array *op_array
 			 * so we shut up about it.  This allows the if (!defined('FOO')) { return; }
 			 * approach to work.
 			 */
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare  %s, because the name is already in use", zend_get_object_type(Z_OBJCE_P(lcname)));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi  %s, karena nama itu sudah digunakan", zend_get_object_type(Z_OBJCE_P(lcname)));
 		}
 		return NULL;
 	}
 
 	if (zend_hash_exists(class_table, Z_STR_P(lcname))) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi %s %s, karena nama itu sudah digunakan", zend_get_object_type(ce), ZSTR_VAL(ce->name));
 	}
 
 	zend_do_inheritance(ce, parent_ce);
@@ -1172,7 +1172,7 @@ ZEND_API zend_class_entry *do_bind_inherited_class(const zend_op_array *op_array
 
 	/* Register the derived class */
 	if (zend_hash_add_ptr(class_table, Z_STR_P(lcname), ce) == NULL) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), ZSTR_VAL(ce->name));
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi %s %s, karena nama itu sudah digunakan", zend_get_object_type(ce), ZSTR_VAL(ce->name));
 	}
 	return ce;
 }
@@ -1241,7 +1241,7 @@ void zend_do_early_binding(void) /* {{{ */
 			/* Classes with traits are handled exactly the same, no early-bind here */
 			return;
 		default:
-			zend_error_noreturn(E_COMPILE_ERROR, "Invalid binding type");
+			zend_error_noreturn(E_COMPILE_ERROR, "Binding type tidak valid");
 			return;
 	}
 
@@ -1256,14 +1256,14 @@ static void zend_mark_function_as_generator() /* {{{ */
 {
 	if (!CG(active_op_array)->function_name) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"The \"yield\" expression can only be used inside a function");
+			"Pernyataan 'hasilkan' hanya bisa di dalam fungsi");
 	}
 
 	if (CG(active_op_array)->fn_flags & ZEND_ACC_HAS_RETURN_TYPE) {
 		zend_arg_info return_info = CG(active_op_array)->arg_info[-1];
 
 		if (ZEND_TYPE_CODE(return_info.type) != IS_ITERABLE) {
-			const char *msg = "Generators may only declare a return type of Generator, Iterator, Traversable, or iterable, %s is not permitted";
+			const char *msg = "Generator hanya bisa bertipe kembali: Generator, Iterator, Traversable, atau iterable";
 			
 			if (!ZEND_TYPE_IS_CLASS(return_info.type)) {
 				zend_error_noreturn(E_COMPILE_ERROR, msg, zend_get_type_by_const(ZEND_TYPE_CODE(return_info.type)));
@@ -1337,7 +1337,7 @@ ZEND_API int zend_unmangle_property_name_ex(const zend_string *name, const char 
 		return SUCCESS;
 	}
 	if (ZSTR_LEN(name) < 3 || ZSTR_VAL(name)[1] == '\0') {
-		zend_error(E_NOTICE, "Illegal member variable name");
+		zend_error(E_NOTICE, "Nama variabel tidak valid");
 		*prop_name = ZSTR_VAL(name);
 		if (prop_len) {
 			*prop_len = ZSTR_LEN(name);
@@ -1347,7 +1347,7 @@ ZEND_API int zend_unmangle_property_name_ex(const zend_string *name, const char 
 
 	class_name_len = zend_strnlen(ZSTR_VAL(name) + 1, ZSTR_LEN(name) - 2);
 	if (class_name_len >= ZSTR_LEN(name) - 2 || ZSTR_VAL(name)[class_name_len + 1] != '\0') {
-		zend_error(E_NOTICE, "Corrupt member variable name");
+		zend_error(E_NOTICE, "Nama variabel corrupt?");
 		*prop_name = ZSTR_VAL(name);
 		if (prop_len) {
 			*prop_len = ZSTR_LEN(name);
@@ -1471,7 +1471,7 @@ static uint32_t zend_get_class_fetch_type_ast(zend_ast *name_ast) /* {{{ */
 static void zend_ensure_valid_class_fetch_type(uint32_t fetch_type) /* {{{ */
 {
 	if (fetch_type != ZEND_FETCH_CLASS_DEFAULT && !CG(active_class_entry) && zend_is_scope_known()) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use \"%s\" when no class scope is active",
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa akses \"%s\" kalau tidak di dalam kelas",
 			fetch_type == ZEND_FETCH_CLASS_SELF ? "diri" :
 			fetch_type == ZEND_FETCH_CLASS_PARENT ? "induk" : "statis");
 	}
@@ -1492,7 +1492,7 @@ static zend_bool zend_try_compile_const_expr_resolve_class_name(zval *zv, zend_a
 
 	if (class_ast->kind != ZEND_AST_ZVAL) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"Dynamic class names are not allowed in compile-time ::class fetch");
+			"Nama kelas dinamis tidak bisa digunakan ketika ambil ::class");
 	}
 
 	fetch_type = zend_get_class_fetch_type(zend_ast_get_str(class_ast));
@@ -1510,7 +1510,7 @@ static zend_bool zend_try_compile_const_expr_resolve_class_name(zval *zv, zend_a
 		case ZEND_FETCH_CLASS_PARENT:
 			if (constant) {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"%s::class cannot be used for compile-time class name resolution",
+					"%s::class tidak bisa digunakan ketika kompilasi",
 					fetch_type == ZEND_FETCH_CLASS_STATIC ? "statis" : "induk"
 				);
 			} else {
@@ -1858,7 +1858,7 @@ zend_ast *zend_negate_num_string(zend_ast *ast) /* {{{ */
 void zend_verify_namespace(void) /* {{{ */
 {
 	if (FC(has_bracketed_namespaces) && !FC(in_namespace)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "No code may exist outside of namespace {}");
+		zend_error_noreturn(E_COMPILE_ERROR, "Semua kode harus di dalam ruangnama {}");
 	}
 }
 /* }}} */
@@ -2318,10 +2318,10 @@ static void zend_emit_return_type_check(
 			if (expr) {
 				if (expr->op_type == IS_CONST && Z_TYPE(expr->u.constant) == IS_NULL) {
 					zend_error_noreturn(E_COMPILE_ERROR,
-						"A void function must not return a value "
-						"(did you mean \"return;\" instead of \"return null;\"?)");
+						"Fungsi void tidak boleh mengembalikan nilai "
+						"(apakah maksud anda \"kembalikan;\" alih-alih \"kembalikan null;\"?)");
 				} else {
-					zend_error_noreturn(E_COMPILE_ERROR, "A void function must not return a value");
+					zend_error_noreturn(E_COMPILE_ERROR, "Fungsi void tidak boleh mengembalikan nilai");
 				}
 			}
 			/* we don't need run-time check */
@@ -2331,11 +2331,11 @@ static void zend_emit_return_type_check(
 		if (!expr && !implicit) {
 			if (ZEND_TYPE_ALLOW_NULL(return_info->type)) {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"A function with return type must return a value "
-					"(did you mean \"return null;\" instead of \"return;\"?)");
+					"Fungsi dengan tipe kembali harus mengembalikan nilai "
+					"(apakah maksud anda \"kembalikan null;\" ketimbang \"kembalikan;\"?)");
 			} else {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"A function with return type must return a value");
+					"Fungsi dengan tipe kembali harus mengembalikan nilai");
 			}
 		}
 
@@ -2470,7 +2470,7 @@ static zend_op *zend_compile_class_ref(znode *result, zend_ast *name_ast, int th
 		uint32_t fetch_type;
 
 		if (Z_TYPE(name_node.u.constant) != IS_STRING) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Illegal class name");
+			zend_error_noreturn(E_COMPILE_ERROR, "Nama kelas tidak valid");
 		}
 
 		name = Z_STR(name_node.u.constant);
@@ -2511,7 +2511,7 @@ static void zend_compile_class_ref_ex(znode *result, zend_ast *name_ast, uint32_
 			zend_string *name;
 
 			if (Z_TYPE(name_node.u.constant) != IS_STRING) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Illegal class name");
+				zend_error_noreturn(E_COMPILE_ERROR, "Nama kelas tidak valid");
 			}
 
 			name = Z_STR(name_node.u.constant);
@@ -2643,7 +2643,7 @@ static void zend_separate_if_call_and_write(znode *node, zend_ast *ast, uint32_t
 			opline->result_type = IS_VAR;
 			opline->result.var = opline->op1.var;
 		} else {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use result of built-in function in write context");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan hasil fungsi built-in dalam konteks menulis");
 		}
 	}
 }
@@ -2680,10 +2680,10 @@ static zend_op *zend_delayed_compile_dim(znode *result, zend_ast *ast, uint32_t 
 
 	if (dim_ast == NULL) {
 		if (type == BP_VAR_R || type == BP_VAR_IS) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use [] for reading");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan [] untuk membaca");
 		}
 		if (type == BP_VAR_UNSET) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use [] for unsetting");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan [] untuk menulis");
 		}
 		dim_node.op_type = IS_UNUSED;
 	} else {
@@ -2777,13 +2777,13 @@ zend_op *zend_compile_static_prop(znode *result, zend_ast *ast, uint32_t type, i
 static void zend_verify_list_assign_target(zend_ast *var_ast, zend_bool old_style) /* {{{ */ {
 	if (var_ast->kind == ZEND_AST_ARRAY) {
 		if (var_ast->attr == ZEND_ARRAY_SYNTAX_LONG) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot assign to array(), use [] instead");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mengisi ke larik(), gunakan []");
 		}
 		if (old_style != var_ast->attr) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot mix [] and list()");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mencampurkan antara [] dan daftar()");
 		}
 	} else if (!zend_can_write_to_variable(var_ast)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Assignments can only happen to writable values");
+		zend_error_noreturn(E_COMPILE_ERROR, "Pengisian nilai hanya bisa ke variabel yang bisa ditulis");
 	}
 }
 /* }}} */
@@ -2809,14 +2809,14 @@ static void zend_compile_list_assign(
 		if (elem_ast == NULL) {
 			if (is_keyed) {
 				zend_error(E_COMPILE_ERROR,
-					"Cannot use empty array entries in keyed array assignment");
+					"Tidak bisa menggunakan entri array kosong saat mengisi array yang punya key");
 			} else {
 				continue;
 			}
 		}
 
 		if (elem_ast->attr) {
-			zend_error(E_COMPILE_ERROR, "[] and list() assignments cannot be by reference");
+			zend_error(E_COMPILE_ERROR, "pengisian [] dan daftar() tidak bisa by reference");
 		}
 
 		var_ast = elem_ast->child[0];
@@ -2826,14 +2826,14 @@ static void zend_compile_list_assign(
 		if (is_keyed) {
 			if (key_ast == NULL) {
 				zend_error(E_COMPILE_ERROR,
-					"Cannot mix keyed and unkeyed array entries in assignments");
+					"Tidak bisa mencampurkan entri array yang punya key dengan yang tidak saat assignment");
 			}
 
 			zend_compile_expr(&dim_node, key_ast);
 		} else {
 			if (key_ast != NULL) {
 				zend_error(E_COMPILE_ERROR,
-					"Cannot mix keyed and unkeyed array entries in assignments");
+					"Tidak bisa mencampurkan entri array yang punya key dengan yang tidak saat assignment");
 			}
 
 			dim_node.op_type = IS_CONST;
@@ -2851,7 +2851,7 @@ static void zend_compile_list_assign(
 	}
 
 	if (has_elems == 0) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use empty list");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan larik kosong");
 	}
 
 	*result = *expr_node;
@@ -2861,10 +2861,10 @@ static void zend_compile_list_assign(
 static void zend_ensure_writable_variable(const zend_ast *ast) /* {{{ */
 {
 	if (ast->kind == ZEND_AST_CALL) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Can't use function return value in write context");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan hasil fungsi untuk menulis");
 	}
 	if (ast->kind == ZEND_AST_METHOD_CALL || ast->kind == ZEND_AST_STATIC_CALL) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Can't use method return value in write context");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan hasil fungsi untuk menulis");
 	}
 }
 /* }}} */
@@ -2952,7 +2952,7 @@ void zend_compile_assign(znode *result, zend_ast *ast) /* {{{ */
 	uint32_t offset;
 
 	if (is_this_fetch(var_ast)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign $this");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mengisi ke $ini");
 	}
 
 	zend_ensure_writable_variable(var_ast);
@@ -3030,7 +3030,7 @@ void zend_compile_assign_ref(znode *result, zend_ast *ast) /* {{{ */
 	uint32_t offset;
 
 	if (is_this_fetch(target_ast)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign $this");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mengisi ke $ini");
 	}
 	zend_ensure_writable_variable(target_ast);
 
@@ -3053,7 +3053,7 @@ void zend_compile_assign_ref(znode *result, zend_ast *ast) /* {{{ */
 	zend_delayed_compile_end(offset);
 
 	if (source_node.op_type != IS_VAR && zend_is_call(source_ast)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use result of built-in function in write context");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan hasil fungsi built-in dalam konteks menulis");
 	}
 
 	opline = zend_emit_op(result, ZEND_ASSIGN_REF, &target_node, &source_node);
@@ -3148,7 +3148,7 @@ uint32_t zend_compile_args(zend_ast *ast, zend_function *fbc) /* {{{ */
 
 		if (uses_arg_unpack) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Cannot use positional argument after argument unpacking");
+				"Tidak bisa menggunakan positional argument setelah unpacking");
 		}
 
 		arg_count++;
@@ -3213,7 +3213,7 @@ uint32_t zend_compile_args(zend_ast *ast, zend_function *fbc) /* {{{ */
 				if (fbc) {
 					opcode = ZEND_SEND_VAL;
 					if (ARG_MUST_BE_SENT_BY_REF(fbc, arg_num)) {
-						zend_error_noreturn(E_COMPILE_ERROR, "Only variables can be passed by reference");
+						zend_error_noreturn(E_COMPILE_ERROR, "Hanya variabel yang bisa dikirim by reference");
 					}
 				} else {
 					opcode = ZEND_SEND_VAL_EX;
@@ -4021,7 +4021,7 @@ void zend_compile_method_call(znode *result, zend_ast *ast, uint32_t type) /* {{
 
 	if (method_node.op_type == IS_CONST) {
 		if (Z_TYPE(method_node.u.constant) != IS_STRING) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Method name must be a string");
+			zend_error_noreturn(E_COMPILE_ERROR, "Nama fungsi harus berupa string");
 		}
 
 		opline->op2_type = IS_CONST;
@@ -4071,7 +4071,7 @@ void zend_compile_static_call(znode *result, zend_ast *ast, uint32_t type) /* {{
 	if (method_node.op_type == IS_CONST) {
 		zval *name = &method_node.u.constant;
 		if (Z_TYPE_P(name) != IS_STRING) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Method name must be a string");
+			zend_error_noreturn(E_COMPILE_ERROR, "Nama fungsi harus berupa string");
 		}
 		if (zend_is_constructor(Z_STR_P(name))) {
 			zval_ptr_dtor(name);
@@ -4194,7 +4194,7 @@ void zend_compile_global_var(zend_ast *ast) /* {{{ */
 	}
 
 	if (is_this_fetch(var_ast)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as global variable");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan $ini sebagai var global");
 	} else if (zend_try_compile_cv(&result, var_ast) == SUCCESS) {
 		zend_op *opline = zend_emit_op(NULL, ZEND_BIND_GLOBAL, &result, &name_node);
 		zend_alloc_cache_slot(opline->op2.constant);
@@ -4247,7 +4247,7 @@ static void zend_compile_static_var_common(zend_ast *var_ast, zval *value, zend_
 	zend_hash_update(CG(active_op_array)->static_variables, var_name, value);
 
 	if (zend_string_equals_literal(var_name, "ini")) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as static variable");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan $ini sebagai var statis");
 	}
 
 	opline = zend_emit_op(NULL, ZEND_BIND_STATIC, NULL, &var_node);
@@ -4284,7 +4284,7 @@ void zend_compile_unset(zend_ast *ast) /* {{{ */
 	switch (var_ast->kind) {
 		case ZEND_AST_VAR:
 			if (is_this_fetch(var_ast)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot unset $this");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menghapus $ini");
 			} else if (zend_try_compile_cv(&var_node, var_ast) == SUCCESS) {
 				opline = zend_emit_op(NULL, ZEND_UNSET_CV, &var_node, NULL);
 			} else {
@@ -4493,14 +4493,14 @@ void zend_compile_break_continue(zend_ast *ast) /* {{{ */
 	if (depth_ast) {
 		zval *depth_zv;
 		if (depth_ast->kind != ZEND_AST_ZVAL) {
-			zend_error_noreturn(E_COMPILE_ERROR, "'%s' operator with non-constant operand "
-				"is no longer supported", ast->kind == ZEND_AST_BREAK ? "break" : "continue");
+			zend_error_noreturn(E_COMPILE_ERROR, "operator '%s' dengan operand non konstanta "
+				"sudah tidak didukung", ast->kind == ZEND_AST_BREAK ? "berhenti" : "lanjut");
 		}
 
 		depth_zv = zend_ast_get_zval(depth_ast);
 		if (Z_TYPE_P(depth_zv) != IS_LONG || Z_LVAL_P(depth_zv) < 1) {
-			zend_error_noreturn(E_COMPILE_ERROR, "'%s' operator accepts only positive numbers",
-				ast->kind == ZEND_AST_BREAK ? "break" : "continue");
+			zend_error_noreturn(E_COMPILE_ERROR, "operator '%s' hanya menerima bilangan positif",
+				ast->kind == ZEND_AST_BREAK ? "berhenti" : "lanjut");
 		}
 
 		depth = Z_LVAL_P(depth_zv);
@@ -4509,13 +4509,13 @@ void zend_compile_break_continue(zend_ast *ast) /* {{{ */
 	}
 
 	if (CG(context).current_brk_cont == -1) {
-		zend_error_noreturn(E_COMPILE_ERROR, "'%s' not in the 'loop' or 'switch' context",
-			ast->kind == ZEND_AST_BREAK ? "break" : "continue");
+		zend_error_noreturn(E_COMPILE_ERROR, "operator '%s' tidak dalam konteks perulangan atau pilihan",
+			ast->kind == ZEND_AST_BREAK ? "berhenti" : "lanjut");
 	} else {
 		if (!zend_handle_loops_and_finally_ex(depth, NULL)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot '%s' %d level%s",
-				ast->kind == ZEND_AST_BREAK ? "break" : "continue",
-				depth, depth == 1 ? "" : "s");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa '%s' %d level%s",
+				ast->kind == ZEND_AST_BREAK ? "berhenti" : "lanjut",
+				depth, depth == 1 ? "" : "");
 		}
 	}
 	opline = zend_emit_op(NULL, ast->kind == ZEND_AST_BREAK ? ZEND_BRK : ZEND_CONT, NULL, NULL);
@@ -4538,7 +4538,7 @@ void zend_resolve_goto_label(zend_op_array *op_array, zend_op *opline) /* {{{ */
 		CG(in_compilation) = 1;
 		CG(active_op_array) = op_array;
 		CG(zend_lineno) = opline->lineno;
-		zend_error_noreturn(E_COMPILE_ERROR, "'goto' to undefined label '%s'", Z_STRVAL_P(label));
+		zend_error_noreturn(E_COMPILE_ERROR, "'lompatke' ke label tidak dikenal '%s'", Z_STRVAL_P(label));
 	}
 
 	zval_dtor(label);
@@ -4550,7 +4550,7 @@ void zend_resolve_goto_label(zend_op_array *op_array, zend_op *opline) /* {{{ */
 			CG(in_compilation) = 1;
 			CG(active_op_array) = op_array;
 			CG(zend_lineno) = opline->lineno;
-			zend_error_noreturn(E_COMPILE_ERROR, "'goto' into loop or switch statement is disallowed");
+			zend_error_noreturn(E_COMPILE_ERROR, "'lompatke' ke perulangan atau switch tidak dibolehkan");
 		}
 		if (CG(context).brk_cont_array[current].start >= 0) {
 			remove_oplines--;
@@ -4616,7 +4616,7 @@ void zend_compile_label(zend_ast *ast) /* {{{ */
 	dest.opline_num = get_next_op_number(CG(active_op_array));
 
 	if (!zend_hash_add_mem(CG(context).labels, label, &dest, sizeof(zend_label))) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Label '%s' already defined", ZSTR_VAL(label));
+		zend_error_noreturn(E_COMPILE_ERROR, "Label '%s' sudah ada", ZSTR_VAL(label));
 	}
 }
 /* }}} */
@@ -4739,10 +4739,10 @@ void zend_compile_foreach(zend_ast *ast) /* {{{ */
 
 	if (key_ast) {
 		if (key_ast->kind == ZEND_AST_REF) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Key element cannot be a reference");
+			zend_error_noreturn(E_COMPILE_ERROR, "Elemen key tidak boleh berupa reference");
 		}
 		if (key_ast->kind == ZEND_AST_ARRAY) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use list as key element");
+			zend_error_noreturn(E_COMPILE_ERROR, "Elemen key tidak boleh berupa larik");
 		}
 	}
 
@@ -4769,7 +4769,7 @@ void zend_compile_foreach(zend_ast *ast) /* {{{ */
 	opline = zend_emit_op(NULL, by_ref ? ZEND_FE_FETCH_RW : ZEND_FE_FETCH_R, &reset_node, NULL);
 
 	if (is_this_fetch(value_ast)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign $this");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mengisi ke $ini");
 	} else if (value_ast->kind == ZEND_AST_VAR &&
 	    zend_try_compile_cv(&value_node, value_ast) == SUCCESS) {
 		SET_NODE(opline->op2, &value_node);
@@ -4949,7 +4949,7 @@ void zend_compile_switch(zend_ast *ast) /* {{{ */
 			if (has_default_case) {
 				CG(zend_lineno) = case_ast->lineno;
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"Switch statements may only contain one default clause");
+					"Statemen pilihan hanya boleh punya satu klausa default");
 			}
 			has_default_case = 1;
 			continue;
@@ -5048,7 +5048,7 @@ void zend_compile_try(zend_ast *ast) /* {{{ */
 	uint32_t orig_try_catch_offset = CG(context).try_catch_offset;
 
 	if (catches->children == 0 && !finally_ast) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use try without catch or finally");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'coba' tanpa 'tangkap' atau 'akhirnya'");
 	}
 
 	/* label: try { } must not be equal to try { label: } */
@@ -5106,7 +5106,7 @@ void zend_compile_try(zend_ast *ast) /* {{{ */
 			zend_bool is_last_class = (j + 1 == classes->children);
 
 			if (!zend_is_const_default_class_ref(class_ast)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Bad class name in the catch statement");
+				zend_error_noreturn(E_COMPILE_ERROR, "Nama kelas yang di-'tangkap' tidak valid");
 			}
 
 			opnum_catch = get_next_op_number(CG(active_op_array));
@@ -5121,7 +5121,7 @@ void zend_compile_try(zend_ast *ast) /* {{{ */
 					zend_resolve_class_name_ast(class_ast));
 
 			if (zend_string_equals_literal(var_name, "ini")) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign $this");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mengisi ke $ini");
 			}
 
 			opline->op2_type = IS_CV;
@@ -5218,7 +5218,7 @@ void zend_handle_encoding_declaration(zend_ast *ast) /* {{{ */
 
 		if (zend_string_equals_literal_ci(name, "encoding")) {
 			if (value_ast->kind != ZEND_AST_ZVAL) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Encoding must be a literal");
+				zend_error_noreturn(E_COMPILE_ERROR, "Encoding harus suatu literal");
 			}
 
 			if (CG(multibyte)) {
@@ -5231,7 +5231,7 @@ void zend_handle_encoding_declaration(zend_ast *ast) /* {{{ */
 
 				new_encoding = zend_multibyte_fetch_encoding(ZSTR_VAL(encoding_name));
 				if (!new_encoding) {
-					zend_error(E_COMPILE_WARNING, "Unsupported encoding [%s]", ZSTR_VAL(encoding_name));
+					zend_error(E_COMPILE_WARNING, "Encoding tidak didukung [%s]", ZSTR_VAL(encoding_name));
 				} else {
 					old_input_filter = LANG_SCNG(input_filter);
 					old_encoding = LANG_SCNG(script_encoding);
@@ -5246,8 +5246,8 @@ void zend_handle_encoding_declaration(zend_ast *ast) /* {{{ */
 
 				zend_string_release(encoding_name);
 			} else {
-				zend_error(E_COMPILE_WARNING, "declare(encoding=...) ignored because "
-					"Zend multibyte feature is turned off by settings");
+				zend_error(E_COMPILE_WARNING, "deklarasikan(encoding=...) diabaikan karena "
+					"fitur Zend multibyte dinonaktifkan di settings");
 			}
 		}
 	}
@@ -5290,7 +5290,7 @@ void zend_compile_declare(zend_ast *ast) /* {{{ */
 		zend_string *name = zend_ast_get_str(name_ast);
 
 		if (value_ast->kind != ZEND_AST_ZVAL) {
-			zend_error_noreturn(E_COMPILE_ERROR, "declare(%s) value must be a literal", ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "nilai deklarasikan(%s) harus berupa literal", ZSTR_VAL(name));
 		}
 
 		if (zend_string_equals_literal_ci(name, "ticks")) {
@@ -5301,26 +5301,26 @@ void zend_compile_declare(zend_ast *ast) /* {{{ */
 		} else if (zend_string_equals_literal_ci(name, "encoding")) {
 
 			if (FAILURE == zend_declare_is_first_statement(ast)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Encoding declaration pragma must be "
-					"the very first statement in the script");
+				zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi encoding harus merupakan "
+					"statemen paling pertama di script");
 			}
 		} else if (zend_string_equals_literal_ci(name, "strict_types")) {
 			zval value_zv;
 
 			if (FAILURE == zend_declare_is_first_statement(ast)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "strict_types declaration must be "
-					"the very first statement in the script");
+				zend_error_noreturn(E_COMPILE_ERROR, "deklarasi strict_types harus merupakan "
+					"statemen paling pertama di script");
 			}
 
 			if (ast->child[1] != NULL) {
-				zend_error_noreturn(E_COMPILE_ERROR, "strict_types declaration must not "
-					"use block mode");
+				zend_error_noreturn(E_COMPILE_ERROR, "deklarasi strict_types tidak boleh "
+					"menggunakan mode blok");
 			}
 
 			zend_const_expr_to_zval(&value_zv, value_ast);
 
 			if (Z_TYPE(value_zv) != IS_LONG || (Z_LVAL(value_zv) != 0 && Z_LVAL(value_zv) != 1)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "strict_types declaration must have 0 or 1 as its value");
+				zend_error_noreturn(E_COMPILE_ERROR, "strict_types harus bernilai 0 atau 1");
 			}
 
 			if (Z_LVAL(value_zv) == 1) {
@@ -5328,7 +5328,7 @@ void zend_compile_declare(zend_ast *ast) /* {{{ */
 			}
 
 		} else {
-			zend_error(E_COMPILE_WARNING, "Unsupported declare '%s'", ZSTR_VAL(name));
+			zend_error(E_COMPILE_WARNING, "Deklarasi tidak didukung '%s'", ZSTR_VAL(name));
 		}
 	}
 
@@ -5386,7 +5386,7 @@ static void zend_compile_typename(zend_ast *ast, zend_arg_info *arg_info, zend_b
 		if (type != 0) {
 			if ((ast->attr & ZEND_NAME_NOT_FQ) != ZEND_NAME_NOT_FQ) {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"Scalar type declaration '%s' must be unqualified",
+					"Tipe deklarasi '%s' harus unqualified",
 					ZSTR_VAL(zend_string_tolower(class_name)));
 			}
 			arg_info->type = ZEND_TYPE_ENCODE(type, allow_null);
@@ -5431,7 +5431,7 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 		zend_compile_typename(return_type_ast, arg_infos, allow_null);
 
 		if (ZEND_TYPE_CODE(arg_infos->type) == IS_VOID && ZEND_TYPE_ALLOW_NULL(arg_infos->type)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Void type cannot be nullable");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tipe void tidak boleh nullable");
 		}
 
 		arg_infos++;
@@ -5458,7 +5458,7 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 		zend_arg_info *arg_info;
 
 		if (zend_is_auto_global(name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign auto-global variable %s",
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mengisi variabel auto global %s",
 				ZSTR_VAL(name));
 		}
 
@@ -5466,14 +5466,14 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 		var_node.u.op.var = lookup_cv(CG(active_op_array), name);
 
 		if (EX_VAR_TO_NUM(var_node.u.op.var) != i) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Redefinition of parameter $%s",
+			zend_error_noreturn(E_COMPILE_ERROR, "Definisi ulang parameter $%s",
 				ZSTR_VAL(name));
 		} else if (zend_string_equals_literal(name, "ini")) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as parameter");
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan $ini untuk parameter");
 		}
 
 		if (op_array->fn_flags & ZEND_ACC_VARIADIC) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Only the last parameter can be variadic");
+			zend_error_noreturn(E_COMPILE_ERROR, "Hanya parameter terakhir boleh variadic");
 		}
 
 		if (is_variadic) {
@@ -5483,7 +5483,7 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 
 			if (default_ast) {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"Variadic parameter cannot have a default value");
+					"Parameter variadic tidak boleh punya nilai default");
 			}
 		} else if (default_ast) {
 			/* we cannot substitute constants here or it will break ReflectionParameter::getDefaultValueConstantName() and ReflectionParameter::isDefaultValueConstant() */
@@ -5526,7 +5526,7 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 			zend_compile_typename(type_ast, arg_info, allow_null);
 
 			if (ZEND_TYPE_CODE(arg_info->type) == IS_VOID) {
-				zend_error_noreturn(E_COMPILE_ERROR, "void cannot be used as a parameter type");
+				zend_error_noreturn(E_COMPILE_ERROR, "void tidak bisa jadi tipe parameter");
 			}
 
 			if (type_ast->kind == ZEND_AST_TYPE) {
@@ -5535,44 +5535,44 @@ void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast) /* {{{ */
 						&& Z_TYPE(default_node.u.constant) != IS_ARRAY
 						&& Z_TYPE(default_node.u.constant) != IS_CONSTANT_AST
 					) {
-						zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-							"with array type can only be an array or NULL");
+						zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+							"dengan tipe array hanya boleh array atau NULL");
 					}
 				} else if (ZEND_TYPE_CODE(arg_info->type) == IS_CALLABLE && default_ast) {
 					if (!has_null_default && Z_TYPE(default_node.u.constant) != IS_CONSTANT_AST) {
-						zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-							"with callable type can only be NULL");
+						zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+							"dengan tipe callable hanya boleh NULL");
 					}
 				}
 			} else {
 				if (default_ast && !has_null_default && Z_TYPE(default_node.u.constant) != IS_CONSTANT_AST) {
 					if (ZEND_TYPE_IS_CLASS(arg_info->type)) {
-						zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-							"with a class type can only be NULL");
+						zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+							"dengan tipe class hanya boleh NULL");
 					} else switch (ZEND_TYPE_CODE(arg_info->type)) {
 						case IS_DOUBLE:
 							if (Z_TYPE(default_node.u.constant) != IS_DOUBLE && Z_TYPE(default_node.u.constant) != IS_LONG) {
-								zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-									"with a float type can only be float, integer, or NULL");
+								zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+									"dengan tipe float hanya boleh float, integer, atau NULL");
 							}
 							break;
 						
 						case IS_ITERABLE:
 							if (Z_TYPE(default_node.u.constant) != IS_ARRAY) {
-								zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-									"with iterable type can only be an array or NULL");
+								zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+									"dengan tipe iterable hanya boleh array atau NULL");
 							}
 							break;
 
 						case IS_OBJECT:
-							zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-								"with an object type can only be NULL");
+							zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+								"dengan tipe object hanya boleh NULL");
 							break;
 							
 						default:
 							if (!ZEND_SAME_FAKE_TYPE(ZEND_TYPE_CODE(arg_info->type), Z_TYPE(default_node.u.constant))) {
-								zend_error_noreturn(E_COMPILE_ERROR, "Default value for parameters "
-									"with a %s type can only be %s or NULL",
+								zend_error_noreturn(E_COMPILE_ERROR, "Nilai default untuk parameter "
+									"dengan tipe %s hanya bisa %s atau NULL",
 									zend_get_type_by_const(ZEND_TYPE_CODE(arg_info->type)), zend_get_type_by_const(ZEND_TYPE_CODE(arg_info->type)));
 							}
 							break;
@@ -5628,11 +5628,11 @@ static void zend_compile_closure_binding(znode *closure, zend_ast *uses_ast) /* 
 		zend_op *opline;
 
 		if (zend_string_equals_literal(var_name, "ini")) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as lexical variable");
+			zend_error_noreturn(E_COMPILE_ERROR, "$ini tidak bisa dipakai untuk variabel");
 		}
 
 		if (zend_is_auto_global(var_name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use auto-global as lexical variable");
+			zend_error_noreturn(E_COMPILE_ERROR, "auto-global tidak bisa dipakai untuk variabel");
 		}
 
 		opline = zend_emit_op(NULL, ZEND_BIND_LEXICAL, closure, NULL);
@@ -5659,7 +5659,7 @@ void zend_compile_closure_uses(zend_ast *ast) /* {{{ */
 		if (op_array->static_variables
 				&& zend_hash_exists(op_array->static_variables, var_name)) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Cannot use variable $%s twice", ZSTR_VAL(var_name));
+				"Tidak bisa menggunakan variabel $%s dua kali", ZSTR_VAL(var_name));
 		}
 
 		{
@@ -5667,7 +5667,7 @@ void zend_compile_closure_uses(zend_ast *ast) /* {{{ */
 			for (i = 0; i < op_array->last_var; i++) {
 				if (zend_string_equals(op_array->vars[i], var_name)) {
 					zend_error_noreturn(E_COMPILE_ERROR,
-						"Cannot use lexical variable $%s as a parameter name", ZSTR_VAL(var_name));
+						"Tidak bisa menggunakan variabel $%s sebagai nama parameter", ZSTR_VAL(var_name));
 				}
 			}
 		}
@@ -5689,26 +5689,26 @@ void zend_begin_method_decl(zend_op_array *op_array, zend_string *name, zend_boo
 
 	if (in_interface) {
 		if (!is_public || (op_array->fn_flags & (ZEND_ACC_FINAL|ZEND_ACC_ABSTRACT))) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Access type for interface method "
-				"%s::%s() must be omitted", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tipe akses untuk fungsi interface "
+				"%s::%s() harus ditiadakan", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		}
 		op_array->fn_flags |= ZEND_ACC_ABSTRACT;
 	}
 
 	if (op_array->fn_flags & ZEND_ACC_ABSTRACT) {
 		if (op_array->fn_flags & ZEND_ACC_PRIVATE) {
-			zend_error_noreturn(E_COMPILE_ERROR, "%s function %s::%s() cannot be declared private",
-				in_interface ? "Interface" : "Abstract", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Fungsi %s %s::%s() tidak bisa dibuat privat",
+				in_interface ? "Interface" : "Abstrak", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		}
 
 		if (has_body) {
-			zend_error_noreturn(E_COMPILE_ERROR, "%s function %s::%s() cannot contain body",
-				in_interface ? "Interface" : "Abstract", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Fungsi %s %s::%s() harus kosong",
+				in_interface ? "Interface" : "Abstrak", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		}
 
 		ce->ce_flags |= ZEND_ACC_IMPLICIT_ABSTRACT_CLASS;
 	} else if (!has_body) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Non-abstract method %s::%s() must contain body",
+		zend_error_noreturn(E_COMPILE_ERROR, "Fungsi non abstrak %s::%s() tidak boleh kosong",
 			ZSTR_VAL(ce->name), ZSTR_VAL(name));
 	}
 
@@ -5719,55 +5719,55 @@ void zend_begin_method_decl(zend_op_array *op_array, zend_string *name, zend_boo
 	lcname = zend_new_interned_string(lcname);
 
 	if (zend_hash_add_ptr(&ce->function_table, lcname, op_array) == NULL) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot redeclare %s::%s()",
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi ulang %s::%s()",
 			ZSTR_VAL(ce->name), ZSTR_VAL(name));
 	}
 
 	if (in_interface) {
 		if (zend_string_equals_literal(lcname, ZEND_CALL_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __call() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __call() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_CALLSTATIC_FUNC_NAME)) {
 			if (!is_public || !is_static) {
-				zend_error(E_WARNING, "The magic method __callStatic() must have "
-					"public visibility and be static");
+				zend_error(E_WARNING, "Fungsi __callStatic() harus "
+					"publik dan statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_GET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __get() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __get() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_SET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __set() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __set() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_UNSET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __unset() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __unset() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_ISSET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __isset() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __isset() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_TOSTRING_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __toString() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __toString() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_INVOKE_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __invoke() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __invoke() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_DEBUGINFO_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __debugInfo() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __debugInfo() harus "
+					"publik dan tidak statis");
 			}
 		}
 	} else {
@@ -5783,59 +5783,59 @@ void zend_begin_method_decl(zend_op_array *op_array, zend_string *name, zend_boo
 			ce->clone = (zend_function *) op_array;
 		} else if (zend_string_equals_literal(lcname, ZEND_CALL_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __call() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __call() harus "
+					"publik dan tidak statis");
 			}
 			ce->__call = (zend_function *) op_array;
 		} else if (zend_string_equals_literal(lcname, ZEND_CALLSTATIC_FUNC_NAME)) {
 			if (!is_public || !is_static) {
-				zend_error(E_WARNING, "The magic method __callStatic() must have "
-					"public visibility and be static");
+				zend_error(E_WARNING, "Fungsi __callStatic() harus "
+				"publik dan statis");
 			}
 			ce->__callstatic = (zend_function *) op_array;
 		} else if (zend_string_equals_literal(lcname, ZEND_GET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __get() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __get() harus "
+					"publik dan tidak statis");
 			}
 			ce->__get = (zend_function *) op_array;
 			ce->ce_flags |= ZEND_ACC_USE_GUARDS;
 		} else if (zend_string_equals_literal(lcname, ZEND_SET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __set() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __set() harus "
+					"publik dan tidak statis");
 			}
 			ce->__set = (zend_function *) op_array;
 			ce->ce_flags |= ZEND_ACC_USE_GUARDS;
 		} else if (zend_string_equals_literal(lcname, ZEND_UNSET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __unset() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __unset() harus "
+					"publik dan tidak statis");
 			}
 			ce->__unset = (zend_function *) op_array;
 			ce->ce_flags |= ZEND_ACC_USE_GUARDS;
 		} else if (zend_string_equals_literal(lcname, ZEND_ISSET_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __isset() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __isset() harus "
+					"publik dan tidak statis");
 			}
 			ce->__isset = (zend_function *) op_array;
 			ce->ce_flags |= ZEND_ACC_USE_GUARDS;
 		} else if (zend_string_equals_literal(lcname, ZEND_TOSTRING_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __toString() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __toString() harus "
+				"publik dan tidak statis");
 			}
 			ce->__tostring = (zend_function *) op_array;
 		} else if (zend_string_equals_literal(lcname, ZEND_INVOKE_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __invoke() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __invoke() harus "
+					"publik dan tidak statis");
 			}
 		} else if (zend_string_equals_literal(lcname, ZEND_DEBUGINFO_FUNC_NAME)) {
 			if (!is_public || is_static) {
-				zend_error(E_WARNING, "The magic method __debugInfo() must have "
-					"public visibility and cannot be static");
+				zend_error(E_WARNING, "Fungsi __debugInfo() harus "
+				"publik dan tidak statis");
 			}
 			ce->__debugInfo = (zend_function *) op_array;
 		} else if (!is_static) {
@@ -5861,18 +5861,18 @@ static void zend_begin_func_decl(znode *result, zend_op_array *op_array, zend_as
 		zend_string *import_name = zend_hash_find_ptr_lc(
 			FC(imports_function), ZSTR_VAL(unqualified_name), ZSTR_LEN(unqualified_name));
 		if (import_name && !zend_string_equals_ci(lcname, import_name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare function %s "
-				"because the name is already in use", ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi fungsi %s "
+				"karena nama itu sudah digunakan", ZSTR_VAL(name));
 		}
 	}
 
 	if (zend_string_equals_literal(lcname, ZEND_AUTOLOAD_FUNC_NAME)) {
 		if (zend_ast_get_list(params_ast)->children != 1) {
-			zend_error_noreturn(E_COMPILE_ERROR, "%s() must take exactly 1 argument",
+			zend_error_noreturn(E_COMPILE_ERROR, "%s() harus punya tepat 1 parameter",
 				ZEND_AUTOLOAD_FUNC_NAME);
 		}
 
-		zend_error(E_DEPRECATED, "__autoload() is deprecated, use spl_autoload_register() instead");
+		zend_error(E_DEPRECATED, "__autoload() sudah deprecated, gunakan spl_autoload_register()");
 	}
 
 	key = zend_build_runtime_definition_key(lcname, decl->lex_pos);
@@ -5989,11 +5989,11 @@ void zend_compile_prop_decl(zend_ast *ast) /* {{{ */
 	uint32_t i, children = list->children;
 
 	if (ce->ce_flags & ZEND_ACC_INTERFACE) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Interfaces may not include member variables");
+		zend_error_noreturn(E_COMPILE_ERROR, "Interfaces tidak boleh punya variabel");
 	}
 
 	if (flags & ZEND_ACC_ABSTRACT) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Properties cannot be declared abstract");
+		zend_error_noreturn(E_COMPILE_ERROR, "Properti tidak boleh abstrak");
 	}
 
 	for (i = 0; i < children; ++i) {
@@ -6011,13 +6011,13 @@ void zend_compile_prop_decl(zend_ast *ast) /* {{{ */
 		}
 
 		if (flags & ZEND_ACC_FINAL) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare property %s::$%s final, "
-				"the final modifier is allowed only for methods and classes",
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi property %s::$%s sebagai final, "
+				"final hanya untuk fungsi dan kelas",
 				ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		}
 
 		if (zend_hash_exists(&ce->properties_info, name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot redeclare %s::$%s",
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi ulang %s::$%s",
 				ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		}
 
@@ -6039,7 +6039,7 @@ void zend_compile_class_const_decl(zend_ast *ast) /* {{{ */
 	uint32_t i;
 
 	if ((ce->ce_flags & ZEND_ACC_TRAIT) != 0) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Traits cannot have constants");
+		zend_error_noreturn(E_COMPILE_ERROR, "Sifat tidak boleh memilik konstanta");
 		return;
 	}
 
@@ -6054,11 +6054,11 @@ void zend_compile_class_const_decl(zend_ast *ast) /* {{{ */
 
 		if (UNEXPECTED(ast->attr & (ZEND_ACC_STATIC|ZEND_ACC_ABSTRACT|ZEND_ACC_FINAL))) {
 			if (ast->attr & ZEND_ACC_STATIC) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use 'static' as constant modifier");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'statis' sebagai modifier konstanta");
 			} else if (ast->attr & ZEND_ACC_ABSTRACT) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use 'abstract' as constant modifier");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'abstrak' sebagai modifier konstanta");
 			} else if (ast->attr & ZEND_ACC_FINAL) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use 'final' as constant modifier");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'final' sebagai modifier konstanta");
 			}
 		}
 
@@ -6127,11 +6127,11 @@ static void zend_compile_trait_alias(zend_ast *ast) /* {{{ */
 	zend_trait_alias *alias;
 
 	if (modifiers == ZEND_ACC_STATIC) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use 'static' as method modifier");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'statis' sebagai modifier fungsi");
 	} else if (modifiers == ZEND_ACC_ABSTRACT) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use 'abstract' as method modifier");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'abstrak' sebagai modifier fungsi");
 	} else if (modifiers == ZEND_ACC_FINAL) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use 'final' as method modifier");
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan 'final' sebagai modifier fungsi");
 	}
 
 	alias = emalloc(sizeof(zend_trait_alias));
@@ -6161,16 +6161,16 @@ void zend_compile_use_trait(zend_ast *ast) /* {{{ */
 		zend_string *name = zend_ast_get_str(trait_ast);
 
 		if (ce->ce_flags & ZEND_ACC_INTERFACE) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use traits inside of interfaces. "
-				"%s is used in %s", ZSTR_VAL(name), ZSTR_VAL(ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan sifat di dalam interface. "
+				"%s digunakan di %s", ZSTR_VAL(name), ZSTR_VAL(ce->name));
 		}
 
 		switch (zend_get_class_fetch_type(name)) {
 			case ZEND_FETCH_CLASS_SELF:
 			case ZEND_FETCH_CLASS_PARENT:
 			case ZEND_FETCH_CLASS_STATIC:
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use '%s' as trait name "
-					"as it is reserved", ZSTR_VAL(name));
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan '%s' sebagai nama sifat "
+					"karena sudah reserved", ZSTR_VAL(name));
 				break;
 		}
 
@@ -6215,7 +6215,7 @@ void zend_compile_implements(znode *class_node, zend_ast *ast) /* {{{ */
 
 		if (!zend_is_const_default_class_ref(class_ast)) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Cannot use '%s' as interface name as it is reserved", ZSTR_VAL(name));
+				"Tidak bisa menggunakan '%s' sebagai nama interface karena sudah reserved", ZSTR_VAL(name));
 		}
 
 		opline = zend_emit_op(NULL, ZEND_ADD_INTERFACE, class_node, NULL);
@@ -6260,7 +6260,7 @@ void zend_compile_class_decl(zend_ast *ast) /* {{{ */
 		zend_string *unqualified_name = decl->name;
 
 		if (CG(active_class_entry)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Class declarations may not be nested");
+			zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi kelas tidak boleh bertingkat");
 		}
 
 		zend_assert_valid_class_name(unqualified_name);
@@ -6272,8 +6272,8 @@ void zend_compile_class_decl(zend_ast *ast) /* {{{ */
 			zend_string *import_name = zend_hash_find_ptr_lc(
 				FC(imports), ZSTR_VAL(unqualified_name), ZSTR_LEN(unqualified_name));
 			if (import_name && !zend_string_equals_ci(lcname, import_name)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare class %s "
-						"because the name is already in use", ZSTR_VAL(name));
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi class %s "
+						"karena nama itu sudah digunakan", ZSTR_VAL(name));
 			}
 		}
 
@@ -6307,7 +6307,7 @@ void zend_compile_class_decl(zend_ast *ast) /* {{{ */
 		if (!zend_is_const_default_class_ref(extends_ast)) {
 			zend_string *extends_name = zend_ast_get_str(extends_ast);
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Cannot use '%s' as class name as it is reserved", ZSTR_VAL(extends_name));
+				"Tidak bisa menggunakan '%s' sebagai nama kelas karena sudah reserved", ZSTR_VAL(extends_name));
 		}
 
 		zend_compile_class_ref(&extends_node, extends_ast, 0);
@@ -6372,33 +6372,33 @@ void zend_compile_class_decl(zend_ast *ast) /* {{{ */
 	if (ce->constructor) {
 		ce->constructor->common.fn_flags |= ZEND_ACC_CTOR;
 		if (ce->constructor->common.fn_flags & ZEND_ACC_STATIC) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Constructor %s::%s() cannot be static",
+			zend_error_noreturn(E_COMPILE_ERROR, "Constructor %s::%s() tidak boleh statis",
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->constructor->common.function_name));
 		}
 		if (ce->constructor->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Constructor %s::%s() cannot declare a return type",
+				"Constructor %s::%s() tidak bisa memiliki tipe kembali",
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->constructor->common.function_name));
 		}
 	}
 	if (ce->destructor) {
 		ce->destructor->common.fn_flags |= ZEND_ACC_DTOR;
 		if (ce->destructor->common.fn_flags & ZEND_ACC_STATIC) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Destructor %s::%s() cannot be static",
+			zend_error_noreturn(E_COMPILE_ERROR, "Destructor %s::%s() tidak boleh statis",
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->destructor->common.function_name));
 		} else if (ce->destructor->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Destructor %s::%s() cannot declare a return type",
+				"Destructor %s::%s() tidak bisa memiliki tipe kembali",
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->destructor->common.function_name));
 		}
 	}
 	if (ce->clone) {
 		if (ce->clone->common.fn_flags & ZEND_ACC_STATIC) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Clone method %s::%s() cannot be static",
+			zend_error_noreturn(E_COMPILE_ERROR, "Fungsi salin %s::%s() tidak boleh statis",
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->clone->common.function_name));
 		} else if (ce->clone->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"%s::%s() cannot declare a return type",
+				"%s::%s() tidak bisa memiliki tipe kembali",
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->clone->common.function_name));
 		}
 	}
@@ -6492,8 +6492,8 @@ static void zend_check_already_in_use(uint32_t type, zend_string *old_name, zend
 		return;
 	}
 
-	zend_error_noreturn(E_COMPILE_ERROR, "Cannot use%s %s as %s because the name "
-		"is already in use", zend_get_use_type_str(type), ZSTR_VAL(old_name), ZSTR_VAL(new_name));
+	zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan %s %s sebagai %s karena "
+		"sudah digunakan", zend_get_use_type_str(type), ZSTR_VAL(old_name), ZSTR_VAL(new_name));
 }
 /* }}} */
 
@@ -6527,11 +6527,11 @@ void zend_compile_use(zend_ast *ast) /* {{{ */
 				if (!current_ns) {
 					if (type == T_CLASS && zend_string_equals_literal(new_name, "strict")) {
 						zend_error_noreturn(E_COMPILE_ERROR,
-							"You seem to be trying to use a different language...");
+							"Ini bukan javascript...");
 					}
 
-					zend_error(E_WARNING, "The use statement with non-compound name '%s' "
-						"has no effect", ZSTR_VAL(new_name));
+					zend_error(E_WARNING, "Statemen 'gunakan' dengan nama non-compound '%s' "
+						"tidak berguna", ZSTR_VAL(new_name));
 				}
 			}
 		}
@@ -6543,8 +6543,8 @@ void zend_compile_use(zend_ast *ast) /* {{{ */
 		}
 
 		if (type == ZEND_SYMBOL_CLASS && zend_is_reserved_class_name(new_name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use %s as %s because '%s' "
-				"is a special class name", ZSTR_VAL(old_name), ZSTR_VAL(new_name), ZSTR_VAL(new_name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan %s sebagai %s karena '%s' "
+				"adalah nama kelas khusus", ZSTR_VAL(old_name), ZSTR_VAL(new_name), ZSTR_VAL(new_name));
 		}
 
 		if (current_ns) {
@@ -6566,8 +6566,8 @@ void zend_compile_use(zend_ast *ast) /* {{{ */
 
 		zend_string_addref(old_name);
 		if (!zend_hash_add_ptr(current_import, lookup_name, old_name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use%s %s as %s because the name "
-				"is already in use", zend_get_use_type_str(type), ZSTR_VAL(old_name), ZSTR_VAL(new_name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan%s %s karena %s nama "
+				"sudah digunakan", zend_get_use_type_str(type), ZSTR_VAL(old_name), ZSTR_VAL(new_name));
 		}
 
 		zend_string_release(lookup_name);
@@ -6615,7 +6615,7 @@ void zend_compile_const_decl(zend_ast *ast) /* {{{ */
 
 		if (zend_lookup_reserved_const(ZSTR_VAL(unqualified_name), ZSTR_LEN(unqualified_name))) {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Cannot redeclare constant '%s'", ZSTR_VAL(unqualified_name));
+				"Tidak bisa deklarasi ulang kosntanta '%s'", ZSTR_VAL(unqualified_name));
 		}
 
 		name = zend_prefix_with_ns(unqualified_name);
@@ -6624,8 +6624,8 @@ void zend_compile_const_decl(zend_ast *ast) /* {{{ */
 		if (FC(imports_const)) {
 			zend_string *import_name = zend_hash_find_ptr(FC(imports_const), unqualified_name);
 			if (import_name && !zend_string_equals(import_name, name)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot declare const %s because "
-					"the name is already in use", ZSTR_VAL(name));
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi konstanta %s karena "
+					"sudah digunakan", ZSTR_VAL(name));
 			}
 		}
 
@@ -6651,17 +6651,15 @@ void zend_compile_namespace(zend_ast *ast) /* {{{ */
 		if (FC(current_namespace)) {
 			/* previous namespace declarations were unbracketed */
 			if (with_bracket) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot mix bracketed namespace declarations "
-					"with unbracketed namespace declarations");
+				zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi ruangnama dengan kurung dan tanpa kurung tidak bisa dicampur");
 			}
 		}
 	} else {
 		/* previous namespace declarations were bracketed */
 		if (!with_bracket) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot mix bracketed namespace declarations "
-				"with unbracketed namespace declarations");
+			zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi ruangnama dengan kurung dan tanpa kurung tidak bisa dicampur");
 		} else if (FC(current_namespace) || FC(in_namespace)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Namespace declarations cannot be nested");
+			zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi ruangnama tidak boleh bertingkat");
 		}
 	}
 
@@ -6676,8 +6674,7 @@ void zend_compile_namespace(zend_ast *ast) /* {{{ */
 			--num;
 		}
 		if (num > 0) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Namespace declaration statement has to be "
-				"the very first statement or after any declare call in the script");
+			zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi ruangnama harus jadi yang paling pertama di dalam script");
 		}
 	}
 
@@ -6689,7 +6686,7 @@ void zend_compile_namespace(zend_ast *ast) /* {{{ */
 		name = zend_ast_get_str(name_ast);
 
 		if (ZEND_FETCH_CLASS_DEFAULT != zend_get_class_fetch_type(name)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use '%s' as namespace name", ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan '%s' untuk ruangnama", ZSTR_VAL(name));
 		}
 
 		FC(current_namespace) = zend_string_copy(name);
@@ -6721,7 +6718,7 @@ void zend_compile_halt_compiler(zend_ast *ast) /* {{{ */
 
 	if (FC(has_bracketed_namespaces) && FC(in_namespace)) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"__HALT_COMPILER() can only be used from the outermost scope");
+			"__HALT_COMPILER() hanya bisa dipakai di scope paling luar");
 	}
 
 	filename = zend_get_compiled_filename();
@@ -6905,7 +6902,7 @@ static zend_bool zend_try_ct_eval_array(zval *result, zend_ast *ast) /* {{{ */
 	zend_bool is_constant = 1;
 
 	if (ast->attr == ZEND_ARRAY_SYNTAX_LIST) {
-		zend_error(E_COMPILE_ERROR, "Cannot use list() as standalone expression");
+		zend_error(E_COMPILE_ERROR, "Tidak bisa menggunakan daftar() sebagai ekspresi");
 	}
 
 	/* First ensure that *all* child nodes are constant and by-val */
@@ -6913,7 +6910,7 @@ static zend_bool zend_try_ct_eval_array(zval *result, zend_ast *ast) /* {{{ */
 		zend_ast *elem_ast = list->child[i];
 
 		if (elem_ast == NULL) {
-			zend_error(E_COMPILE_ERROR, "Cannot use empty array elements in arrays");
+			zend_error(E_COMPILE_ERROR, "Tidak bisa menggunakan elemen larik kosong di dalam larik");
 		}
 
 		zend_eval_const_expr(&elem_ast->child[0]);
@@ -6967,7 +6964,7 @@ static zend_bool zend_try_ct_eval_array(zval *result, zend_ast *ast) /* {{{ */
 					zend_hash_update(Z_ARRVAL_P(result), ZSTR_EMPTY_ALLOC(), value);
 					break;
 				default:
-					zend_error_noreturn(E_COMPILE_ERROR, "Illegal offset type");
+					zend_error_noreturn(E_COMPILE_ERROR, "Indeks tidak valid");
 					break;
 			}
 		} else {
@@ -7221,7 +7218,7 @@ void zend_compile_cast(znode *result, zend_ast *ast) /* {{{ */
 	opline->extended_value = ast->attr;
 
 	if (ast->attr == IS_NULL) {
-		zend_error(E_DEPRECATED, "The (unset) cast is deprecated");
+		zend_error(E_DEPRECATED, "Casting (hapus) sudah deprecated");
 	}
 }
 /* }}} */
@@ -7387,7 +7384,7 @@ void zend_compile_yield_from(znode *result, zend_ast *ast) /* {{{ */
 
 	if (CG(active_op_array)->fn_flags & ZEND_ACC_RETURN_REFERENCE) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"Cannot use \"yield from\" inside a by-reference generator");
+			"Tidak bisa menggunakan \"hasilkan dari\" di dalam generator by-reference");
 	}
 
 	zend_compile_expr(&expr_node, expr_ast);
@@ -7406,7 +7403,7 @@ void zend_compile_instanceof(znode *result, zend_ast *ast) /* {{{ */
 	zend_compile_expr(&obj_node, obj_ast);
 	if (obj_node.op_type == IS_CONST) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"instanceof expects an object instance, constant given");
+			"'merupakansuatu' harus berupa objek, bukan konstanta");
 	}
 
 	zend_compile_class_ref_ex(&class_node, class_ast,
@@ -7457,8 +7454,8 @@ void zend_compile_isset_or_empty(znode *result, zend_ast *ast) /* {{{ */
 			return;
 		} else {
 			zend_error_noreturn(E_COMPILE_ERROR,
-				"Cannot use isset() on the result of an expression "
-				"(you can use \"null !== expression\" instead)");
+				"Tidak bisa menggunakan diset() pada hasil ekspresi "
+				"(gunakan saja \"null !== ekspresi\")");
 		}
 	}
 
@@ -7559,7 +7556,7 @@ void zend_compile_array(znode *result, zend_ast *ast) /* {{{ */
 		znode value_node, key_node, *key_node_ptr = NULL;
 
 		if (elem_ast == NULL) {
-			zend_error(E_COMPILE_ERROR, "Cannot use empty array elements in arrays");
+			zend_error(E_COMPILE_ERROR, "Tidak bisa menggunakan elemen larik kosong di dalam larik");
 		}
 
 		value_ast = elem_ast->child[0];
@@ -7693,7 +7690,7 @@ void zend_compile_class_const(znode *result, zend_ast *ast) /* {{{ */
 	}
 	if (const_ast->kind == ZEND_AST_ZVAL && zend_string_equals_literal_ci(zend_ast_get_str(const_ast), "class")) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"Dynamic class names are not allowed in compile-time ::class fetch");
+			"Nama kelas dinamis tidak diperkenankan pada ::class");
 	}
 
 	zend_compile_class_ref_ex(&class_node, class_ast, ZEND_FETCH_CLASS_EXCEPTION);
@@ -7921,7 +7918,7 @@ void zend_compile_const_expr_class_const(zend_ast **ast_ptr) /* {{{ */
 
 	if (class_ast->kind != ZEND_AST_ZVAL) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"Dynamic class names are not allowed in compile-time class constant references");
+			"Nama kelas dinamis tidak diperkenankan");
 	}
 
 	if (zend_try_compile_const_expr_resolve_class_name(&result, class_ast, const_ast, 1)) {
@@ -7934,7 +7931,7 @@ void zend_compile_const_expr_class_const(zend_ast **ast_ptr) /* {{{ */
 
 	if (ZEND_FETCH_CLASS_STATIC == fetch_type) {
 		zend_error_noreturn(E_COMPILE_ERROR,
-			"\"static::\" is not allowed in compile-time constants");
+			"\"statis::\" tidak diperkenankan");
 	}
 
 	if (ZEND_FETCH_CLASS_DEFAULT == fetch_type) {
@@ -7999,7 +7996,7 @@ void zend_compile_const_expr(zend_ast **ast_ptr) /* {{{ */
 	}
 
 	if (!zend_is_allowed_in_const_expr(ast->kind)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Constant expression contains invalid operations");
+		zend_error_noreturn(E_COMPILE_ERROR, "Ekspresi konstanta mengandung operasi tidak valid");
 	}
 
 	switch (ast->kind) {
@@ -8336,7 +8333,7 @@ void zend_compile_var(znode *result, zend_ast *ast, uint32_t type) /* {{{ */
 		default:
 			if (type == BP_VAR_W || type == BP_VAR_RW || type == BP_VAR_UNSET) {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"Cannot use temporary expression in write context");
+					"Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			}
 
 			zend_compile_expr(result, ast);
@@ -8499,7 +8496,7 @@ void zend_eval_const_expr(zend_ast **ast_ptr) /* {{{ */
 			zval *container, *dim;
 
 			if (ast->child[1] == NULL) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use [] for reading");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menggunakan [] untuk membaca");
 			}
 
 			/* Set isset fetch indicator here, opcache disallows runtime altering of the AST */
@@ -8605,7 +8602,7 @@ void zend_eval_const_expr(zend_ast **ast_ptr) /* {{{ */
 
 			if (name_ast->kind == ZEND_AST_ZVAL && zend_string_equals_literal_ci(zend_ast_get_str(name_ast), "class")) {
 				zend_error_noreturn(E_COMPILE_ERROR,
-					"Dynamic class names are not allowed in compile-time ::class fetch");
+					"Nama kelas dinamis tidak diperkenankan pada ::class");
 			}
 
 			if (class_ast->kind != ZEND_AST_ZVAL || name_ast->kind != ZEND_AST_ZVAL) {

@@ -393,7 +393,7 @@ ZEND_FUNCTION(func_num_args)
 	zend_execute_data *ex = EX(prev_execute_data);
 
 	if (ZEND_CALL_INFO(ex) & ZEND_CALL_CODE) {
-		zend_error(E_WARNING, "func_num_args():  Called from the global scope - no function context");
+		zend_error(E_WARNING, "func_num_args():  Dipanggil bukan dari dalam fungsi");
 		RETURN_LONG(-1);
 	}
 
@@ -419,13 +419,13 @@ ZEND_FUNCTION(func_get_arg)
 	}
 
 	if (requested_offset < 0) {
-		zend_error(E_WARNING, "func_get_arg():  The argument number should be >= 0");
+		zend_error(E_WARNING, "func_get_arg():  Jumlah argumen harusnya >= 0");
 		RETURN_FALSE;
 	}
 
 	ex = EX(prev_execute_data);
 	if (ZEND_CALL_INFO(ex) & ZEND_CALL_CODE) {
-		zend_error(E_WARNING, "func_get_arg():  Called from the global scope - no function context");
+		zend_error(E_WARNING, "func_get_arg():  Dipanggil bukan dari dalam fungsi");
 		RETURN_FALSE;
 	}
 
@@ -436,7 +436,7 @@ ZEND_FUNCTION(func_get_arg)
 	arg_count = ZEND_CALL_NUM_ARGS(ex);
 
 	if ((zend_ulong)requested_offset >= arg_count) {
-		zend_error(E_WARNING, "func_get_arg():  Argument " ZEND_LONG_FMT " not passed to function", requested_offset);
+		zend_error(E_WARNING, "func_get_arg():  Argumen " ZEND_LONG_FMT " tidak dikirim ke fungsi", requested_offset);
 		RETURN_FALSE;
 	}
 
@@ -463,7 +463,7 @@ ZEND_FUNCTION(func_get_args)
 	zend_execute_data *ex = EX(prev_execute_data);
 
 	if (ZEND_CALL_INFO(ex) & ZEND_CALL_CODE) {
-		zend_error(E_WARNING, "func_get_args():  Called from the global scope - no function context");
+		zend_error(E_WARNING, "func_get_args():  Dipanggil bukan dari dalam fungsi");
 		RETURN_FALSE;
 	}
 
@@ -563,7 +563,7 @@ ZEND_FUNCTION(strncmp)
 	ZEND_PARSE_PARAMETERS_END();
 
 	if (len < 0) {
-		zend_error(E_WARNING, "Length must be greater than or equal to 0");
+		zend_error(E_WARNING, "Panjang harus >= 0");
 		RETURN_FALSE;
 	}
 
@@ -600,7 +600,7 @@ ZEND_FUNCTION(strncasecmp)
 	ZEND_PARSE_PARAMETERS_END();
 
 	if (len < 0) {
-		zend_error(E_WARNING, "Length must be greater than or equal to 0");
+		zend_error(E_WARNING, "Panjang harus >= 0");
 		RETURN_FALSE;
 	}
 
@@ -622,13 +622,13 @@ ZEND_FUNCTION(each)
 	}
 
 	if (!EG(each_deprecation_thrown)) {
-		zend_error(E_DEPRECATED, "The each() function is deprecated. This message will be suppressed on further calls");
+		zend_error(E_DEPRECATED, "Fungsi each() sudah deprecated");
 		EG(each_deprecation_thrown) = 1;
 	}
 
 	target_hash = HASH_OF(array);
 	if (!target_hash) {
-		zend_error(E_WARNING,"Variable passed to each() is not an array or object");
+		zend_error(E_WARNING,"Variabel yang dikirim ke each() bukan array atau objek");
 		return;
 	}
 	while (1) {
@@ -733,7 +733,7 @@ static int validate_constant_array(HashTable *ht) /* {{{ */
 			if (Z_TYPE_P(val) == IS_ARRAY) {
 				if (Z_REFCOUNTED_P(val)) {
 					if (Z_IS_RECURSIVE_P(val)) {
-						zend_error(E_WARNING, "Constants cannot be recursive arrays");
+						zend_error(E_WARNING, "Konstanta tidak boleh array rekursif");
 						ret = 0;
 						break;
 					} else if (!validate_constant_array(Z_ARRVAL_P(val))) {
@@ -742,7 +742,7 @@ static int validate_constant_array(HashTable *ht) /* {{{ */
 					}
 				}
 			} else if (Z_TYPE_P(val) != IS_STRING && Z_TYPE_P(val) != IS_RESOURCE) {
-				zend_error(E_WARNING, "Constants may only evaluate to scalar values or arrays");
+				zend_error(E_WARNING, "Konstanta hanya bisa dievaluasi jadi scalar atau array");
 				ret = 0;
 				break;
 			}
@@ -802,7 +802,7 @@ ZEND_FUNCTION(definisikan)
 
 	/* class constant, check if there is name and make sure class is valid & exists */
 	if (zend_memnstr(ZSTR_VAL(name), "::", sizeof("::") - 1, ZSTR_VAL(name) + ZSTR_LEN(name))) {
-		zend_error(E_WARNING, "Class constants cannot be defined or redefined");
+		zend_error(E_WARNING, "Konstanta kelas tidak bisa didefinisikan ulang");
 		RETURN_FALSE;
 	}
 
@@ -844,7 +844,7 @@ repeat:
 			}
 			/* no break */
 		default:
-			zend_error(E_WARNING, "Constants may only evaluate to scalar values or arrays");
+			zend_error(E_WARNING, "Konstanta hanya bisa dievaluasi jadi scalar atau array");
 			zval_ptr_dtor(&val_free);
 			RETURN_FALSE;
 	}
@@ -898,7 +898,7 @@ ZEND_FUNCTION(get_class)
 		if (scope) {
 			RETURN_STR_COPY(scope->name);
 		} else {
-			zend_error(E_WARNING, "get_class() called without object from outside a class");
+			zend_error(E_WARNING, "get_class() dipanggil dari luar kelas tanpa objek");
 			RETURN_FALSE;
 		}
 	}
@@ -923,7 +923,7 @@ ZEND_FUNCTION(get_called_class)
 	} else {
 		zend_class_entry *scope = zend_get_executed_scope();
 		if (!scope)  {
-			zend_error(E_WARNING, "get_called_class() called from outside a class");
+			zend_error(E_WARNING, "get_called_class() dipanggil dari luar kelas");
 		}
 	}
 	RETURN_FALSE;
@@ -1341,7 +1341,7 @@ ZEND_FUNCTION(property_exists)
 	} else if (Z_TYPE_P(object) == IS_OBJECT) {
 		ce = Z_OBJCE_P(object);
 	} else {
-		zend_error(E_WARNING, "First parameter must either be an object or the name of an existing class");
+		zend_error(E_WARNING, "Parameter pertama harus objek atau nama suatu kelas");
 		RETURN_NULL();
 	}
 
@@ -1525,15 +1525,15 @@ ZEND_FUNCTION(class_alias)
 			if (zend_register_class_alias_ex(alias_name, alias_name_len, ce, 0) == SUCCESS) {
 				RETURN_TRUE;
 			} else {
-				zend_error(E_WARNING, "Cannot declare %s %s, because the name is already in use", zend_get_object_type(ce), alias_name);
+				zend_error(E_WARNING, "Tidak bisa mendeklarasikan %s %s, karena sudah ada yang menggunakan nama itu", zend_get_object_type(ce), alias_name);
 				RETURN_FALSE;
 			}
 		} else {
-			zend_error(E_WARNING, "First argument of class_alias() must be a name of user defined class");
+			zend_error(E_WARNING, "Argumen pertama class_alias() harus nama kelas buatan user");
 			RETURN_FALSE;
 		}
 	} else {
-		zend_error(E_WARNING, "Class '%s' not found", ZSTR_VAL(class_name));
+		zend_error(E_WARNING, "Kelas '%s' tidak ditemukan", ZSTR_VAL(class_name));
 		RETURN_FALSE;
 	}
 }
@@ -1577,7 +1577,7 @@ ZEND_FUNCTION(trigger_error)
 		case E_USER_DEPRECATED:
 			break;
 		default:
-			zend_error(E_WARNING, "Invalid error type specified");
+			zend_error(E_WARNING, "Tipe error tidak valid");
 			RETURN_FALSE;
 			break;
 	}
@@ -1601,8 +1601,8 @@ ZEND_FUNCTION(set_error_handler)
 	if (Z_TYPE_P(error_handler) != IS_NULL) { /* NULL == unset */
 		if (!zend_is_callable(error_handler, 0, NULL)) {
 			zend_string *error_handler_name = zend_get_callable_name(error_handler);
-			zend_error(E_WARNING, "%s() expects the argument (%s) to be a valid callback",
-					   get_active_function_name(), error_handler_name?ZSTR_VAL(error_handler_name):"unknown");
+			zend_error(E_WARNING, "%s() perlu parameter (%s) suatu callback",
+					   get_active_function_name(), error_handler_name?ZSTR_VAL(error_handler_name):"tidakdiketahui");
 			zend_string_release(error_handler_name);
 			return;
 		}
@@ -1668,8 +1668,8 @@ ZEND_FUNCTION(set_exception_handler)
 	if (Z_TYPE_P(exception_handler) != IS_NULL) { /* NULL == unset */
 		if (!zend_is_callable(exception_handler, 0, NULL)) {
 		zend_string *exception_handler_name = zend_get_callable_name(exception_handler);
-			zend_error(E_WARNING, "%s() expects the argument (%s) to be a valid callback",
-					   get_active_function_name(), exception_handler_name?ZSTR_VAL(exception_handler_name):"unknown");
+			zend_error(E_WARNING, "%s() perlu parameter (%s) suatu callback",
+					   get_active_function_name(), exception_handler_name?ZSTR_VAL(exception_handler_name):"tidakdiketahui");
 			zend_string_release(exception_handler_name);
 			return;
 		}
@@ -1897,7 +1897,7 @@ ZEND_FUNCTION(create_function)
 
 		func = zend_hash_str_find_ptr(EG(function_table), LAMBDA_TEMP_FUNCNAME, sizeof(LAMBDA_TEMP_FUNCNAME)-1);
 		if (!func) {
-			zend_error_noreturn(E_CORE_ERROR, "Unexpected inconsistency in create_function()");
+			zend_error_noreturn(E_CORE_ERROR, "Ketidakkonsistenan pada create_function()");
 			RETURN_FALSE;
 		}
 		if (func->refcount) {
@@ -1982,7 +1982,7 @@ ZEND_FUNCTION(get_resources)
 		int id = zend_fetch_list_dtor_id(ZSTR_VAL(type));
 
 		if (id <= 0) {
-			zend_error(E_WARNING, "get_resources():  Unknown resource type '%s'", ZSTR_VAL(type));
+			zend_error(E_WARNING, "get_resources():  resource type '%s' tidak dikenal", ZSTR_VAL(type));
 			RETURN_FALSE;
 		}
 

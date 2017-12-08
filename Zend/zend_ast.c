@@ -206,7 +206,7 @@ static int zend_ast_add_array_element(zval *result, zval *offset, zval *expr)
 		case IS_UNDEF:
 			if (!zend_hash_next_index_insert(Z_ARRVAL_P(result), expr)) {
 				zend_error(E_WARNING,
-					"Cannot add element to the array as the next element is already occupied");
+					"Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				zval_ptr_dtor(expr);
 			}
 			break;
@@ -230,11 +230,11 @@ static int zend_ast_add_array_element(zval *result, zval *offset, zval *expr)
 			zend_hash_index_update(Z_ARRVAL_P(result), zend_dval_to_lval(Z_DVAL_P(offset)), expr);
 			break;
 		case IS_RESOURCE:
-			zend_error(E_NOTICE, "Resource ID#%d used as offset, casting to integer (%d)", Z_RES_HANDLE_P(offset), Z_RES_HANDLE_P(offset));
+			zend_error(E_NOTICE, "Resource ID#%d digunakan sebagai offset, casting ke integer (%d)", Z_RES_HANDLE_P(offset), Z_RES_HANDLE_P(offset));
 			zend_hash_index_update(Z_ARRVAL_P(result), Z_RES_HANDLE_P(offset), expr);
 			break;
 		default:
-			zend_throw_error(NULL, "Illegal offset type");
+			zend_throw_error(NULL, "Offset type tidak valid");
 			return FAILURE;
  	}
 	return SUCCESS;
@@ -443,7 +443,7 @@ ZEND_API int zend_ast_evaluate(zval *result, zend_ast *ast, zend_class_entry *sc
 			break;
 		case ZEND_AST_DIM:
 			if (ast->child[1] == NULL) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot use [] for reading");
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa pakai [] untuk membaca");
 			}
 
 			if (UNEXPECTED(zend_ast_evaluate(&op1, ast->child[0], scope) != SUCCESS)) {
@@ -459,7 +459,7 @@ ZEND_API int zend_ast_evaluate(zval *result, zend_ast *ast, zend_class_entry *sc
 			}
 			break;
 		default:
-			zend_throw_error(NULL, "Unsupported constant expression");
+			zend_throw_error(NULL, "Pernyataan konstanta yang tidak didukung");
 			ret = FAILURE;
 	}
 	return ret;
