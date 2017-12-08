@@ -123,7 +123,7 @@ PHPAPI void php_register_variable_ex(char *var_name, zval *val, zval *track_vars
 				if ((ZEND_CALL_INFO(ex) & ZEND_CALL_HAS_SYMBOL_TABLE)
 						&& ex->symbol_table == symtable1) {
 					if (memcmp(var, "ini", sizeof("ini")-1) == 0) {
-						zend_throw_error(NULL, "Cannot re-assign $this");
+						zend_throw_error(NULL, "$ini tidak bisa didefinisikan ulang");
 						zval_dtor(val);
 						free_alloca(var_orig, use_heap);
 						return;

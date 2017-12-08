@@ -94,7 +94,7 @@ ZEND_API ZEND_COLD void zend_wrong_param_count(void) /* {{{ */
 	const char *space;
 	const char *class_name = get_active_class_name(&space);
 
-	zend_internal_argument_count_error(ZEND_ARG_USES_STRICT_TYPES(), "Wrong parameter count for %s%s%s()", class_name, space, get_active_function_name());
+	zend_internal_argument_count_error(ZEND_ARG_USES_STRICT_TYPES(), "Jumlah parameter salah untuk %s%s%s()", class_name, space, get_active_function_name());
 }
 /* }}} */
 
@@ -176,11 +176,11 @@ ZEND_API ZEND_COLD void ZEND_FASTCALL zend_wrong_parameters_count_error(zend_boo
 
 	zend_internal_argument_count_error(
 				throw_ || ZEND_ARG_USES_STRICT_TYPES(),
-				"%s%s%s() expects %s %d parameter%s, %d given", 
+				"%s%s%s() butuh %s %d parameter%s, dikasihnya %d", 
 				class_name, \
 				class_name[0] ? "::" : "", \
 				ZSTR_VAL(active_function->common.function_name),
-				min_num_args == max_num_args ? "exactly" : num_args < min_num_args ? "at least" : "at most",
+				min_num_args == max_num_args ? "tepat" : num_args < min_num_args ? "minimal" : "maksimal",
 				num_args < min_num_args ? min_num_args : max_num_args,
 				(num_args < min_num_args ? min_num_args : max_num_args) == 1 ? "" : "s",
 				num_args);
@@ -196,7 +196,7 @@ ZEND_API ZEND_COLD void ZEND_FASTCALL zend_wrong_parameter_type_error(zend_bool 
 		NULL
 	};
 
-	zend_internal_type_error(throw_ || ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() expects parameter %d to be %s, %s given",
+	zend_internal_type_error(throw_ || ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() perlu parameter %d sebagai %s, tapi dikasihnya %s",
 		class_name, space, get_active_function_name(), num, expected_error[expected_type], zend_zval_type_name(arg));
 }
 /* }}} */
@@ -206,7 +206,7 @@ ZEND_API ZEND_COLD void ZEND_FASTCALL zend_wrong_parameter_class_error(zend_bool
 	const char *space;
 	const char *class_name = get_active_class_name(&space);
 
-	zend_internal_type_error(throw_ || ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() expects parameter %d to be %s, %s given",
+	zend_internal_type_error(throw_ || ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() perlu parameter %d sebagai %s, tapi dikasihnya %s",
 		class_name, space, get_active_function_name(), num, name, zend_zval_type_name(arg));
 }
 /* }}} */
@@ -217,13 +217,13 @@ ZEND_API ZEND_COLD void ZEND_FASTCALL zend_wrong_callback_error(zend_bool throw_
 	const char *class_name = get_active_class_name(&space);
 
 	if (severity == E_WARNING) {
-		zend_internal_type_error(throw_ || ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() expects parameter %d to be a valid callback, %s",
+		zend_internal_type_error(throw_ || ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() perlu parameter %d suatu callback, %s",
 			class_name, space, get_active_function_name(), num, error);
 	} else if (severity == E_ERROR) {
-		zend_throw_error(zend_ce_type_error, "%s%s%s() expects parameter %d to be a valid callback, %s",
+		zend_throw_error(zend_ce_type_error, "%s%s%s() perlu parameter %d suatu callback, %s",
 			class_name, space, get_active_function_name(), num, error);
 	} else {
-		zend_error(severity, "%s%s%s() expects parameter %d to be a valid callback, %s",
+		zend_error(severity, "%s%s%s() perlu parameter %d suatu callback, %s",
 			class_name, space, get_active_function_name(), num, error);
 	}
 	efree(error);
@@ -245,7 +245,7 @@ ZEND_API int ZEND_FASTCALL zend_parse_arg_class(zval *arg, zend_class_entry **pc
 			const char *space;
 			const char *class_name = get_active_class_name(&space);
 
-			zend_internal_type_error(ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() expects parameter %d to be a class name derived from %s, '%s' given",
+			zend_internal_type_error(ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() perlu parameter %d suatu kelas turunan dari %s, dikasihnya '%s'",
 				class_name, space, get_active_function_name(), num,
 				ZSTR_VAL(ce_base->name), Z_STRVAL_P(arg));
 			*pce = NULL;
@@ -256,7 +256,7 @@ ZEND_API int ZEND_FASTCALL zend_parse_arg_class(zval *arg, zend_class_entry **pc
 		const char *space;
 		const char *class_name = get_active_class_name(&space);
 
-		zend_internal_type_error(ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() expects parameter %d to be a valid class name, '%s' given",
+		zend_internal_type_error(ZEND_ARG_USES_STRICT_TYPES(), "%s%s%s() perlu parameter %d suatu kelas yang valid, dikasihnya '%s'",
 			class_name, space, get_active_function_name(), num,
 			Z_STRVAL_P(arg));
 		return 0;
@@ -642,14 +642,14 @@ static const char *zend_parse_arg_impl(int arg_num, zval *arg, va_list *va, cons
 				}
 				if (ce_base) {
 					if ((!*pce || !instanceof_function(*pce, ce_base))) {
-						zend_spprintf(error, 0, "to be a class name derived from %s, '%s' given",
+						zend_spprintf(error, 0, "suatu kelas turunan dari %s, tapi dikasihnya '%s'",
 							ZSTR_VAL(ce_base->name), Z_STRVAL_P(arg));
 						*pce = NULL;
 						return "";
 					}
 				}
 				if (!*pce) {
-					zend_spprintf(error, 0, "to be a valid class name, '%s' given",
+					zend_spprintf(error, 0, "suatu nama kelas yang valid, tapi dikasihnya '%s'",
 						Z_STRVAL_P(arg));
 					return "";
 				}
@@ -673,7 +673,7 @@ static const char *zend_parse_arg_impl(int arg_num, zval *arg, va_list *va, cons
 				if (zend_fcall_info_init(arg, 0, fci, fcc, NULL, &is_callable_error) == SUCCESS) {
 					if (is_callable_error) {
 						*severity = E_DEPRECATED;
-						zend_spprintf(error, 0, "to be a valid callback, %s", is_callable_error);
+						zend_spprintf(error, 0, "suatu callback, %s", is_callable_error);
 						efree(is_callable_error);
 						*spec = spec_walk;
 						return "";
@@ -682,11 +682,11 @@ static const char *zend_parse_arg_impl(int arg_num, zval *arg, va_list *va, cons
 				} else {
 					if (is_callable_error) {
 						*severity = E_ERROR;
-						zend_spprintf(error, 0, "to be a valid callback, %s", is_callable_error);
+						zend_spprintf(error, 0, "suatu callback, %s", is_callable_error);
 						efree(is_callable_error);
 						return "";
 					} else {
-						return "valid callback";
+						return "callback";
 					}
 				}
 			}
@@ -727,12 +727,12 @@ static int zend_parse_arg(int arg_num, zval *arg, va_list *va, const char **spec
 				ZEND_ARG_USES_STRICT_TYPES() || (flags & ZEND_PARSE_PARAMS_THROW);
 
 			if (error) {
-				zend_internal_type_error(throw_exception, "%s%s%s() expects parameter %d %s",
+				zend_internal_type_error(throw_exception, "%s%s%s() perlu parameter %d %s",
 						class_name, space, get_active_function_name(), arg_num, error);
 				efree(error);
 			} else {
 				zend_internal_type_error(throw_exception,
-						"%s%s%s() expects parameter %d to be %s, %s given",
+						"%s%s%s() perlu parameter %d sebagai %s, tapi dikasihnya %s",
 						class_name, space, get_active_function_name(), arg_num, expected_type,
 						zend_zval_type_name(arg));
 			}
@@ -809,7 +809,7 @@ static int zend_parse_va_args(int num_args, const char *type_spec, va_list *va, 
 			case '+':
 				if (have_varargs) {
 					zend_parse_parameters_debug_error(
-						"only one varargs specifier (* or +) is permitted");
+						"cuma salah satu penanda (* atau +) yang diizinkan");
 					return FAILURE;
 				}
 				have_varargs = 1;
@@ -822,7 +822,7 @@ static int zend_parse_va_args(int num_args, const char *type_spec, va_list *va, 
 				break;
 
 			default:
-				zend_parse_parameters_debug_error("bad type specifier while parsing parameters");
+				zend_parse_parameters_debug_error("type specifier salah");
 				return FAILURE;
 		}
 	}
@@ -842,11 +842,11 @@ static int zend_parse_va_args(int num_args, const char *type_spec, va_list *va, 
 			zend_function *active_function = EG(current_execute_data)->func;
 			const char *class_name = active_function->common.scope ? ZSTR_VAL(active_function->common.scope->name) : "";
 			zend_bool throw_exception = ZEND_ARG_USES_STRICT_TYPES() || (flags & ZEND_PARSE_PARAMS_THROW);
-			zend_internal_argument_count_error(throw_exception, "%s%s%s() expects %s %d parameter%s, %d given",
+			zend_internal_argument_count_error(throw_exception, "%s%s%s() butuh %s %d parameter%s, dikasihnya %d",
 					class_name,
 					class_name[0] ? "::" : "",
 					ZSTR_VAL(active_function->common.function_name),
-					min_num_args == max_num_args ? "exactly" : num_args < min_num_args ? "at least" : "at most",
+					min_num_args == max_num_args ? "tepat" : num_args < min_num_args ? "minimal" : "maksimal",
 					num_args < min_num_args ? min_num_args : max_num_args,
 					(num_args < min_num_args ? min_num_args : max_num_args) == 1 ? "" : "s",
 					num_args);
@@ -857,7 +857,7 @@ static int zend_parse_va_args(int num_args, const char *type_spec, va_list *va, 
 	arg_count = ZEND_CALL_NUM_ARGS(EG(current_execute_data));
 
 	if (num_args > arg_count) {
-		zend_parse_parameters_debug_error("could not obtain parameters for parsing");
+		zend_parse_parameters_debug_error("gagal mendapatkan parameter untuk di-parsing");
 		return FAILURE;
 	}
 
@@ -974,7 +974,7 @@ ZEND_API int zend_parse_method_parameters(int num_args, zval *this_ptr, const ch
 		*object = this_ptr;
 
 		if (ce && !instanceof_function(Z_OBJCE_P(this_ptr), ce)) {
-			zend_error_noreturn(E_CORE_ERROR, "%s::%s() must be derived from %s::%s",
+			zend_error_noreturn(E_CORE_ERROR, "%s::%s() harus turunan dari %s::%s",
 				ZSTR_VAL(Z_OBJCE_P(this_ptr)->name), get_active_function_name(), ZSTR_VAL(ce->name), get_active_function_name());
 		}
 
@@ -1007,7 +1007,7 @@ ZEND_API int zend_parse_method_parameters_ex(int flags, int num_args, zval *this
 
 		if (ce && !instanceof_function(Z_OBJCE_P(this_ptr), ce)) {
 			if (!(flags & ZEND_PARSE_PARAMS_QUIET)) {
-				zend_error_noreturn(E_CORE_ERROR, "%s::%s() must be derived from %s::%s",
+				zend_error_noreturn(E_CORE_ERROR, "%s::%s() harus turunan dari %s::%s",
 					ZSTR_VAL(ce->name), get_active_function_name(), ZSTR_VAL(Z_OBJCE_P(this_ptr)->name), get_active_function_name());
 			}
 			va_end(va);
@@ -1236,11 +1236,11 @@ ZEND_API int _object_and_properties_init(zval *arg, zend_class_entry *class_type
 {
 	if (UNEXPECTED(class_type->ce_flags & (ZEND_ACC_INTERFACE|ZEND_ACC_TRAIT|ZEND_ACC_IMPLICIT_ABSTRACT_CLASS|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS))) {
 		if (class_type->ce_flags & ZEND_ACC_INTERFACE) {
-			zend_throw_error(NULL, "Cannot instantiate interface %s", ZSTR_VAL(class_type->name));
+			zend_throw_error(NULL, "Gagal membuat interface %s", ZSTR_VAL(class_type->name));
 		} else if (class_type->ce_flags & ZEND_ACC_TRAIT) {
-			zend_throw_error(NULL, "Cannot instantiate trait %s", ZSTR_VAL(class_type->name));
+			zend_throw_error(NULL, "Gagal membuat sifat %s", ZSTR_VAL(class_type->name));
 		} else {
-			zend_throw_error(NULL, "Cannot instantiate abstract class %s", ZSTR_VAL(class_type->name));
+			zend_throw_error(NULL, "Gagal membuat kelas abstrak %s", ZSTR_VAL(class_type->name));
 		}
 		ZVAL_NULL(arg);
 		Z_OBJ_P(arg) = NULL;
@@ -1603,7 +1603,7 @@ ZEND_API int array_set_zval_key(HashTable *ht, zval *key, zval *value) /* {{{ */
 			result = zend_symtable_update(ht, ZSTR_EMPTY_ALLOC(), value);
 			break;
 		case IS_RESOURCE:
-			zend_error(E_NOTICE, "Resource ID#%d used as offset, casting to integer (%d)", Z_RES_HANDLE_P(key), Z_RES_HANDLE_P(key));
+			zend_error(E_NOTICE, "Resource ID#%d dipakai sebagai offset, casting ke integer (%d)", Z_RES_HANDLE_P(key), Z_RES_HANDLE_P(key));
 			result = zend_hash_index_update(ht, Z_RES_HANDLE_P(key), value);
 			break;
 		case IS_FALSE:
@@ -1619,7 +1619,7 @@ ZEND_API int array_set_zval_key(HashTable *ht, zval *key, zval *value) /* {{{ */
 			result = zend_hash_index_update(ht, zend_dval_to_lval(Z_DVAL_P(key)), value);
 			break;
 		default:
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe offset tidak valid");
 			result = NULL;
 	}
 
@@ -1780,7 +1780,7 @@ ZEND_API int zend_startup_module_ex(zend_module_entry *module) /* {{{ */
 				if ((req_mod = zend_hash_find_ptr(&module_registry, lcname)) == NULL || !req_mod->module_started) {
 					zend_string_free(lcname);
 					/* TODO: Check version relationship */
-					zend_error(E_CORE_WARNING, "Cannot load module '%s' because required module '%s' is not loaded", module->name, dep->name);
+					zend_error(E_CORE_WARNING, "Gagal memuat modul '%s' karena modul prasyarat '%s' tidak di-load", module->name, dep->name);
 					module->module_started = 0;
 					return FAILURE;
 				}
@@ -1803,7 +1803,7 @@ ZEND_API int zend_startup_module_ex(zend_module_entry *module) /* {{{ */
 	if (module->module_startup_func) {
 		EG(current_module) = module;
 		if (module->module_startup_func(module->type, module->module_number)==FAILURE) {
-			zend_error_noreturn(E_CORE_ERROR,"Unable to start %s module", module->name);
+			zend_error_noreturn(E_CORE_ERROR,"Gagal memulai modul %s", module->name);
 			EG(current_module) = NULL;
 			return FAILURE;
 		}
@@ -1968,7 +1968,7 @@ ZEND_API zend_module_entry* zend_register_module_ex(zend_module_entry *module) /
 				if (zend_hash_exists(&module_registry, lcname) || zend_get_extension(dep->name)) {
 					zend_string_free(lcname);
 					/* TODO: Check version relationship */
-					zend_error(E_CORE_WARNING, "Cannot load module '%s' because conflicting module '%s' is already loaded", module->name, dep->name);
+					zend_error(E_CORE_WARNING, "Gagal memuat modul '%s' karena ada modul yang konflik: '%s'", module->name, dep->name);
 					return NULL;
 				}
 				zend_string_free(lcname);
@@ -1983,7 +1983,7 @@ ZEND_API zend_module_entry* zend_register_module_ex(zend_module_entry *module) /
 
 	lcname = zend_new_interned_string(lcname);
 	if ((module_ptr = zend_hash_add_mem(&module_registry, lcname, module, sizeof(zend_module_entry))) == NULL) {
-		zend_error(E_CORE_WARNING, "Module '%s' already loaded", module->name);
+		zend_error(E_CORE_WARNING, "Modul '%s' sudah di-load", module->name);
 		zend_string_release(lcname);
 		return NULL;
 	}
@@ -1994,7 +1994,7 @@ ZEND_API zend_module_entry* zend_register_module_ex(zend_module_entry *module) /
 		zend_hash_del(&module_registry, lcname);
 		zend_string_release(lcname);
 		EG(current_module) = NULL;
-		zend_error(E_CORE_WARNING,"%s: Unable to register functions, unable to load", module->name);
+		zend_error(E_CORE_WARNING,"%s: Gagal registrasi fungsi", module->name);
 		return NULL;
 	}
 
@@ -2024,54 +2024,54 @@ ZEND_API void zend_check_magic_method_implementation(const zend_class_entry *ce,
 	lcname[sizeof(lcname)-1] = '\0'; /* zend_str_tolower_copy won't necessarily set the zero byte */
 
 	if (name_len == sizeof(ZEND_DESTRUCTOR_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_DESTRUCTOR_FUNC_NAME, sizeof(ZEND_DESTRUCTOR_FUNC_NAME) - 1) && fptr->common.num_args != 0) {
-		zend_error(error_type, "Destructor %s::%s() cannot take arguments", ZSTR_VAL(ce->name), ZEND_DESTRUCTOR_FUNC_NAME);
+		zend_error(error_type, "Destructor %s::%s() seharusnya tidak punya parameter", ZSTR_VAL(ce->name), ZEND_DESTRUCTOR_FUNC_NAME);
 	} else if (name_len == sizeof(ZEND_CLONE_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_CLONE_FUNC_NAME, sizeof(ZEND_CLONE_FUNC_NAME) - 1) && fptr->common.num_args != 0) {
-		zend_error(error_type, "Method %s::%s() cannot accept any arguments", ZSTR_VAL(ce->name), ZEND_CLONE_FUNC_NAME);
+		zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter", ZSTR_VAL(ce->name), ZEND_CLONE_FUNC_NAME);
 	} else if (name_len == sizeof(ZEND_GET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_GET_FUNC_NAME, sizeof(ZEND_GET_FUNC_NAME) - 1)) {
 		if (fptr->common.num_args != 1) {
-			zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ZSTR_VAL(ce->name), ZEND_GET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() harus memiliki tepat 1 parameter", ZSTR_VAL(ce->name), ZEND_GET_FUNC_NAME);
 		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1)) {
-			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ZSTR_VAL(ce->name), ZEND_GET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter by reference", ZSTR_VAL(ce->name), ZEND_GET_FUNC_NAME);
 		}
 	} else if (name_len == sizeof(ZEND_SET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_SET_FUNC_NAME, sizeof(ZEND_SET_FUNC_NAME) - 1)) {
 		if (fptr->common.num_args != 2) {
-			zend_error(error_type, "Method %s::%s() must take exactly 2 arguments", ZSTR_VAL(ce->name), ZEND_SET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() harus memiliki tepat 2 parameter", ZSTR_VAL(ce->name), ZEND_SET_FUNC_NAME);
 		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1) || ARG_SHOULD_BE_SENT_BY_REF(fptr, 2)) {
-			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ZSTR_VAL(ce->name), ZEND_SET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter by reference", ZSTR_VAL(ce->name), ZEND_SET_FUNC_NAME);
 		}
 	} else if (name_len == sizeof(ZEND_UNSET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_UNSET_FUNC_NAME, sizeof(ZEND_UNSET_FUNC_NAME) - 1)) {
 		if (fptr->common.num_args != 1) {
-			zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ZSTR_VAL(ce->name), ZEND_UNSET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() harus memiliki tepat 1 parameter", ZSTR_VAL(ce->name), ZEND_UNSET_FUNC_NAME);
 		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1)) {
-			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ZSTR_VAL(ce->name), ZEND_UNSET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter by reference", ZSTR_VAL(ce->name), ZEND_UNSET_FUNC_NAME);
 		}
 	} else if (name_len == sizeof(ZEND_ISSET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_ISSET_FUNC_NAME, sizeof(ZEND_ISSET_FUNC_NAME) - 1)) {
 		if (fptr->common.num_args != 1) {
-			zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ZSTR_VAL(ce->name), ZEND_ISSET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() harus memiliki tepat 1 parameter", ZSTR_VAL(ce->name), ZEND_ISSET_FUNC_NAME);
 		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1)) {
-			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ZSTR_VAL(ce->name), ZEND_ISSET_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter by reference", ZSTR_VAL(ce->name), ZEND_ISSET_FUNC_NAME);
 		}
 	} else if (name_len == sizeof(ZEND_CALL_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_CALL_FUNC_NAME, sizeof(ZEND_CALL_FUNC_NAME) - 1)) {
 		if (fptr->common.num_args != 2) {
-			zend_error(error_type, "Method %s::%s() must take exactly 2 arguments", ZSTR_VAL(ce->name), ZEND_CALL_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() harus memiliki tepat 2 parameter", ZSTR_VAL(ce->name), ZEND_CALL_FUNC_NAME);
 		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1) || ARG_SHOULD_BE_SENT_BY_REF(fptr, 2)) {
-			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ZSTR_VAL(ce->name), ZEND_CALL_FUNC_NAME);
+			zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter by reference", ZSTR_VAL(ce->name), ZEND_CALL_FUNC_NAME);
 		}
 	} else if (name_len == sizeof(ZEND_CALLSTATIC_FUNC_NAME) - 1 &&
 		!memcmp(lcname, ZEND_CALLSTATIC_FUNC_NAME, sizeof(ZEND_CALLSTATIC_FUNC_NAME)-1)
 	) {
 		if (fptr->common.num_args != 2) {
-			zend_error(error_type, "Method %s::__callStatic() must take exactly 2 arguments", ZSTR_VAL(ce->name));
+			zend_error(error_type, "Fungsi %s::__callStatic() harus memiliki tepat 2 parameter", ZSTR_VAL(ce->name));
 		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1) || ARG_SHOULD_BE_SENT_BY_REF(fptr, 2)) {
-			zend_error(error_type, "Method %s::__callStatic() cannot take arguments by reference", ZSTR_VAL(ce->name));
+			zend_error(error_type, "Fungsi %s::__callStatic() seharusnya tidak punya parameter by reference", ZSTR_VAL(ce->name));
 		}
  	} else if (name_len == sizeof(ZEND_TOSTRING_FUNC_NAME) - 1 &&
  		!memcmp(lcname, ZEND_TOSTRING_FUNC_NAME, sizeof(ZEND_TOSTRING_FUNC_NAME)-1) && fptr->common.num_args != 0
 	) {
-		zend_error(error_type, "Method %s::%s() cannot take arguments", ZSTR_VAL(ce->name), ZEND_TOSTRING_FUNC_NAME);
+		zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter", ZSTR_VAL(ce->name), ZEND_TOSTRING_FUNC_NAME);
 	} else if (name_len == sizeof(ZEND_DEBUGINFO_FUNC_NAME) - 1 &&
 		!memcmp(lcname, ZEND_DEBUGINFO_FUNC_NAME, sizeof(ZEND_DEBUGINFO_FUNC_NAME)-1) && fptr->common.num_args != 0) {
-		zend_error(error_type, "Method %s::%s() cannot take arguments", ZSTR_VAL(ce->name), ZEND_DEBUGINFO_FUNC_NAME);
+		zend_error(error_type, "Fungsi %s::%s() seharusnya tidak punya parameter", ZSTR_VAL(ce->name), ZEND_DEBUGINFO_FUNC_NAME);
 	}
 }
 /* }}} */
@@ -2124,7 +2124,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 		if (ptr->flags) {
 			if (!(ptr->flags & ZEND_ACC_PPP_MASK)) {
 				if (ptr->flags != ZEND_ACC_DEPRECATED && scope) {
-					zend_error(error_type, "Invalid access level for %s%s%s() - access must be exactly one of public, protected or private", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
+					zend_error(error_type, "Modifier tidak valid: %s%s%s() - harus salah satu dari publik, terproteksi, atau privat", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
 				}
 				internal_function->fn_flags = ZEND_ACC_PUBLIC | ptr->flags;
 			} else {
@@ -2160,7 +2160,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 						type_name++;
 					}
 					if (!scope && (!strcasecmp(type_name, "diri") || !strcasecmp(type_name, "induk"))) {
-						zend_error_noreturn(E_CORE_ERROR, "Cannot declare a return type of %s outside of a class scope", type_name);
+						zend_error_noreturn(E_CORE_ERROR, "Tidak bisa deklarasi tipe %s di luar class", type_name);
 					}
 				}
 
@@ -2184,19 +2184,19 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 				}
 			}
 			if (ptr->flags & ZEND_ACC_STATIC && (!scope || !(scope->ce_flags & ZEND_ACC_INTERFACE))) {
-				zend_error(error_type, "Static function %s%s%s() cannot be abstract", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
+				zend_error(error_type, "Fungsi statis %s%s%s() tidak boleh abstrak", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
 			}
 		} else {
 			if (scope && (scope->ce_flags & ZEND_ACC_INTERFACE)) {
 				efree((char*)lc_class_name);
-				zend_error(error_type, "Interface %s cannot contain non abstract method %s()", ZSTR_VAL(scope->name), ptr->fname);
+				zend_error(error_type, "Interface %s tidak boleh punya fungsi non abstrak %s()", ZSTR_VAL(scope->name), ptr->fname);
 				return FAILURE;
 			}
 			if (!internal_function->handler) {
 				if (scope) {
 					efree((char*)lc_class_name);
 				}
-				zend_error(error_type, "Method %s%s%s() cannot be a NULL function", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
+				zend_error(error_type, "Fungsi %s%s%s() tidak boleh berupa NULL", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
 				zend_unregister_functions(functions, count, target_function_table);
 				return FAILURE;
 			}
@@ -2265,7 +2265,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 			} else if (zend_string_equals_literal(lowercase_name, ZEND_DESTRUCTOR_FUNC_NAME)) {
 				dtor = reg_function;
 				if (internal_function->num_args) {
-					zend_error(error_type, "Destructor %s::%s() cannot take arguments", ZSTR_VAL(scope->name), ptr->fname);
+					zend_error(error_type, "Destructor %s::%s() seharusnya tidak punya parameter", ZSTR_VAL(scope->name), ptr->fname);
 				}
 			} else if (zend_string_equals_literal(lowercase_name, ZEND_CLONE_FUNC_NAME)) {
 				clone = reg_function;
@@ -2309,7 +2309,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 			lowercase_name = zend_string_alloc(fname_len, 0);
 			zend_str_tolower_copy(ZSTR_VAL(lowercase_name), ptr->fname, fname_len);
 			if (zend_hash_exists(target_function_table, lowercase_name)) {
-				zend_error(error_type, "Function registration failed - duplicate name - %s%s%s", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
+				zend_error(error_type, "Registrasi fungsi gagal, nama sudah ada - %s%s%s", scope ? ZSTR_VAL(scope->name) : "", scope ? "::" : "", ptr->fname);
 			}
 			zend_string_free(lowercase_name);
 			ptr++;
@@ -2332,81 +2332,81 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, const zend_functio
 		if (ctor) {
 			ctor->common.fn_flags |= ZEND_ACC_CTOR;
 			if (ctor->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Constructor %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(ctor->common.function_name));
+				zend_error(error_type, "Konstruktor %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(ctor->common.function_name));
 			}
 			ctor->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (dtor) {
 			dtor->common.fn_flags |= ZEND_ACC_DTOR;
 			if (dtor->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Destructor %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(dtor->common.function_name));
+				zend_error(error_type, "Destructor %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(dtor->common.function_name));
 			}
 			dtor->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (clone) {
 			if (clone->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Constructor %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(clone->common.function_name));
+				zend_error(error_type, "Konstruktor %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(clone->common.function_name));
 			}
 			clone->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__call) {
 			if (__call->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__call->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__call->common.function_name));
 			}
 			__call->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__callstatic) {
 			if (!(__callstatic->common.fn_flags & ZEND_ACC_STATIC)) {
-				zend_error(error_type, "Method %s::%s() must be static", ZSTR_VAL(scope->name), ZSTR_VAL(__callstatic->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() harus statis", ZSTR_VAL(scope->name), ZSTR_VAL(__callstatic->common.function_name));
 			}
 			__callstatic->common.fn_flags |= ZEND_ACC_STATIC;
 		}
 		if (__tostring) {
 			if (__tostring->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__tostring->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__tostring->common.function_name));
 			}
 			__tostring->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__get) {
 			if (__get->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__get->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__get->common.function_name));
 			}
 			__get->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__set) {
 			if (__set->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__set->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__set->common.function_name));
 			}
 			__set->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__unset) {
 			if (__unset->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__unset->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__unset->common.function_name));
 			}
 			__unset->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__isset) {
 			if (__isset->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__isset->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__isset->common.function_name));
 			}
 			__isset->common.fn_flags &= ~ZEND_ACC_ALLOW_STATIC;
 		}
 		if (__debugInfo) {
 			if (__debugInfo->common.fn_flags & ZEND_ACC_STATIC) {
-				zend_error(error_type, "Method %s::%s() cannot be static", ZSTR_VAL(scope->name), ZSTR_VAL(__debugInfo->common.function_name));
+				zend_error(error_type, "Fungsi %s::%s() tidak boleh statis", ZSTR_VAL(scope->name), ZSTR_VAL(__debugInfo->common.function_name));
 			}
 		}
 
 		if (ctor && ctor->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE && ctor->common.fn_flags & ZEND_ACC_CTOR) {
-			zend_error_noreturn(E_CORE_ERROR, "Constructor %s::%s() cannot declare a return type", ZSTR_VAL(scope->name), ZSTR_VAL(ctor->common.function_name));
+			zend_error_noreturn(E_CORE_ERROR, "Konstruktor %s::%s() tidak boleh punya tipe nilai kembali", ZSTR_VAL(scope->name), ZSTR_VAL(ctor->common.function_name));
 		}
 
 		if (dtor && dtor->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE && dtor->common.fn_flags & ZEND_ACC_DTOR) {
-			zend_error_noreturn(E_CORE_ERROR, "Destructor %s::%s() cannot declare a return type", ZSTR_VAL(scope->name), ZSTR_VAL(dtor->common.function_name));
+			zend_error_noreturn(E_CORE_ERROR, "Destructor %s::%s() tidak boleh punya tipe nilai kembali", ZSTR_VAL(scope->name), ZSTR_VAL(dtor->common.function_name));
 		}
 
 		if (clone && clone->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE && dtor->common.fn_flags & ZEND_ACC_DTOR) {
-			zend_error_noreturn(E_CORE_ERROR, "%s::%s() cannot declare a return type", ZSTR_VAL(scope->name), ZSTR_VAL(clone->common.function_name));
+			zend_error_noreturn(E_CORE_ERROR, "%s::%s() tidak boleh punya tipe nilai kembali", ZSTR_VAL(scope->name), ZSTR_VAL(clone->common.function_name));
 		}
 		efree((char*)lc_class_name);
 	}
@@ -2529,7 +2529,7 @@ ZEND_API void zend_activate_modules(void) /* {{{ */
 		zend_module_entry *module = *p;
 
 		if (module->request_startup_func(module->type, module->module_number)==FAILURE) {
-			zend_error(E_WARNING, "request_startup() for %s module failed", module->name);
+			zend_error(E_WARNING, "request_startup() untuk modul %s gagal", module->name);
 			exit(1);
 		}
 		p++;
@@ -2754,7 +2754,7 @@ ZEND_API int zend_set_hash_symbol(zval *symbol, const char *name, int name_lengt
 Dummy function which displays an error when a disabled function is called. */
 ZEND_API ZEND_FUNCTION(display_disabled_function)
 {
-	zend_error(E_WARNING, "%s() has been disabled for security reasons", get_active_function_name());
+	zend_error(E_WARNING, "%s() dinonaktifkan demi alasan keamanan", get_active_function_name());
 }
 /* }}} */
 
@@ -2780,7 +2780,7 @@ static zend_object *display_disabled_class(zend_class_entry *class_type) /* {{{ 
 	zend_object *intern;
 
 	intern = zend_objects_new(class_type);
-	zend_error(E_WARNING, "%s() has been disabled for security reasons", ZSTR_VAL(class_type->name));
+	zend_error(E_WARNING, "%s() dinonaktifkan demi alasan keamanan", ZSTR_VAL(class_type->name));
 	return intern;
 }
 #ifdef ZEND_WIN32
@@ -2824,7 +2824,7 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 	*strict_class = 0;
 	if (zend_string_equals_literal(lcname, "diri")) {
 		if (!scope) {
-			if (error) *error = estrdup("cannot access self:: when no class scope is active");
+			if (error) *error = estrdup("tidak bisa mengakses diri:: jika tidak di dalam kelas");
 		} else {
 			fcc->called_scope = zend_get_called_scope(EG(current_execute_data));
 			fcc->calling_scope = scope;
@@ -2835,9 +2835,9 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 		}
 	} else if (zend_string_equals_literal(lcname, "induk")) {
 		if (!scope) {
-			if (error) *error = estrdup("cannot access parent:: when no class scope is active");
+			if (error) *error = estrdup("tidak bisa mengakses induk:: jika tidak di dalam kelas");
 		} else if (!scope->parent) {
-			if (error) *error = estrdup("cannot access parent:: when current class scope has no parent");
+			if (error) *error = estrdup("tidak bisa mengakses induk:: jika kelas ini tidak punya induk");
 		} else {
 			fcc->called_scope = zend_get_called_scope(EG(current_execute_data));
 			fcc->calling_scope = scope->parent;
@@ -2851,7 +2851,7 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 		zend_class_entry *called_scope = zend_get_called_scope(EG(current_execute_data));
 
 		if (!called_scope) {
-			if (error) *error = estrdup("cannot access static:: when no class scope is active");
+			if (error) *error = estrdup("tidak bisa mengakses static:: jika tidak di dalam kelas");
 		} else {
 			fcc->called_scope = called_scope;
 			fcc->calling_scope = called_scope;
@@ -2887,7 +2887,7 @@ static int zend_is_callable_check_class(zend_string *name, zend_class_entry *sco
 		*strict_class = 1;
 		ret = 1;
 	} else {
-		if (error) zend_spprintf(error, 0, "class '%.*s' not found", (int)name_len, ZSTR_VAL(name));
+		if (error) zend_spprintf(error, 0, "kelas '%.*s' tidak ditemukan", (int)name_len, ZSTR_VAL(name));
 	}
 	ZSTR_ALLOCA_FREE(lcname, use_heap);
 	return ret;
@@ -2961,7 +2961,7 @@ static int zend_is_callable_check_func(int check_flags, zval *callable, zend_fca
 		mlen = Z_STRLEN_P(callable) - clen - 2;
 
 		if (colon == Z_STRVAL_P(callable)) {
-			if (error) zend_spprintf(error, 0, "invalid function name");
+			if (error) zend_spprintf(error, 0, "nama fungsi tidak valid");
 			return 0;
 		}
 
@@ -2982,7 +2982,7 @@ static int zend_is_callable_check_func(int check_flags, zval *callable, zend_fca
 
 		ftable = &fcc->calling_scope->function_table;
 		if (ce_org && !instanceof_function(ce_org, fcc->calling_scope)) {
-			if (error) zend_spprintf(error, 0, "class '%s' is not a subclass of '%s'", ZSTR_VAL(ce_org->name), ZSTR_VAL(fcc->calling_scope->name));
+			if (error) zend_spprintf(error, 0, "kelas '%s' bukan turunan dari '%s'", ZSTR_VAL(ce_org->name), ZSTR_VAL(fcc->calling_scope->name));
 			return 0;
 		}
 		mname = zend_string_init(Z_STRVAL_P(callable) + clen + 2, mlen, 0);
@@ -2995,7 +2995,7 @@ static int zend_is_callable_check_func(int check_flags, zval *callable, zend_fca
 	} else {
 		/* We already checked for plain function before. */
 		if (error && !(check_flags & IS_CALLABLE_CHECK_SILENT)) {
-			zend_spprintf(error, 0, "function '%s' not found or invalid function name", Z_STRVAL_P(callable));
+			zend_spprintf(error, 0, "fungsi '%s' tidak ditemukan atau tidak valid", Z_STRVAL_P(callable));
 		}
 		return 0;
 	}
@@ -3094,10 +3094,10 @@ get_function_via_handler:
 		if (fcc->calling_scope && !call_via_handler) {
 			if (fcc->function_handler->common.fn_flags & ZEND_ACC_ABSTRACT) {
 				if (error) {
-					zend_spprintf(error, 0, "cannot call abstract method %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
+					zend_spprintf(error, 0, "fungsi abstrak tidak bisa dipanggil %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
 					retval = 0;
 				} else {
-					zend_throw_error(NULL, "Cannot call abstract method %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
+					zend_throw_error(NULL, "fungsi abstrak tidak bisa dipanggil %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
 					retval = 0;
 				}
 			} else if (!fcc->object && !(fcc->function_handler->common.fn_flags & ZEND_ACC_STATIC)) {
@@ -3105,25 +3105,25 @@ get_function_via_handler:
 				char *verb;
 				if (fcc->function_handler->common.fn_flags & ZEND_ACC_ALLOW_STATIC) {
 					severity = E_DEPRECATED;
-					verb = "should not";
+					verb = "seharusnya tidak";
 				} else {
 					/* An internal function assumes $this is present and won't check that. So PHP would crash by allowing the call. */
 					severity = E_ERROR;
-					verb = "cannot";
+					verb = "tidak bisa";
 				}
 				if ((check_flags & IS_CALLABLE_CHECK_IS_STATIC) != 0) {
 					retval = 0;
 				}
 				if (error) {
-					zend_spprintf(error, 0, "non-static method %s::%s() %s be called statically", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name), verb);
+					zend_spprintf(error, 0, "fungsi non statis %s::%s() %s diakses secara statis", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name), verb);
 					if (severity != E_DEPRECATED) {
 						retval = 0;
 					}
 				} else if (retval) {
 					if (severity == E_ERROR) {
-						zend_throw_error(NULL, "Non-static method %s::%s() %s be called statically", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name), verb);
+						zend_throw_error(NULL, "fungsi non statis %s::%s() %s diakses secara statis", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name), verb);
 					} else {
-						zend_error(severity, "Non-static method %s::%s() %s be called statically", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name), verb);
+						zend_error(severity, "fungsi non statis %s::%s() %s diakses secara statis", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name), verb);
 					}
 				}
 			}
@@ -3135,7 +3135,7 @@ get_function_via_handler:
 							if (*error) {
 								efree(*error);
 							}
-							zend_spprintf(error, 0, "cannot access private method %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
+							zend_spprintf(error, 0, "tidak bisa akses fungsi privat %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
 						}
 						retval = 0;
 					}
@@ -3146,7 +3146,7 @@ get_function_via_handler:
 							if (*error) {
 								efree(*error);
 							}
-							zend_spprintf(error, 0, "cannot access protected method %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
+							zend_spprintf(error, 0, "tidak bisa akses fungsi terproteksi %s::%s()", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(fcc->function_handler->common.function_name));
 						}
 						retval = 0;
 					}
@@ -3155,9 +3155,9 @@ get_function_via_handler:
 		}
 	} else if (error && !(check_flags & IS_CALLABLE_CHECK_SILENT)) {
 		if (fcc->calling_scope) {
-			if (error) zend_spprintf(error, 0, "class '%s' does not have a method '%s'", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(mname));
+			if (error) zend_spprintf(error, 0, "kelas '%s' tidak punya fungsi '%s'", ZSTR_VAL(fcc->calling_scope->name), ZSTR_VAL(mname));
 		} else {
-			if (error) zend_spprintf(error, 0, "function '%s' does not exist", ZSTR_VAL(mname));
+			if (error) zend_spprintf(error, 0, "fungsi '%s' tidak ada", ZSTR_VAL(mname));
 		}
 	}
 	zend_string_release(lmname);
@@ -3357,12 +3357,12 @@ again:
 					if (!obj || (!Z_ISREF_P(obj)?
 								(Z_TYPE_P(obj) != IS_STRING && Z_TYPE_P(obj) != IS_OBJECT) :
 								(Z_TYPE_P(Z_REFVAL_P(obj)) != IS_STRING && Z_TYPE_P(Z_REFVAL_P(obj)) != IS_OBJECT))) {
-						if (error) zend_spprintf(error, 0, "first array member is not a valid class name or object");
+						if (error) zend_spprintf(error, 0, "elemen larik pertama bukan nama objek atau kelas yang valid");
 					} else {
-						if (error) zend_spprintf(error, 0, "second array member is not a valid method");
+						if (error) zend_spprintf(error, 0, "elemen larik kedua bukan fungsi yang valid");
 					}
 				} else {
-					if (error) zend_spprintf(error, 0, "array must have exactly two members");
+					if (error) zend_spprintf(error, 0, "larik harus punya tepat 2 anggota");
 				}
 			}
 			return 0;
@@ -3372,13 +3372,13 @@ again:
 				fcc->initialized = 1;
 				return 1;
 			}
-			if (error) zend_spprintf(error, 0, "no array or string given");
+			if (error) zend_spprintf(error, 0, "tidak diberi array atau string");
 			return 0;
 		case IS_REFERENCE:
 			callable = Z_REFVAL_P(callable);
 			goto again;
 		default:
-			if (error) zend_spprintf(error, 0, "no array or string given");
+			if (error) zend_spprintf(error, 0, "tidak diberi array atau string");
 			return 0;
 	}
 }
@@ -3778,13 +3778,13 @@ ZEND_API int zend_declare_class_constant_ex(zend_class_entry *ce, zend_string *n
 
 	if (ce->ce_flags & ZEND_ACC_INTERFACE) {
 		if (access_type != ZEND_ACC_PUBLIC) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Access type for interface constant %s::%s must be public", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Akses untuk konstanta %s::%s harus publik", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 		}
 	}
 
 	if (zend_string_equals_literal_ci(name, "class")) {
 		zend_error_noreturn(ce->type == ZEND_INTERNAL_CLASS ? E_CORE_ERROR : E_COMPILE_ERROR,
-				"A class constant must not be called 'class'; it is reserved for class name fetching");
+				"Nama konstanta tidak boleh 'class'");
 	}
 
 	if (Z_TYPE_P(value) == IS_STRING && !ZSTR_IS_INTERNED(Z_STR_P(value))) {
@@ -3806,7 +3806,7 @@ ZEND_API int zend_declare_class_constant_ex(zend_class_entry *ce, zend_string *n
 
 	if (!zend_hash_add_ptr(&ce->constants_table, name, c)) {
 		zend_error_noreturn(ce->type == ZEND_INTERNAL_CLASS ? E_CORE_ERROR : E_COMPILE_ERROR,
-			"Cannot redefine class constant %s::%s", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+			"Tidak bisa mendefinisikan ulang %s::%s", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 	}
 
 	return SUCCESS;
@@ -3889,7 +3889,7 @@ ZEND_API void zend_update_property_ex(zend_class_entry *scope, zval *object, zen
 	EG(fake_scope) = scope;
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
-		zend_error_noreturn(E_CORE_ERROR, "Property %s of class %s cannot be updated", ZSTR_VAL(name), ZSTR_VAL(Z_OBJCE_P(object)->name));
+		zend_error_noreturn(E_CORE_ERROR, "Properti %s dari kelas %s tidak bisa diubah", ZSTR_VAL(name), ZSTR_VAL(Z_OBJCE_P(object)->name));
 	}
 	ZVAL_STR(&property, name);
 	Z_OBJ_HT_P(object)->write_property(object, &property, value, NULL);
@@ -3906,7 +3906,7 @@ ZEND_API void zend_update_property(zend_class_entry *scope, zval *object, const 
 	EG(fake_scope) = scope;
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
-		zend_error_noreturn(E_CORE_ERROR, "Property %s of class %s cannot be updated", name, ZSTR_VAL(Z_OBJCE_P(object)->name));
+		zend_error_noreturn(E_CORE_ERROR, "Properti %s dari kelas %s tidak bisa diubah", name, ZSTR_VAL(Z_OBJCE_P(object)->name));
 	}
 	ZVAL_STRINGL(&property, name, name_length);
 	Z_OBJ_HT_P(object)->write_property(object, &property, value, NULL);
@@ -3933,7 +3933,7 @@ ZEND_API void zend_unset_property(zend_class_entry *scope, zval *object, const c
 	EG(fake_scope) = scope;
 
 	if (!Z_OBJ_HT_P(object)->unset_property) {
-		zend_error_noreturn(E_CORE_ERROR, "Property %s of class %s cannot be unset", name, ZSTR_VAL(Z_OBJCE_P(object)->name));
+		zend_error_noreturn(E_CORE_ERROR, "Properti %s dari kelas %s tidak bisa dihapus", name, ZSTR_VAL(Z_OBJCE_P(object)->name));
 	}
 	ZVAL_STRINGL(&property, name, name_length);
 	Z_OBJ_HT_P(object)->unset_property(object, &property, 0);
@@ -4102,7 +4102,7 @@ ZEND_API zval *zend_read_property_ex(zend_class_entry *scope, zval *object, zend
 	EG(fake_scope) = scope;
 
 	if (!Z_OBJ_HT_P(object)->read_property) {
-		zend_error_noreturn(E_CORE_ERROR, "Property %s of class %s cannot be read", ZSTR_VAL(name), ZSTR_VAL(Z_OBJCE_P(object)->name));
+		zend_error_noreturn(E_CORE_ERROR, "Properti %s dari kelas %s tidak bisa dibaca", ZSTR_VAL(name), ZSTR_VAL(Z_OBJCE_P(object)->name));
 	}
 
 	ZVAL_STR(&property, name);
