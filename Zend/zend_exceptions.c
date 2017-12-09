@@ -999,7 +999,7 @@ ZEND_API ZEND_COLD void zend_exception_error(zend_object *ex, int severity) /* {
 			}
 
 			zend_error_va(E_WARNING, (file && ZSTR_LEN(file) > 0) ? ZSTR_VAL(file) : NULL, line,
-				"Exception tidak tertangkap %s pada waktu pemanggilan %s::__tostring()",
+				"Exception %s tidak tertangkap pada waktu pemanggilan %s::__tostring()",
 				ZSTR_VAL(Z_OBJCE(zv)->name), ZSTR_VAL(ce_exception->name));
 
 			if (file) {
@@ -1012,12 +1012,12 @@ ZEND_API ZEND_COLD void zend_exception_error(zend_object *ex, int severity) /* {
 		line = zval_get_long(GET_PROPERTY_SILENT(&exception, ZEND_STR_LINE));
 
 		zend_error_va(severity, (file && ZSTR_LEN(file) > 0) ? ZSTR_VAL(file) : NULL, line,
-			"Exception tidak tertangkap %s\n  dilempar", ZSTR_VAL(str));
+			"Exception %s tidak tertangkap \n  dilempar", ZSTR_VAL(str));
 
 		zend_string_release(str);
 		zend_string_release(file);
 	} else {
-		zend_error(severity, "Exception tidak tertangkap '%s'", ZSTR_VAL(ce_exception->name));
+		zend_error(severity, "Exception '%s' tidak tertangkap ", ZSTR_VAL(ce_exception->name));
 	}
 
 	OBJ_RELEASE(ex);
