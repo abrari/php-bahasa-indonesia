@@ -812,32 +812,32 @@ PHPAPI ZEND_COLD void php_verror(const char *docref, const char *params, int typ
 	) {
 		switch (EG(current_execute_data)->opline->extended_value) {
 			case ZEND_EVAL:
-				function = "eval";
+				function = "jalankan";
 				is_function = 1;
 				break;
 			case ZEND_INCLUDE:
-				function = "include";
+				function = "sertakan";
 				is_function = 1;
 				break;
 			case ZEND_INCLUDE_ONCE:
-				function = "include_once";
+				function = "sertakan_satu_kali";
 				is_function = 1;
 				break;
 			case ZEND_REQUIRE:
-				function = "require";
+				function = "butuh";
 				is_function = 1;
 				break;
 			case ZEND_REQUIRE_ONCE:
-				function = "require_once";
+				function = "butuh_satu_kali";
 				is_function = 1;
 				break;
 			default:
-				function = "Unknown";
+				function = "Tidak diketahui";
 		}
 	} else {
 		function = get_active_function_name();
 		if (!function || !strlen(function)) {
-			function = "Unknown";
+			function = "Tidak diketahui";
 		} else {
 			is_function = 1;
 			class_name = get_active_class_name(&space);
@@ -1066,7 +1066,7 @@ static ZEND_COLD void php_error_cb(int type, const char *error_filename, const u
 			free(s);
 		}
 		if (!error_filename) {
-			error_filename = "Unknown";
+			error_filename = "Tidak diketahui";
 		}
 		PG(last_error_type) = type;
 		PG(last_error_message) = strdup(buffer);
@@ -1136,7 +1136,7 @@ static ZEND_COLD void php_error_cb(int type, const char *error_filename, const u
 				break;
 			case E_NOTICE:
 			case E_USER_NOTICE:
-				error_type_str = "Catatan";
+				error_type_str = "Perhatian";
 				syslog_type_int = LOG_NOTICE;
 				break;
 			case E_STRICT:
@@ -1490,13 +1490,13 @@ static ZEND_COLD void php_message_handler_for_zend(zend_long message, const void
 {
 	switch (message) {
 		case ZMSG_FAILED_INCLUDE_FOPEN:
-			php_error_docref("function.include", E_WARNING, "Failed opening '%s' for inclusion (include_path='%s')", php_strip_url_passwd((char *) data), STR_PRINT(PG(include_path)));
+			php_error_docref("function.include", E_WARNING, "Gagal mengakses file '%s' untuk disertakan (include_path='%s')", php_strip_url_passwd((char *) data), STR_PRINT(PG(include_path)));
 			break;
 		case ZMSG_FAILED_REQUIRE_FOPEN:
-			php_error_docref("function.require", E_COMPILE_ERROR, "Failed opening required '%s' (include_path='%s')", php_strip_url_passwd((char *) data), STR_PRINT(PG(include_path)));
+			php_error_docref("function.require", E_COMPILE_ERROR, "Gagal mengakses file yang dibutuhkan '%s' (include_path='%s')", php_strip_url_passwd((char *) data), STR_PRINT(PG(include_path)));
 			break;
 		case ZMSG_FAILED_HIGHLIGHT_FOPEN:
-			php_error_docref(NULL, E_WARNING, "Failed opening '%s' for highlighting", php_strip_url_passwd((char *) data));
+			php_error_docref(NULL, E_WARNING, "Gagal mengakses file '%s' untuk highlighting", php_strip_url_passwd((char *) data));
 			break;
 		case ZMSG_MEMORY_LEAK_DETECTED:
 		case ZMSG_MEMORY_LEAK_REPEATED:
@@ -2139,7 +2139,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	 * (this uses configuration parameters from php.ini)
 	 */
 	if (php_init_stream_wrappers(module_number) == FAILURE)	{
-		php_printf("PHP:  Unable to initialize stream url wrappers.\n");
+		php_printf("PHP:  Gagal inisiasi stream url wrappers.\n");
 		return FAILURE;
 	}
 
@@ -2152,7 +2152,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 
 	/* startup extensions statically compiled in */
 	if (php_register_internal_extensions_func() == FAILURE) {
-		php_printf("Unable to start builtin modules\n");
+		php_printf("Gagal menjalankan modul built-in\n");
 		return FAILURE;
 	}
 
@@ -2209,7 +2209,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 		} directives[2] = {
 			{
 				E_DEPRECATED,
-				"Directive '%s' is deprecated",
+				"Directive '%s' sudah deprecated",
 				{
 					"track_errors",
 					NULL
@@ -2217,7 +2217,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 			},
 			{
 				E_CORE_ERROR,
-				"Directive '%s' is no longer available in PHP",
+				"Directive '%s' sudah tidak ada lagi di PHP",
 				{
 					"allow_call_time_pass_reference",
 					"asp_tags",

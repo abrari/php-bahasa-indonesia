@@ -511,51 +511,51 @@ static void php_cli_usage(char *argv0)
 		prog = "php";
 	}
 
-	printf( "Usage: %s [options] [-f] <file> [--] [args...]\n"
-				"   %s [options] -r <code> [--] [args...]\n"
-				"   %s [options] [-B <begin_code>] -R <code> [-E <end_code>] [--] [args...]\n"
-				"   %s [options] [-B <begin_code>] -F <file> [-E <end_code>] [--] [args...]\n"
-				"   %s [options] -S <addr>:<port> [-t docroot] [router]\n"
-				"   %s [options] -- [args...]\n"
-				"   %s [options] -a\n"
+	printf(  "Opsi: %s [opsi] [-f] <file> [--] [args...]\n"
+				"   %s [opsi] -r <code> [--] [args...]\n"
+				"   %s [opsi] [-B <begin_code>] -R <code> [-E <end_code>] [--] [args...]\n"
+				"   %s [opsi] [-B <begin_code>] -F <file> [-E <end_code>] [--] [args...]\n"
+				"   %s [opsi] -S <addr>:<port> [-t docroot] [router]\n"
+				"   %s [opsi] -- [args...]\n"
+				"   %s [opsi] -a\n"
 				"\n"
 #if (HAVE_LIBREADLINE || HAVE_LIBEDIT) && !defined(COMPILE_DL_READLINE)
-				"  -a               Run as interactive shell\n"
+				"  -a               Jalankan sebagai shell interaktif\n"
 #else
-				"  -a               Run interactively\n"
+				"  -a               Jalankan secara interaktif\n"
 #endif
-				"  -c <path>|<file> Look for php.ini file in this directory\n"
-				"  -n               No configuration (ini) files will be used\n"
-				"  -d foo[=bar]     Define INI entry foo with value 'bar'\n"
-				"  -e               Generate extended information for debugger/profiler\n"
-				"  -f <file>        Parse and execute <file>.\n"
-				"  -h               This help\n"
-				"  -i               PHP information\n"
-				"  -l               Syntax check only (lint)\n"
-				"  -m               Show compiled in modules\n"
-				"  -r <code>        Run PHP <code> without using script tags <?..?>\n"
-				"  -B <begin_code>  Run PHP <begin_code> before processing input lines\n"
-				"  -R <code>        Run PHP <code> for every input line\n"
-				"  -F <file>        Parse and execute <file> for every input line\n"
-				"  -E <end_code>    Run PHP <end_code> after processing all input lines\n"
-				"  -H               Hide any passed arguments from external tools.\n"
-				"  -S <addr>:<port> Run with built-in web server.\n"
-				"  -t <docroot>     Specify document root <docroot> for built-in web server.\n"
-				"  -s               Output HTML syntax highlighted source.\n"
-				"  -v               Version number\n"
-				"  -w               Output source with stripped comments and whitespace.\n"
-				"  -z <file>        Load Zend extension <file>.\n"
+				"  -c <path>|<file> Gunakan file php.ini pada folder ini\n"
+				"  -n               Tidak pakai file konfigurasi .ini\n"
+				"  -d foo[=bar]     Set isi konfigurasi 'foo' dengan nilai 'bar'\n"
+				"  -e               Generate informasi tambahan untuk debugger/profiler\n"
+				"  -f <file>        Jalankan <file>.\n"
+				"  -h               Bantuan ini\n"
+				"  -i               Informasi PHP\n"
+				"  -l               Hanya cek sintaks (lint)\n"
+				"  -m               Tampilkan modul\n"
+				"  -r <code>        Jalankan <code> tanpa tag <?..?>\n"
+				"  -B <begin_code>  Jalankan <begin_code> sebelum menjalankan baris input\n"
+				"  -R <code>        Jalankan <code> pada setiap baris input\n"
+				"  -F <file>        Jalankan <file> pada setiap baris input\n"
+				"  -E <end_code>    Jalankan <end_code> setelah semua baris input\n"
+				"  -H               Sembunyikan argumen dari tools eksternal.\n"
+				"  -S <addr>:<port> Jalankan web server bawaan.\n"
+				"  -t <docroot>     Tentukan root <docroot> untuk web server bawaan.\n"
+				"  -s               Tampilkan syntax highlight untuk file.\n"
+				"  -v               Tampilkan versi\n"
+				"  -w               Bersihkan file dari komentar dan whitspace.\n"
+				"  -z <file>        Load extension Zend pada <file>.\n"
 				"\n"
-				"  args...          Arguments passed to script. Use -- args when first argument\n"
-				"                   starts with - or script is read from stdin\n"
+				"  args...          Argument yang dikirim ke script. Gunakan -- args jika argumen\n"
+				"                   pertama mulai dengan - atau script dari stdin\n"
 				"\n"
-				"  --ini            Show configuration file names\n"
+				"  --ini            Tampilkan nama file konfigurasi\n"
 				"\n"
-				"  --rf <name>      Show information about function <name>.\n"
-				"  --rc <name>      Show information about class <name>.\n"
-				"  --re <name>      Show information about extension <name>.\n"
-				"  --rz <name>      Show information about Zend extension <name>.\n"
-				"  --ri <name>      Show configuration for extension <name>.\n"
+				"  --rf <nama>      Tampilkan informasi fungsi <nama>.\n"
+				"  --rc <nama>      Tampilkan informasi kelas <nama>.\n"
+				"  --re <nama>      Tampilkan informasi extension <nama>.\n"
+				"  --rz <nama>      Tampilkan informasi Zend extension <nama>.\n"
+				"  --ri <nama>      Tampilkan konfigurasi untuk extension <nama>.\n"
 				"\n"
 				, prog, prog, prog, prog, prog, prog, prog);
 }
@@ -623,7 +623,7 @@ static int cli_seek_file_begin(zend_file_handle *file_handle, char *script_file,
 	file_handle->opened_path = NULL;
 	file_handle->free_filename = 0;
 	if (!(file_handle->handle.fp = VCWD_FOPEN(script_file, "rb"))) {
-		php_printf("Could not open input file: %s\n", script_file);
+		php_printf("Gagal mengakses file input: %s\n", script_file);
 		return FAILURE;
 	}
 	file_handle->filename = script_file;
@@ -697,7 +697,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 				goto out;
 
 			case 'v': /* show php version & quit */
-				php_printf("PHP %s (%s) (built: %s %s) ( %s)\nCopyright (c) 1997-2017 The PHP Group\n%s",
+				php_printf("Interpreter PHP Bahasa Indonesia\nBasis PHP %s (%s) (dikompilasi: %s %s) ( %s)\nHak cipta (c) 1997-2017 The PHP Group\n%s",
 					PHP_VERSION, cli_sapi_module.name, __DATE__, __TIME__,
 #if ZTS
 					"ZTS "
@@ -769,7 +769,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 'F':
 				if (behavior == PHP_MODE_PROCESS_STDIN) {
 					if (exec_run || script_file) {
-						param_error = "You can use -R or -F only once.\n";
+						param_error = "-R atau -F hanya bisa digunakan sekali.\n";
 						break;
 					}
 				} else if (behavior != PHP_MODE_STANDARD) {
@@ -785,7 +785,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 					param_error = param_mode_conflict;
 					break;
 				} else if (script_file) {
-					param_error = "You can use -f only once.\n";
+					param_error = "-f hanya bisa digunakan sekali.\n";
 					break;
 				}
 				script_file = php_optarg;
@@ -805,7 +805,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 'r': /* run code from command line */
 				if (behavior == PHP_MODE_CLI_DIRECT) {
 					if (exec_direct || script_file) {
-						param_error = "You can use -r only once.\n";
+						param_error = "-r hanya bisa digunakan sekali.\n";
 						break;
 					}
 				} else if (behavior != PHP_MODE_STANDARD || interactive) {
@@ -819,7 +819,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 'R':
 				if (behavior == PHP_MODE_PROCESS_STDIN) {
 					if (exec_run || script_file) {
-						param_error = "You can use -R or -F only once.\n";
+						param_error = "-R atau -F hanya bisa digunakan sekali.\n";
 						break;
 					}
 				} else if (behavior != PHP_MODE_STANDARD) {
@@ -833,7 +833,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 'B':
 				if (behavior == PHP_MODE_PROCESS_STDIN) {
 					if (exec_begin) {
-						param_error = "You can use -B only once.\n";
+						param_error = "-B hanya bisa digunakan sekali.\n";
 						break;
 					}
 				} else if (behavior != PHP_MODE_STANDARD || interactive) {
@@ -847,7 +847,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 'E':
 				if (behavior == PHP_MODE_PROCESS_STDIN) {
 					if (exec_end) {
-						param_error = "You can use -E only once.\n";
+						param_error = "-E hanya bisa digunakan sekali.\n";
 						break;
 					}
 				} else if (behavior != PHP_MODE_STANDARD || interactive) {
@@ -860,7 +860,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 
 			case 's': /* generate highlighted HTML from source */
 				if (behavior == PHP_MODE_CLI_DIRECT || behavior == PHP_MODE_PROCESS_STDIN) {
-					param_error = "Source highlighting only works for files.\n";
+					param_error = "Highlight source hanya untuk file.\n";
 					break;
 				}
 				behavior=PHP_MODE_HIGHLIGHT;
@@ -868,7 +868,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 
 			case 'w':
 				if (behavior == PHP_MODE_CLI_DIRECT || behavior == PHP_MODE_PROCESS_STDIN) {
-					param_error = "Source stripping only works for files.\n";
+					param_error = "Pembersihan source hanya untuk file.\n";
 					break;
 				}
 				behavior=PHP_MODE_STRIP;
@@ -1015,9 +1015,9 @@ static int do_cli(int argc, char **argv) /* {{{ */
 		case PHP_MODE_LINT:
 			exit_status = php_lint_script(&file_handle);
 			if (exit_status==SUCCESS) {
-				zend_printf("No syntax errors detected in %s\n", file_handle.filename);
+				zend_printf("Tidak ada kesalahan sintaks pada %s\n", file_handle.filename);
 			} else {
-				zend_printf("Errors parsing %s\n", file_handle.filename);
+				zend_printf("Ada kesalahan parsing %s\n", file_handle.filename);
 			}
 			break;
 		case PHP_MODE_STRIP:

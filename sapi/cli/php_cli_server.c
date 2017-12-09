@@ -2128,7 +2128,7 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
 	int is_static_file  = 0;
 
 	SG(server_context) = client;
-	if (client->request.ext_len != 3 || memcmp(client->request.ext, "php", 3) || !client->request.path_translated) {
+	if (client->request.ext_len != 3 || memcmp(client->request.ext, "php", 3) || memcmp(client->request.ext, "phpid", 5) || !client->request.path_translated) {
 		is_static_file = 1;
 	}
 
@@ -2597,10 +2597,10 @@ int do_cli_server(int argc, char **argv) /* {{{ */
 			memmove(buf, "unknown time, can't be fetched", sizeof("unknown time, can't be fetched"));
 		}
 
-		printf("PHP %s Development Server started at %s"
-				"Listening on http://%s\n"
-				"Document root is %s\n"
-				"Press Ctrl-C to quit.\n",
+		printf("PHP %s Development Server dimulai pada %s"
+				"Listening pada http://%s\n"
+				"Document root: %s\n"
+				"Tekan Ctrl-C untuk keluar.\n",
 				PHP_VERSION, buf, server_bind_address, document_root);
 	}
 
