@@ -35,6 +35,9 @@ Zend Engine v3.3.0-dev, Copyright (c) 1998-2017 Zend Technologies
 ## Kompilasi (Windows)
 Untuk kompilasi di Windows, ikuti langkah-langkah pada [link berikut](https://github.com/Microsoft/php-sdk-binary-tools). Sebelumnya Visual Studio 2015 atau 2017 harus sudah terinstal. Hasil kompilasi akan berada pada folder `Release_TS`.
 
+## Rilis versi Windows
+Rilis pertama versi Windows tersedia di halaman "Releases" repositori ini: https://github.com/abrari/php-bahasa-indonesia/releases/tag/phpid-0.1.
+
 ## Perbedaan dengan PHP
 Secara umum, beberapa hal yang berbeda dari PHP asli antara lain:
 
