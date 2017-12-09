@@ -253,7 +253,7 @@ static zend_never_inline ZEND_COLD void zval_undefined_cv(uint32_t var EXECUTE_D
 {
 	zend_string *cv = CV_DEF_OF(EX_VAR_TO_NUM(var));
 
-	zend_error(E_NOTICE, "Undefined variable: %s", ZSTR_VAL(cv));
+	zend_error(E_NOTICE, "Variabel tidak terdefinisi: %s", ZSTR_VAL(cv));
 }
 
 static zend_never_inline zval *_get_zval_cv_lookup(zval *ptr, uint32_t var, int type EXECUTE_DATA_DC)
@@ -640,7 +640,7 @@ static inline int make_real_object(zval *object)
 			return 0;
 		}
 		object_init(object);
-		zend_error(E_WARNING, "Creating default object from empty value");
+		zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 	}
 	return 1;
 }
@@ -665,55 +665,55 @@ static ZEND_COLD void zend_verify_type_error_common(
 	if (ZEND_TYPE_IS_CLASS(arg_info->type)) {
 		if (ce) {
 			if (ce->ce_flags & ZEND_ACC_INTERFACE) {
-				*need_msg = "implement interface ";
+				*need_msg = "mengimplementasi interface ";
 				is_interface = 1;
 			} else {
-				*need_msg = "be an instance of ";
+				*need_msg = "suatu objek dari  ";
 			}
 			*need_kind = ZSTR_VAL(ce->name);
 		} else {
 			/* We don't know whether it's a class or interface, assume it's a class */
 
-			*need_msg = "be an instance of ";
+			*need_msg = "suatu objek dari  ";
 			*need_kind = ZSTR_VAL(ZEND_TYPE_NAME(arg_info->type));
 		}
 	} else {
 		switch (ZEND_TYPE_CODE(arg_info->type)) {
 			case IS_OBJECT:
-				*need_msg = "be an ";
-				*need_kind = "object";
+				*need_msg = "suatu ";
+				*need_kind = "objek";
 				break;
 			case IS_CALLABLE:
-				*need_msg = "be callable";
+				*need_msg = "suatu callable";
 				*need_kind = "";
 				break;
 			case IS_ITERABLE:
-				*need_msg = "be iterable";
+				*need_msg = "suatu iterable";
 				*need_kind = "";
 				break;
 			default:
-				*need_msg = "be of the type ";
+				*need_msg = "suatu dari tipe ";
 				*need_kind = zend_get_type_by_const(ZEND_TYPE_CODE(arg_info->type));
 				break;
 		}
 	}
 
 	if (ZEND_TYPE_ALLOW_NULL(arg_info->type)) {
-		*need_or_null = is_interface ? " or be null" : " or null";
+		*need_or_null = is_interface ? " atau null" : " atau null";
 	} else {
 		*need_or_null = "";
 	}
 
 	if (value) {
 		if (ZEND_TYPE_IS_CLASS(arg_info->type) && Z_TYPE_P(value) == IS_OBJECT) {
-			*given_msg = "instance of ";
+			*given_msg = "suatu objek dari ";
 			*given_kind = ZSTR_VAL(Z_OBJCE_P(value)->name);
 		} else {
 			*given_msg = zend_zval_type_name(value);
 			*given_kind = "";
 		}
 	} else {
-		*given_msg = "none";
+		*given_msg = "kosong";
 		*given_kind = "";
 	}
 }
@@ -733,14 +733,14 @@ static ZEND_COLD void zend_verify_arg_error(
 
 		if (zf->common.type == ZEND_USER_FUNCTION) {
 			if (ptr && ptr->func && ZEND_USER_CODE(ptr->func->common.type)) {
-				zend_type_error("Argument %d passed to %s%s%s() must %s%s%s, %s%s given, called in %s on line %d",
+				zend_type_error("Parameter ke-%d pada fungsi %s%s%s() harus %s%s%s, dikasihnya %s%s, dipanggil di %s pada baris %d",
 						arg_num, fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind,
 						ZSTR_VAL(ptr->func->op_array.filename), ptr->opline->lineno);
 			} else {
-				zend_type_error("Argument %d passed to %s%s%s() must %s%s%s, %s%s given", arg_num, fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind);
+				zend_type_error("Parameter ke-%d pada fungsi %s%s%s() harus %s%s%s, dikasihnya %s%s", arg_num, fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind);
 			}
 		} else {
-			zend_type_error("Argument %d passed to %s%s%s() must %s%s%s, %s%s given", arg_num, fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind);
+			zend_type_error("Parameter ke-%d pada fungsi %s%s%s() harus %s%s%s, dikasihnya %s%s", arg_num, fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind);
 		}
 	} else {
 		zend_missing_arg_error(ptr);
@@ -920,22 +920,22 @@ ZEND_API ZEND_COLD void ZEND_FASTCALL zend_missing_arg_error(zend_execute_data *
 	zend_execute_data *ptr = EX(prev_execute_data);
 
 	if (ptr && ptr->func && ZEND_USER_CODE(ptr->func->common.type)) {
-		zend_throw_error(zend_ce_argument_count_error, "Too few arguments to function %s%s%s(), %d passed in %s on line %d and %s %d expected",
+		zend_throw_error(zend_ce_argument_count_error, "Parameter untuk fungsi %s%s%s() terlalu sedikit, diberikan %d di %s pada baris %d dan seharusnya %s %d",
 			EX(func)->common.scope ? ZSTR_VAL(EX(func)->common.scope->name) : "",
 			EX(func)->common.scope ? "::" : "",
 			ZSTR_VAL(EX(func)->common.function_name),
 			EX_NUM_ARGS(),
 			ZSTR_VAL(ptr->func->op_array.filename),
 			ptr->opline->lineno,
-			EX(func)->common.required_num_args == EX(func)->common.num_args ? "exactly" : "at least",
+			EX(func)->common.required_num_args == EX(func)->common.num_args ? "tepat" : "minimal",
 			EX(func)->common.required_num_args);
 	} else {
-		zend_throw_error(zend_ce_argument_count_error, "Too few arguments to function %s%s%s(), %d passed and %s %d expected",
+		zend_throw_error(zend_ce_argument_count_error, "Parameter untuk fungsi %s%s%s() terlalu sedikit, diberikan %d dan seharusnya %s %d",
 			EX(func)->common.scope ? ZSTR_VAL(EX(func)->common.scope->name) : "",
 			EX(func)->common.scope ? "::" : "",
 			ZSTR_VAL(EX(func)->common.function_name),
 			EX_NUM_ARGS(),
-			EX(func)->common.required_num_args == EX(func)->common.num_args ? "exactly" : "at least",
+			EX(func)->common.required_num_args == EX(func)->common.num_args ? "tepat" : "minimal",
 			EX(func)->common.required_num_args);
 	}
 }
@@ -951,7 +951,7 @@ static ZEND_COLD void zend_verify_return_error(
 		zf, arg_info, ce, value,
 		&fname, &fsep, &fclass, &need_msg, &need_kind, &need_or_null, &given_msg, &given_kind); 
 
-	zend_type_error("Return value of %s%s%s() must %s%s%s, %s%s returned",
+	zend_type_error("Tipe kembali fungsi %s%s%s() harus %s%s%s, dikembalikannya %s%s",
 		fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind);
 }
 
@@ -967,7 +967,7 @@ static ZEND_COLD void zend_verify_internal_return_error(
 		zf, arg_info, ce, value,
 		&fname, &fsep, &fclass, &need_msg, &need_kind, &need_or_null, &given_msg, &given_kind); 
 
-	zend_error_noreturn(E_CORE_ERROR, "Return value of %s%s%s() must %s%s%s, %s%s returned",
+	zend_error_noreturn(E_CORE_ERROR, "Tipe kembali fungsi %s%s%s() harus %s%s%s, dikembalikannya %s%s",
 		fclass, fsep, fname, need_msg, need_kind, need_or_null, given_msg, given_kind);
 }
 
@@ -985,7 +985,7 @@ static ZEND_COLD void zend_verify_void_return_error(const zend_function *zf, con
 		fclass = "";
 	}
 
-	zend_type_error("%s%s%s() must not return a value, %s%s returned",
+	zend_type_error("%s%s%s() seharusnya tidak mengembalikan nilai, tapi malah mengembalikan %s%s",
 		fclass, fsep, fname, returned_msg, returned_kind);
 }
 
@@ -1044,7 +1044,7 @@ static ZEND_COLD int zend_verify_missing_return_type(zend_function *zf, void **c
 static zend_never_inline void zend_assign_to_object_dim(zval *object, zval *dim, zval *value)
 {
 	if (UNEXPECTED(!Z_OBJ_HT_P(object)->write_dimension)) {
-		zend_throw_error(NULL, "Cannot use object as array");
+		zend_throw_error(NULL, "Tidak bisa menggunakan objek sebagai larik");
 		return;
 	}
 
@@ -1078,7 +1078,7 @@ static zend_never_inline void zend_binary_assign_op_obj_dim(zval *object, zval *
 		}
 		zval_ptr_dtor(&res);
 	} else {
-		zend_error(E_WARNING, "Attempt to assign property of non-object");
+		zend_error(E_WARNING, "Pemberian properti pada variabel yang bukan suatu objek");
 		if (retval) {
 			ZVAL_NULL(retval);
 		}
@@ -1097,7 +1097,7 @@ try_again:
 					break;
 				}
 				if (type != BP_VAR_UNSET) {
-					zend_error(E_WARNING, "Illegal string offset '%s'", Z_STRVAL_P(dim));
+					zend_error(E_WARNING, "Indeks berupa string yang tidak valid '%s'", Z_STRVAL_P(dim));
 				}
 				break;
 			case IS_UNDEF:
@@ -1106,13 +1106,13 @@ try_again:
 			case IS_NULL:
 			case IS_FALSE:
 			case IS_TRUE:
-				zend_error(E_NOTICE, "String offset cast occurred");
+				zend_error(E_NOTICE, "Indeks di-cast ke string");
 				break;
 			case IS_REFERENCE:
 				dim = Z_REFVAL_P(dim);
 				goto try_again;
 			default:
-				zend_error(E_WARNING, "Illegal offset type");
+				zend_error(E_WARNING, "Indeks tidak valid");
 				break;
 		}
 
@@ -1144,7 +1144,7 @@ static zend_never_inline ZEND_COLD void zend_wrong_string_offset(EXECUTE_DATA_D)
 		case ZEND_ASSIGN_BW_AND:
 		case ZEND_ASSIGN_BW_XOR:
 		case ZEND_ASSIGN_POW:
-			msg = "Cannot use assign-op operators with string offsets";
+			msg = "Tidak bisa menggunakan operator assign-op dengan offset string";
 			break;
 		case ZEND_FETCH_DIM_W:
 		case ZEND_FETCH_DIM_RW:
@@ -1171,11 +1171,11 @@ static zend_never_inline ZEND_COLD void zend_wrong_string_offset(EXECUTE_DATA_D)
 						case ZEND_ASSIGN_BW_XOR:
 						case ZEND_ASSIGN_POW:
 							if (opline->extended_value == ZEND_ASSIGN_OBJ) {
-								msg = "Cannot use string offset as an object";
+								msg = "Tidak bisa menggunakan indeks string sebagai object";
 							} else if (opline->extended_value == ZEND_ASSIGN_DIM) {
-								msg = "Cannot use string offset as an array";
+								msg = "Tidak bisa menggunakan indeks string sebagai array";
 							} else {
-								msg = "Cannot use assign-op operators with string offsets";
+								msg = "Tidak bisa menggunakan operator assign-op dengan offset string";
 							}
 							break;
 						case ZEND_PRE_INC_OBJ:
@@ -1186,45 +1186,45 @@ static zend_never_inline ZEND_COLD void zend_wrong_string_offset(EXECUTE_DATA_D)
 						case ZEND_PRE_DEC:
 						case ZEND_POST_INC:
 						case ZEND_POST_DEC:
-							msg = "Cannot increment/decrement string offsets";
+							msg = "Tidak bisa menambah/kurang indeks string";
 							break;
 						case ZEND_FETCH_DIM_W:
 						case ZEND_FETCH_DIM_RW:
 						case ZEND_FETCH_DIM_FUNC_ARG:
 						case ZEND_FETCH_DIM_UNSET:
 						case ZEND_ASSIGN_DIM:
-							msg = "Cannot use string offset as an array";
+							msg = "Tidak bisa menggunakan indeks string sebagai array";
 							break;
 						case ZEND_FETCH_OBJ_W:
 						case ZEND_FETCH_OBJ_RW:
 						case ZEND_FETCH_OBJ_FUNC_ARG:
 						case ZEND_FETCH_OBJ_UNSET:
 						case ZEND_ASSIGN_OBJ:
-							msg = "Cannot use string offset as an object";
+							msg = "Tidak bisa menggunakan indeks string sebagai object";
 							break;
 						case ZEND_ASSIGN_REF:
 						case ZEND_ADD_ARRAY_ELEMENT:
 						case ZEND_INIT_ARRAY:
 						case ZEND_MAKE_REF:
-							msg = "Cannot create references to/from string offsets";
+							msg = "Tidak bisa membuat reference dari/ke indeks string";
 							break;
 						case ZEND_RETURN_BY_REF:
 						case ZEND_VERIFY_RETURN_TYPE:
-							msg = "Cannot return string offsets by reference";
+							msg = "Tidak bisa mengembalikan indeks string by reference";
 							break;
 						case ZEND_UNSET_DIM:
 						case ZEND_UNSET_OBJ:
-							msg = "Cannot unset string offsets";
+							msg = "Tidak bisa hapus indeks string";
 							break;
 						case ZEND_YIELD:
-							msg = "Cannot yield string offsets by reference";
+							msg = "Tidak bisa hasilkan indeks string by reference";
 							break;
 						case ZEND_SEND_REF:
 						case ZEND_SEND_VAR_EX:
-							msg = "Only variables can be passed by reference";
+							msg = "Hanya variabel yang bisa di-passing by reference, bukan fungsi";
 							break;
 						case ZEND_FE_RESET_RW:
-							msg = "Cannot iterate on string offsets by reference";
+							msg = "Tidak bisa iterasi indeks string by reference";
 							break;
 						EMPTY_SWITCH_DEFAULT_CASE();
 					}
@@ -1232,7 +1232,7 @@ static zend_never_inline ZEND_COLD void zend_wrong_string_offset(EXECUTE_DATA_D)
 				}
 				if (opline->op2_type == IS_VAR && opline->op2.var == var) {
 					ZEND_ASSERT(opline->opcode == ZEND_ASSIGN_REF);
-					msg = "Cannot create references to/from string offsets";
+					msg = "Tidak bisa membuat reference dari/ke indeks string";
 					break;
 				}
 			}
@@ -1253,7 +1253,7 @@ static zend_never_inline void zend_assign_to_string_offset(zval *str, zval *dim,
 	offset = zend_check_string_offset(dim, BP_VAR_W EXECUTE_DATA_CC);
 	if (offset < -(zend_long)Z_STRLEN_P(str)) {
 		/* Error on negative offset */
-		zend_error(E_WARNING, "Illegal string offset:  " ZEND_LONG_FMT, offset);
+		zend_error(E_WARNING, "Indeks string tidak valid:  " ZEND_LONG_FMT, offset);
 		if (result) {
 			ZVAL_NULL(result);
 		}
@@ -1274,7 +1274,7 @@ static zend_never_inline void zend_assign_to_string_offset(zval *str, zval *dim,
 
 	if (string_len == 0) {
 		/* Error on empty input string */
-		zend_error(E_WARNING, "Cannot assign an empty string to a string offset");
+		zend_error(E_WARNING, "Indeks string tidak boleh string kosong");
 		if (result) {
 			ZVAL_NULL(result);
 		}
@@ -1351,7 +1351,7 @@ static zend_never_inline void zend_post_incdec_overloaded_property(zval *object,
 		zval_ptr_dtor(&z_copy);
 		zval_ptr_dtor(z);
 	} else {
-		zend_error(E_WARNING, "Attempt to increment/decrement property of non-object");
+		zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti dari variabel yang bukan objek");
 		ZVAL_NULL(result);
 	}
 }
@@ -1396,7 +1396,7 @@ static zend_never_inline void zend_pre_incdec_overloaded_property(zval *object, 
 		OBJ_RELEASE(Z_OBJ(obj));
 		zval_ptr_dtor(zptr);
 	} else {
-		zend_error(E_WARNING, "Attempt to increment/decrement property of non-object");
+		zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti dari variabel yang bukan objek");
 		if (UNEXPECTED(result)) {
 			ZVAL_NULL(result);
 		}
@@ -1438,7 +1438,7 @@ static zend_never_inline void zend_assign_op_overloaded_property(zval *object, z
 		}
 		zval_ptr_dtor(zptr);
 	} else {
-		zend_error(E_WARNING, "Attempt to assign property of non-object");
+		zend_error(E_WARNING, "Pemberian properti pada variabel yang bukan suatu objek");
 		if (UNEXPECTED(result)) {
 			ZVAL_NULL(result);
 		}
@@ -1503,14 +1503,14 @@ num_index:
 num_undef:
 		switch (type) {
 			case BP_VAR_R:
-				zend_error(E_NOTICE,"Undefined offset: " ZEND_LONG_FMT, hval);
+				zend_error(E_NOTICE,"Indeks tidak ada: " ZEND_LONG_FMT, hval);
 				/* break missing intentionally */
 			case BP_VAR_UNSET:
 			case BP_VAR_IS:
 				retval = &EG(uninitialized_zval);
 				break;
 			case BP_VAR_RW:
-				zend_error(E_NOTICE,"Undefined offset: " ZEND_LONG_FMT, hval);
+				zend_error(E_NOTICE,"Indeks tidak ada: " ZEND_LONG_FMT, hval);
 				retval = zend_hash_index_update(ht, hval, &EG(uninitialized_zval));
 				break;
 			case BP_VAR_W:
@@ -1533,14 +1533,14 @@ str_index:
 				if (UNEXPECTED(Z_TYPE_P(retval) == IS_UNDEF)) {
 					switch (type) {
 						case BP_VAR_R:
-							zend_error(E_NOTICE, "Undefined index: %s", ZSTR_VAL(offset_key));
+							zend_error(E_NOTICE, "Indeks tidak ada: %s", ZSTR_VAL(offset_key));
 							/* break missing intentionally */
 						case BP_VAR_UNSET:
 						case BP_VAR_IS:
 							retval = &EG(uninitialized_zval);
 							break;
 						case BP_VAR_RW:
-							zend_error(E_NOTICE,"Undefined index: %s", ZSTR_VAL(offset_key));
+							zend_error(E_NOTICE,"Indeks tidak ada: %s", ZSTR_VAL(offset_key));
 							/* break missing intentionally */
 						case BP_VAR_W:
 							ZVAL_NULL(retval);
@@ -1551,14 +1551,14 @@ str_index:
 		} else {
 			switch (type) {
 				case BP_VAR_R:
-					zend_error(E_NOTICE, "Undefined index: %s", ZSTR_VAL(offset_key));
+					zend_error(E_NOTICE, "Indeks tidak ada: %s", ZSTR_VAL(offset_key));
 					/* break missing intentionally */
 				case BP_VAR_UNSET:
 				case BP_VAR_IS:
 					retval = &EG(uninitialized_zval);
 					break;
 				case BP_VAR_RW:
-					zend_error(E_NOTICE,"Undefined index: %s", ZSTR_VAL(offset_key));
+					zend_error(E_NOTICE,"Indeks tidak ada: %s", ZSTR_VAL(offset_key));
 					retval = zend_hash_update(ht, offset_key, &EG(uninitialized_zval));
 					break;
 				case BP_VAR_W:
@@ -1578,7 +1578,7 @@ str_index:
 				hval = zend_dval_to_lval(Z_DVAL_P(dim));
 				goto num_index;
 			case IS_RESOURCE:
-				zend_error(E_NOTICE, "Resource ID#%d used as offset, casting to integer (%d)", Z_RES_HANDLE_P(dim), Z_RES_HANDLE_P(dim));
+				zend_error(E_NOTICE, "Resource ID#%d digunakan sebagai indeks, cast ke integer (%d)", Z_RES_HANDLE_P(dim), Z_RES_HANDLE_P(dim));
 				hval = Z_RES_HANDLE_P(dim);
 				goto num_index;
 			case IS_FALSE:
@@ -1591,7 +1591,7 @@ str_index:
 				dim = Z_REFVAL_P(dim);
 				goto try_again;
 			default:
-				zend_error(E_WARNING, "Illegal offset type");
+				zend_error(E_WARNING, "Tipe indeks tidak valid");
 				retval = (type == BP_VAR_W || type == BP_VAR_RW) ?
 					NULL : &EG(uninitialized_zval);
 		}
@@ -1630,7 +1630,7 @@ fetch_from_array:
 		if (dim == NULL) {
 			retval = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(retval == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambah elemen larik, elemen setelahnya sudah ada yang menempati");
 				ZVAL_ERROR(result);
 				return;
 			}
@@ -1651,7 +1651,7 @@ fetch_from_array:
 	}
 	if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 		if (dim == NULL) {
-			zend_throw_error(NULL, "[] operator not supported for strings");
+			zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 		} else {
 			zend_check_string_offset(dim, type EXECUTE_DATA_CC);
 			zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -1663,7 +1663,7 @@ fetch_from_array:
 			dim = &EG(uninitialized_zval);
 		}
 		if (!Z_OBJ_HT_P(container)->read_dimension) {
-			zend_throw_error(NULL, "Cannot use object as array");
+			zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			ZVAL_ERROR(result);
 		} else {
 			retval = Z_OBJ_HT_P(container)->read_dimension(container, dim, type, result);
@@ -1672,7 +1672,7 @@ fetch_from_array:
 				zend_class_entry *ce = Z_OBJCE_P(container);
 
 				ZVAL_NULL(result);
-				zend_error(E_NOTICE, "Indirect modification of overloaded element of %s has no effect", ZSTR_VAL(ce->name));
+				zend_error(E_NOTICE, "Modifikasi elemen  %s yang di-overload tidak akan berefek", ZSTR_VAL(ce->name));
 			} else if (EXPECTED(retval && Z_TYPE_P(retval) != IS_UNDEF)) {
 				if (!Z_ISREF_P(retval)) {
 					if (result != retval) {
@@ -1681,7 +1681,7 @@ fetch_from_array:
 					}
 					if (Z_TYPE_P(retval) != IS_OBJECT) {
 						zend_class_entry *ce = Z_OBJCE_P(container);
-						zend_error(E_NOTICE, "Indirect modification of overloaded element of %s has no effect", ZSTR_VAL(ce->name));
+						zend_error(E_NOTICE, "Modifikasi elemen  %s yang di-overload tidak akan berefek", ZSTR_VAL(ce->name));
 					}
 				} else if (UNEXPECTED(Z_REFCOUNT_P(retval) == 1)) {
 					ZVAL_UNREF(retval);
@@ -1712,10 +1712,10 @@ fetch_from_array:
 			ZVAL_ERROR(result);
 		} else {
 			if (type == BP_VAR_UNSET) {
-				zend_error(E_WARNING, "Cannot unset offset in a non-array variable");
+				zend_error(E_WARNING, "Tidak bisa hapus indeks pada variabel yang bukan larik");
 				ZVAL_NULL(result);
 			} else {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				ZVAL_ERROR(result);
 			}
 		}
@@ -1769,7 +1769,7 @@ try_string_offset:
 						ZVAL_NULL(result);
 						return;
 					}
-					zend_error(E_WARNING, "Illegal string offset '%s'", Z_STRVAL_P(dim));
+					zend_error(E_WARNING, "Indeks string tidak valid '%s'", Z_STRVAL_P(dim));
 					break;
 				case IS_UNDEF:
 					zval_undefined_cv(EX(opline)->op2.var EXECUTE_DATA_CC);
@@ -1778,14 +1778,14 @@ try_string_offset:
 				case IS_FALSE:
 				case IS_TRUE:
 					if (type != BP_VAR_IS) {
-						zend_error(E_NOTICE, "String offset cast occurred");
+						zend_error(E_NOTICE, "Terjadi casting indeks ke string");
 					}
 					break;
 				case IS_REFERENCE:
 					dim = Z_REFVAL_P(dim);
 					goto try_string_offset;
 				default:
-					zend_error(E_WARNING, "Illegal offset type");
+					zend_error(E_WARNING, "Tipe indeks tidak valid");
 					break;
 			}
 
@@ -1796,7 +1796,7 @@ try_string_offset:
 
 		if (UNEXPECTED(Z_STRLEN_P(container) < (size_t)((offset < 0) ? -offset : (offset + 1)))) {
 			if (type != BP_VAR_IS) {
-				zend_error(E_NOTICE, "Uninitialized string offset: " ZEND_LONG_FMT, offset);
+				zend_error(E_NOTICE, "Indeks pada string belum ada: " ZEND_LONG_FMT, offset);
 				ZVAL_EMPTY_STRING(result);
 			} else {
 				ZVAL_NULL(result);
@@ -1817,7 +1817,7 @@ try_string_offset:
 			dim = &EG(uninitialized_zval);
 		}
 		if (!Z_OBJ_HT_P(container)->read_dimension) {
-			zend_throw_error(NULL, "Cannot use object as array");
+			zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			ZVAL_NULL(result);
 		} else {
 			retval = Z_OBJ_HT_P(container)->read_dimension(container, dim, type, result);
@@ -1891,7 +1891,7 @@ static zend_always_inline void zend_fetch_property_address(zval *result, zval *c
 			} else {
 				if (container_op_type != IS_VAR || EXPECTED(!Z_ISERROR_P(container))) {
 					zend_string *property_name = zval_get_string(prop_ptr);
-					zend_error(E_WARNING, "Attempt to modify property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Modifikasi properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				ZVAL_ERROR(result);
@@ -1937,7 +1937,7 @@ use_read_property:
 					ZVAL_UNREF(ptr);
 				}
 			} else {
-				zend_throw_error(NULL, "Cannot access undefined property for object with overloaded property access");
+				zend_throw_error(NULL, "Tidak bisa mengakses properti tak terdefinisi pada objek dengan akses property overloaded ");
 				ZVAL_ERROR(result);
 			}
 		} else {
@@ -1946,7 +1946,7 @@ use_read_property:
 	} else if (EXPECTED(Z_OBJ_HT_P(container)->read_property)) {
 		goto use_read_property; 
 	} else {
-		zend_error(E_WARNING, "This object doesn't support property references");
+		zend_error(E_WARNING, "Objek ini tidak mendukung property reference");
 		ZVAL_ERROR(result);
 	}
 }
@@ -1976,7 +1976,7 @@ static zend_always_inline zval* zend_fetch_static_property_address(zval *varname
 			/* check if static properties were destoyed */
 			if (UNEXPECTED(CE_STATIC_MEMBERS(ce) == NULL)) {
 				if (type != BP_VAR_IS) {
-					zend_throw_error(NULL, "Access to undeclared static property: %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+					zend_throw_error(NULL, "Properti tidak ada: %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 				}
 				return NULL;
 			}
@@ -2015,7 +2015,7 @@ static zend_always_inline zval* zend_fetch_static_property_address(zval *varname
 			/* check if static properties were destoyed */
 			if (UNEXPECTED(CE_STATIC_MEMBERS(ce) == NULL)) {
 				if (type != BP_VAR_IS) {
-					zend_throw_error(NULL, "Access to undeclared static property: %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(name));
+					zend_throw_error(NULL, "Properti tidak ada: %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(name));
 				}
 				return NULL;
 			}
@@ -2055,7 +2055,7 @@ static int zend_check_symbol(zval *pz)
 		pz = Z_INDIRECT_P(pz);
 	}
 	if (Z_TYPE_P(pz) > 10) {
-		fprintf(stderr, "Warning!  %x has invalid type!\n", *pz);
+		fprintf(stderr, "Warning!  %x tipe tidak valid!\n", *pz);
 /* See http://support.microsoft.com/kb/190351 */
 #ifdef ZEND_WIN32
 		fflush(stderr);
@@ -2572,7 +2572,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_string(zend_s
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(called_scope->name), ZSTR_VAL(mname));
+				zend_throw_error(NULL, "Tidak ada fungsi %s::%s()", ZSTR_VAL(called_scope->name), ZSTR_VAL(mname));
 			}
 			zend_string_release(lcname);
 			zend_string_release(mname);
@@ -2585,7 +2585,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_string(zend_s
 		if (UNEXPECTED(!(fbc->common.fn_flags & ZEND_ACC_STATIC))) {
 			if (fbc->common.fn_flags & ZEND_ACC_ALLOW_STATIC) {
 				zend_error(E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non-statis %s::%s() seharusnya tidak diakses secara statis",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					return NULL;
@@ -2593,7 +2593,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_string(zend_s
 			} else {
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non-statis %s::%s() tidak bisa diakses secara statis",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				return NULL;
 			}
@@ -2606,7 +2606,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_string(zend_s
 			lcname = zend_string_tolower(function);
 		}
 		if (UNEXPECTED((func = zend_hash_find(EG(function_table), lcname)) == NULL)) {
-			zend_throw_error(NULL, "Call to undefined function %s()", ZSTR_VAL(function));
+			zend_throw_error(NULL, "Fungsi tidak dikenal: %s()", ZSTR_VAL(function));
 			zend_string_release(lcname);
 			return NULL;
 		}
@@ -2648,7 +2648,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_object(zval *
 			GC_ADDREF(object); /* For $this pointer */
 		}
 	} else {
-		zend_throw_error(NULL, "Function name must be a string");
+		zend_throw_error(NULL, "Nama fungsi harus string");
 		return NULL;
 	}
 
@@ -2675,19 +2675,19 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_array(zend_ar
 		method = zend_hash_index_find(function, 1);
 
 		if (UNEXPECTED(!obj) || UNEXPECTED(!method)) {
-			zend_throw_error(NULL, "Array callback has to contain indices 0 and 1");
+			zend_throw_error(NULL, "Array callback harus punya indeks ke-0 dan 1");
 			return NULL;
 		}
 
 		ZVAL_DEREF(obj);
 		if (UNEXPECTED(Z_TYPE_P(obj) != IS_STRING) && UNEXPECTED(Z_TYPE_P(obj) != IS_OBJECT)) {
-			zend_throw_error(NULL, "First array member is not a valid class name or object");
+			zend_throw_error(NULL, "Elemen pertama harus nama kelas atau objek");
 			return NULL;
 		}
 
 		ZVAL_DEREF(method);
 		if (UNEXPECTED(Z_TYPE_P(method) != IS_STRING)) {
-			zend_throw_error(NULL, "Second array member is not a valid method");
+			zend_throw_error(NULL, "Elemen kedua harus nama fungsi yang valid");
 			return NULL;
 		}
 
@@ -2705,14 +2705,14 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_array(zend_ar
 			}
 			if (UNEXPECTED(fbc == NULL)) {
 				if (EXPECTED(!EG(exception))) {
-					zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(called_scope->name), Z_STRVAL_P(method));
+					zend_throw_error(NULL, "Tidak ada fungsi %s::%s()", ZSTR_VAL(called_scope->name), Z_STRVAL_P(method));
 				}
 				return NULL;
 			}
 			if (!(fbc->common.fn_flags & ZEND_ACC_STATIC)) {
 				if (fbc->common.fn_flags & ZEND_ACC_ALLOW_STATIC) {
 					zend_error(E_DEPRECATED,
-						"Non-static method %s::%s() should not be called statically",
+						"Fungsi non-statis %s::%s() seharusnya tidak diakses secara statis",
 						ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 					if (UNEXPECTED(EG(exception) != NULL)) {
 						return NULL;
@@ -2720,7 +2720,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_array(zend_ar
 				} else {
 					zend_throw_error(
 						zend_ce_error,
-						"Non-static method %s::%s() cannot be called statically",
+						"Fungsi non-statis %s::%s() tidak bisa diakses secara statis",
 						ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 					return NULL;
 				}
@@ -2732,7 +2732,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_array(zend_ar
 			fbc = Z_OBJ_HT_P(obj)->get_method(&object, Z_STR_P(method), NULL);
 			if (UNEXPECTED(fbc == NULL)) {
 				if (EXPECTED(!EG(exception))) {
-					zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(object->ce->name), Z_STRVAL_P(method));
+					zend_throw_error(NULL, "Tidak ada fungsi %s::%s()", ZSTR_VAL(object->ce->name), Z_STRVAL_P(method));
 				}
 				return NULL;
 			}
@@ -2745,7 +2745,7 @@ static zend_never_inline zend_execute_data *zend_init_dynamic_call_array(zend_ar
 			}
 		}
 	} else {
-		zend_throw_error(NULL, "Function name must be a string");
+		zend_throw_error(NULL, "Nama fungsi harus string");
 		return NULL;
 	}
 
@@ -2827,7 +2827,7 @@ already_compiled:
 				new_op_array = compile_filename(type, inc_filename);
 				break;
 			case ZEND_EVAL: {
-					char *eval_desc = zend_make_compiled_string_description("eval()'d code");
+					char *eval_desc = zend_make_compiled_string_description("kode di fungsi jalankan()");
 					new_op_array = zend_compile_string(inc_filename, eval_desc);
 					efree(eval_desc);
 				}
@@ -2856,7 +2856,7 @@ ZEND_API int ZEND_FASTCALL zend_do_fcall_overloaded(zend_execute_data *call, zva
 		efree(fbc);
 		zend_vm_stack_free_call_frame(call);
 
-		zend_throw_error(NULL, "Cannot call overloaded function for non-object");
+		zend_throw_error(NULL, "Tidak bisa memanggil property overload pada non-objek");
 		return 0;
 	}
 

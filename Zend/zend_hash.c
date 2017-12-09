@@ -90,7 +90,7 @@ static zend_always_inline uint32_t zend_hash_check_size(uint32_t nSize)
 	if (nSize < HT_MIN_SIZE) {
 		nSize = HT_MIN_SIZE;
 	} else if (UNEXPECTED(nSize >= HT_MAX_SIZE)) {
-		zend_error_noreturn(E_ERROR, "Possible integer overflow in memory allocation (%u * %zu + %zu)", nSize, sizeof(Bucket), sizeof(Bucket));
+		zend_error_noreturn(E_ERROR, "Kemungkinan integer overflow pada alokasi memori (%u * %zu + %zu)", nSize, sizeof(Bucket), sizeof(Bucket));
 	}
 
 #if defined(ZEND_WIN32)
@@ -202,7 +202,7 @@ static void ZEND_FASTCALL zend_hash_packed_grow(HashTable *ht)
 {
 	HT_ASSERT_RC1(ht);
 	if (ht->nTableSize >= HT_MAX_SIZE) {
-		zend_error_noreturn(E_ERROR, "Possible integer overflow in memory allocation (%u * %zu + %zu)", ht->nTableSize * 2, sizeof(Bucket), sizeof(Bucket));
+		zend_error_noreturn(E_ERROR, "Kemungkinan integer overflow pada alokasi memori (%u * %zu + %zu)", ht->nTableSize * 2, sizeof(Bucket), sizeof(Bucket));
 	}
 	ht->nTableSize += ht->nTableSize;
 	HT_SET_DATA_ADDR(ht, perealloc2(HT_GET_DATA_ADDR(ht), HT_SIZE(ht), HT_USED_SIZE(ht), GC_FLAGS(ht) & IS_ARRAY_PERSISTENT));
@@ -944,7 +944,7 @@ static void ZEND_FASTCALL zend_hash_do_resize(HashTable *ht)
 		pefree(old_data, GC_FLAGS(ht) & IS_ARRAY_PERSISTENT);
 		zend_hash_rehash(ht);
 	} else {
-		zend_error_noreturn(E_ERROR, "Possible integer overflow in memory allocation (%u * %zu + %zu)", ht->nTableSize * 2, sizeof(Bucket) + sizeof(uint32_t), sizeof(Bucket));
+		zend_error_noreturn(E_ERROR, "Kemungkinan integer overflow pada alokasi memori (%u * %zu + %zu)", ht->nTableSize * 2, sizeof(Bucket) + sizeof(uint32_t), sizeof(Bucket));
 	}
 }
 
@@ -2481,7 +2481,7 @@ ZEND_API int zend_hash_compare(HashTable *ht1, HashTable *ht2, compare_func_t co
 	 * false recursion detection.
 	 */
 	if (UNEXPECTED(GC_IS_RECURSIVE(ht1))) {
-		zend_error_noreturn(E_ERROR, "Nesting level too deep - recursive dependency?");
+		zend_error_noreturn(E_ERROR, "Level nesting terlalu dalam - rekursif?");
 	}
 
 	if (!(GC_FLAGS(ht1) & GC_IMMUTABLE)) {

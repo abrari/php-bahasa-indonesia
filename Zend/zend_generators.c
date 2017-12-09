@@ -381,7 +381,7 @@ static zend_object *zend_generator_create(zend_class_entry *class_type) /* {{{ *
 
 static ZEND_COLD zend_function *zend_generator_get_constructor(zend_object *object) /* {{{ */
 {
-	zend_throw_error(NULL, "The \"Generator\" class is reserved for internal use and cannot be manually instantiated");
+	zend_throw_error(NULL, "Kelas \"Generator\" hanya untuk keperluan internal dan tidak bisa dibuat baru");
 
 	return NULL;
 }
@@ -762,7 +762,7 @@ ZEND_API void zend_generator_resume(zend_generator *orig_generator) /* {{{ */
 
 try_again:
 	if (generator->flags & ZEND_GENERATOR_CURRENTLY_RUNNING) {
-		zend_throw_error(NULL, "Cannot resume an already running generator");
+		zend_throw_error(NULL, "Tidak bisa melanjutkan generator yang sedang jalan");
 		return;
 	}
 
@@ -865,7 +865,7 @@ static inline void zend_generator_rewind(zend_generator *generator) /* {{{ */
 	zend_generator_ensure_initialized(generator);
 
 	if (!(generator->flags & ZEND_GENERATOR_AT_FIRST_YIELD)) {
-		zend_throw_exception(NULL, "Cannot rewind a generator that was already run", 0);
+		zend_throw_exception(NULL, "Tidak bisa mengulang generator yang sudah berjalan", 0);
 	}
 }
 /* }}} */
@@ -1069,7 +1069,7 @@ ZEND_METHOD(Generator, getReturn)
 	if (Z_ISUNDEF(generator->retval)) {
 		/* Generator hasn't returned yet -> error! */
 		zend_throw_exception(NULL,
-			"Cannot get return value of a generator that hasn't returned", 0);
+			"Tidak bisa mendapatkan hasil generator yang belum mengembalikan hasil", 0);
 		return;
 	}
 
@@ -1089,7 +1089,7 @@ ZEND_METHOD(Generator, __wakeup)
 		return;
 	}
 
-	zend_throw_exception(NULL, "Unserialization of 'Generator' is not allowed", 0);
+	zend_throw_exception(NULL, "Generator tidak bisa di-unserialize", 0);
 }
 /* }}} */
 
@@ -1181,12 +1181,12 @@ zend_object_iterator *zend_generator_get_iterator(zend_class_entry *ce, zval *ob
 	zend_generator *generator = (zend_generator*)Z_OBJ_P(object);
 
 	if (!generator->execute_data) {
-		zend_throw_exception(NULL, "Cannot traverse an already closed generator", 0);
+		zend_throw_exception(NULL, "Tidak bisa menelusuri generator yang sudah selesai", 0);
 		return NULL;
 	}
 
 	if (UNEXPECTED(by_ref) && !(generator->execute_data->func->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
-		zend_throw_exception(NULL, "You can only iterate a generator by-reference if it declared that it yields by-reference", 0);
+		zend_throw_exception(NULL, "Generator tidak menghasilkan by reference", 0);
 		return NULL;
 	}
 

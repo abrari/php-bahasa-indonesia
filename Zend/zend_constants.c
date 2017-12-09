@@ -308,16 +308,16 @@ ZEND_API zval *zend_get_constant_ex(zend_string *cname, zend_class_entry *scope,
 
 		if (zend_string_equals_literal_ci(class_name, "diri")) {
 			if (UNEXPECTED(!scope)) {
-				zend_throw_error(NULL, "Cannot access self:: when no class scope is active");
+				zend_throw_error(NULL, "Tidak bisa mengakses diri:: kalau tidak di dalam kelas");
 				goto failure;
 			}
 			ce = scope;
 		} else if (zend_string_equals_literal_ci(class_name, "induk")) {
 			if (UNEXPECTED(!scope)) {
-				zend_throw_error(NULL, "Cannot access parent:: when no class scope is active");
+				zend_throw_error(NULL, "Tidak bisa mengakses induk:: kalau tidak di dalam kelas");
 				goto failure;
 			} else if (UNEXPECTED(!scope->parent)) {
-				zend_throw_error(NULL, "Cannot access parent:: when current class scope has no parent");
+				zend_throw_error(NULL, "Tidak bisa mengakses induk:: kalau kelas ini tidak punya induk");
 				goto failure;
 			} else {
 				ce = scope->parent;
@@ -325,7 +325,7 @@ ZEND_API zval *zend_get_constant_ex(zend_string *cname, zend_class_entry *scope,
 		} else if (zend_string_equals_literal_ci(class_name, "statis")) {
 			ce = zend_get_called_scope(EG(current_execute_data));
 			if (UNEXPECTED(!ce)) {
-				zend_throw_error(NULL, "Cannot access static:: when no class scope is active");
+				zend_throw_error(NULL, "Tidak bisa mengakses statis:: kalau tidak di dalam kelas");
 				goto failure;
 			}
 		} else {
@@ -335,13 +335,13 @@ ZEND_API zval *zend_get_constant_ex(zend_string *cname, zend_class_entry *scope,
 			c = zend_hash_find_ptr(&ce->constants_table, constant_name);
 			if (c == NULL) {
 				if ((flags & ZEND_FETCH_CLASS_SILENT) == 0) {
-					zend_throw_error(NULL, "Undefined class constant '%s::%s'", ZSTR_VAL(class_name), ZSTR_VAL(constant_name));
+					zend_throw_error(NULL, "Konstanta tidak terdefinisi '%s::%s'", ZSTR_VAL(class_name), ZSTR_VAL(constant_name));
 					goto failure;
 				}
 				ret_constant = NULL;
 			} else {
 				if (!zend_verify_const_access(c, scope)) {
-					zend_throw_error(NULL, "Cannot access %s const %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(class_name), ZSTR_VAL(constant_name));
+					zend_throw_error(NULL, "Tidak bisa mengakses konstanta %s %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(class_name), ZSTR_VAL(constant_name));
 					goto failure;
 				}
 				ret_constant = &c->value;
@@ -351,7 +351,7 @@ ZEND_API zval *zend_get_constant_ex(zend_string *cname, zend_class_entry *scope,
 		if (ret_constant && Z_TYPE_P(ret_constant) == IS_CONSTANT_AST) {
 			if (Z_TYPE_P(ret_constant) == IS_CONSTANT_AST) {
 				if (IS_CONSTANT_VISITED(ret_constant)) {
-					zend_throw_error(NULL, "Cannot declare self-referencing constant '%s::%s'", ZSTR_VAL(class_name), ZSTR_VAL(constant_name));
+					zend_throw_error(NULL, "Tidak bisa deklarasi konstanta yang self-referencing '%s::%s'", ZSTR_VAL(class_name), ZSTR_VAL(constant_name));
 					ret_constant = NULL;
 					goto failure;
 				}
@@ -491,7 +491,7 @@ ZEND_API int zend_register_constant(zend_constant *c)
 		if (ZSTR_VAL(c->name)[0] == '\0' && ZSTR_LEN(c->name) > sizeof("\0__COMPILER_HALT_OFFSET__")-1
 			&& memcmp(ZSTR_VAL(name), "\0__COMPILER_HALT_OFFSET__", sizeof("\0__COMPILER_HALT_OFFSET__")) == 0) {
 		}
-		zend_error(E_NOTICE,"Constant %s already defined", ZSTR_VAL(name));
+		zend_error(E_NOTICE,"Nama konstanta tidak valid: %s", ZSTR_VAL(name));
 		zend_string_release(c->name);
 		if (!(c->flags & CONST_PERSISTENT)) {
 			zval_dtor(&c->value);

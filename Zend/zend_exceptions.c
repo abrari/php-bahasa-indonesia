@@ -50,7 +50,7 @@ static int zend_implement_throwable(zend_class_entry *interface, zend_class_entr
 	if (instanceof_function(class_type, zend_ce_exception) || instanceof_function(class_type, zend_ce_error)) {
 		return SUCCESS;
 	}
-	zend_error_noreturn(E_ERROR, "Class %s cannot implement interface %s, extend %s or %s instead",
+	zend_error_noreturn(E_ERROR, "Kelas %s tidak bisa mengimplementasi interface %s. Bisanya jadi turunan %s atau %s",
 		ZSTR_VAL(class_type->name),
 		ZSTR_VAL(interface->name),
 		ZSTR_VAL(zend_ce_exception->name),
@@ -82,7 +82,7 @@ void zend_exception_set_previous(zend_object *exception, zend_object *add_previo
 	}
 	ZVAL_OBJ(&pv, add_previous);
 	if (!instanceof_function(Z_OBJCE(pv), zend_ce_throwable)) {
-		zend_error_noreturn(E_CORE_ERROR, "Previous exception must implement Throwable");
+		zend_error_noreturn(E_CORE_ERROR, "Exception harus mengimplementasi Throwable");
 		return;
 	}
 	ZVAL_OBJ(&zv, exception);
@@ -160,7 +160,7 @@ ZEND_API ZEND_COLD void zend_throw_exception_internal(zval *exception) /* {{{ */
 		if(EG(exception)) {
 			zend_exception_error(EG(exception), E_ERROR);
 		}
-		zend_error_noreturn(E_CORE_ERROR, "Exception thrown without a stack frame");
+		zend_error_noreturn(E_CORE_ERROR, "Exception dilempar tanpa stack frame");
 	}
 
 	if (zend_throw_exception_hook) {
@@ -283,7 +283,7 @@ ZEND_METHOD(exception, __construct)
 		} else {
 			ce = base_ce;
 		}
-		zend_throw_error(NULL, "Wrong parameters for %s([string $message [, long $code [, Throwable $previous = NULL]]])", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Parameter salah untuk %s([string $pesan [, long $kode [, Throwable $sebelumnya = NULL]]])", ZSTR_VAL(ce->name));
 		return;
 	}
 
@@ -350,7 +350,7 @@ ZEND_METHOD(error_exception, __construct)
 		} else {
 			ce = zend_ce_error_exception;
 		}
-		zend_throw_error(NULL, "Wrong parameters for %s([string $message [, long $code, [ long $severity, [ string $filename, [ long $lineno  [, Throwable $previous = NULL]]]]]])", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Parameter salah untuk %s([string $pesan [, long $kode, [ long $level, [ string $namaFile, [ long $nomorBaris  [, Throwable $sebelumnya = NULL]]]]]])", ZSTR_VAL(ce->name));
 		return;
 	}
 
@@ -473,7 +473,7 @@ ZEND_METHOD(error_exception, getSeverity)
 		tmp = zend_hash_find(ht, key);                                      \
 		if (tmp) {                                                          \
 			if (Z_TYPE_P(tmp) != IS_STRING) {                               \
-				zend_error(E_WARNING, "Value for %s is no string",          \
+				zend_error(E_WARNING, "Nilai untuk %s bukan string",          \
 					ZSTR_VAL(key));                                         \
 				smart_str_appends(str, "[unknown]");                        \
 			} else {                                                        \
@@ -550,7 +550,7 @@ static void _build_trace_string(smart_str *str, HashTable *ht, uint32_t num) /* 
 	file = zend_hash_find(ht, ZSTR_KNOWN(ZEND_STR_FILE));
 	if (file) {
 		if (Z_TYPE_P(file) != IS_STRING) {
-			zend_error(E_WARNING, "Function name is no string");
+			zend_error(E_WARNING, "Nama fungsi bukan string");
 			smart_str_appends(str, "[unknown function]");
 		} else{
 			zend_long line;
@@ -559,7 +559,7 @@ static void _build_trace_string(smart_str *str, HashTable *ht, uint32_t num) /* 
 				if (Z_TYPE_P(tmp) == IS_LONG) {
 					line = Z_LVAL_P(tmp);
 				} else {
-					zend_error(E_WARNING, "Line is no long");
+					zend_error(E_WARNING, "Nomor baris bukan angka");
 					line = 0;
 				}
 			} else {
@@ -591,7 +591,7 @@ static void _build_trace_string(smart_str *str, HashTable *ht, uint32_t num) /* 
 				ZSTR_LEN(str->s) -= 2; /* remove last ', ' */
 			}
 		} else {
-			zend_error(E_WARNING, "args element is no array");
+			zend_error(E_WARNING, "elemen args bukan larik");
 		}
 	}
 	smart_str_appends(str, ")\n");
@@ -620,7 +620,7 @@ ZEND_METHOD(exception, getTraceAsString)
 	}
 	ZEND_HASH_FOREACH_NUM_KEY_VAL(Z_ARRVAL_P(trace), index, frame) {
 		if (Z_TYPE_P(frame) != IS_ARRAY) {
-			zend_error(E_WARNING, "Expected array for frame " ZEND_ULONG_FMT, index);
+			zend_error(E_WARNING, "Seharusnya array untuk frame " ZEND_ULONG_FMT, index);
 			continue;
 		}
 
@@ -885,7 +885,7 @@ ZEND_API ZEND_COLD zend_object *zend_throw_exception(zend_class_entry *exception
 
 	if (exception_ce) {
 		if (!instanceof_function(exception_ce, zend_ce_throwable)) {
-			zend_error(E_NOTICE, "Exceptions must implement Throwable");
+			zend_error(E_NOTICE, "Exception harus mengimplementasi Throwable");
 			exception_ce = zend_ce_exception;
 		}
 	} else {
@@ -981,7 +981,7 @@ ZEND_API ZEND_COLD void zend_exception_error(zend_object *ex, int severity) /* {
 		zend_call_method_with_0_params(&exception, ce_exception, NULL, "__tostring", &tmp);
 		if (!EG(exception)) {
 			if (Z_TYPE(tmp) != IS_STRING) {
-				zend_error(E_WARNING, "%s::__toString() must return a string", ZSTR_VAL(ce_exception->name));
+				zend_error(E_WARNING, "%s::__toString() hasilnya harus string", ZSTR_VAL(ce_exception->name));
 			} else {
 				zend_update_property_ex(i_get_exception_base(&exception), &exception, ZSTR_KNOWN(ZEND_STR_STRING), &tmp);
 			}
@@ -999,7 +999,7 @@ ZEND_API ZEND_COLD void zend_exception_error(zend_object *ex, int severity) /* {
 			}
 
 			zend_error_va(E_WARNING, (file && ZSTR_LEN(file) > 0) ? ZSTR_VAL(file) : NULL, line,
-				"Uncaught %s in exception handling during call to %s::__tostring()",
+				"Exception tidak tertangkap %s pada waktu pemanggilan %s::__tostring()",
 				ZSTR_VAL(Z_OBJCE(zv)->name), ZSTR_VAL(ce_exception->name));
 
 			if (file) {
@@ -1012,12 +1012,12 @@ ZEND_API ZEND_COLD void zend_exception_error(zend_object *ex, int severity) /* {
 		line = zval_get_long(GET_PROPERTY_SILENT(&exception, ZEND_STR_LINE));
 
 		zend_error_va(severity, (file && ZSTR_LEN(file) > 0) ? ZSTR_VAL(file) : NULL, line,
-			"Uncaught %s\n  thrown", ZSTR_VAL(str));
+			"Exception tidak tertangkap %s\n  dilempar", ZSTR_VAL(str));
 
 		zend_string_release(str);
 		zend_string_release(file);
 	} else {
-		zend_error(severity, "Uncaught exception '%s'", ZSTR_VAL(ce_exception->name));
+		zend_error(severity, "Exception tidak tertangkap '%s'", ZSTR_VAL(ce_exception->name));
 	}
 
 	OBJ_RELEASE(ex);
@@ -1029,13 +1029,13 @@ ZEND_API ZEND_COLD void zend_throw_exception_object(zval *exception) /* {{{ */
 	zend_class_entry *exception_ce;
 
 	if (exception == NULL || Z_TYPE_P(exception) != IS_OBJECT) {
-		zend_error_noreturn(E_CORE_ERROR, "Need to supply an object when throwing an exception");
+		zend_error_noreturn(E_CORE_ERROR, "Exception yang dilempar harus berupa objek");
 	}
 
 	exception_ce = Z_OBJCE_P(exception);
 
 	if (!exception_ce || !instanceof_function(exception_ce, zend_ce_throwable)) {
-		zend_throw_error(NULL, "Cannot throw objects that do not implement Throwable");
+		zend_throw_error(NULL, "Objek yang dilempar harus mengimplementasi Throwable");
 		zval_ptr_dtor(exception);
 		return;
 	}

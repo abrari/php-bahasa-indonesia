@@ -442,7 +442,7 @@ ZEND_API const char *get_active_function_name(void) /* {{{ */
 				if (function_name) {
 					return ZSTR_VAL(function_name);
 				} else {
-					return "main";
+					return "utama";
 				}
 			}
 			break;
@@ -465,7 +465,7 @@ ZEND_API const char *zend_get_executed_filename(void) /* {{{ */
 	if (ex) {
 		return ZSTR_VAL(ex->func->op_array.filename);
 	} else {
-		return "[no active file]";
+		return "[tidak ada file script]";
 	}
 }
 /* }}} */
@@ -549,10 +549,10 @@ ZEND_API int zend_use_undefined_constant(zend_string *name, zend_ast_attr attr, 
 	if (UNEXPECTED(EG(exception))) {
 		return FAILURE;
 	} else if ((colon = (char*)zend_memrchr(ZSTR_VAL(name), ':', ZSTR_LEN(name)))) {
-		zend_throw_error(NULL, "Undefined class constant '%s'", ZSTR_VAL(name));
+		zend_throw_error(NULL, "Konstanta tak terdefinisi '%s'", ZSTR_VAL(name));
 		return FAILURE;
 	} else if ((attr & IS_CONSTANT_UNQUALIFIED) == 0) {
-		zend_throw_error(NULL, "Undefined constant '%s'", ZSTR_VAL(name));
+		zend_throw_error(NULL, "Konstanta tak terdefinisi '%s'", ZSTR_VAL(name));
 		return FAILURE;
 	} else {
 		char *actual = ZSTR_VAL(name);
@@ -564,7 +564,7 @@ ZEND_API int zend_use_undefined_constant(zend_string *name, zend_ast_attr attr, 
 			actual_len -= (actual - ZSTR_VAL(name));
 		}
 
-		zend_error(E_WARNING, "Use of undefined constant %s - assumed '%s' (this will throw an Error in a future version of PHP)", actual, actual);
+		zend_error(E_WARNING, "Ditemukan konstanta tak terdefinisi %s - diasumsikan sebagai string '%s'", actual, actual);
 		if (EG(exception)) {
 			return FAILURE;
 		} else {
@@ -648,7 +648,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 		case sizeof(zend_fcall_info):
 			break; /* nothing to do currently */
 		default:
-			zend_error_noreturn(E_CORE_ERROR, "Corrupted fcall_info provided to zend_call_function()");
+			zend_error_noreturn(E_CORE_ERROR, "fcall_info corrupt ke zend_call_function()");
 			break;
 	}
 
@@ -686,7 +686,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 			if (error) {
 				zend_string *callable_name
 					= zend_get_callable_name_ex(&fci->function_name, fci->object);
-				zend_error(E_WARNING, "Invalid callback %s, %s", ZSTR_VAL(callable_name), error);
+				zend_error(E_WARNING, "Callback tidak valid %s, %s", ZSTR_VAL(callable_name), error);
 				efree(error);
 				zend_string_release(callable_name);
 			}
@@ -718,7 +718,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 		func, fci->param_count, fci_cache->called_scope, fci->object);
 
 	if (UNEXPECTED(func->common.fn_flags & ZEND_ACC_DEPRECATED)) {
-		zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
+		zend_error(E_DEPRECATED, "Fungsi %s%s%s() sudah tidak deprecated",
 			func->common.scope ? ZSTR_VAL(func->common.scope->name) : "",
 			func->common.scope ? "::" : "",
 			ZSTR_VAL(func->common.function_name));
@@ -744,7 +744,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 					/* By-value send is not allowed -- emit a warning,
 					 * but still perform the call with a by-value send. */
 					zend_error(E_WARNING,
-						"Parameter %d to %s%s%s() expected to be a reference, value given", i+1,
+						"Parameter ke-%d untuk fungsi %s%s%s() mestinya reference, dikasihnya nilai", i+1,
 						func->common.scope ? ZSTR_VAL(func->common.scope->name) : "",
 						func->common.scope ? "::" : "",
 						ZSTR_VAL(func->common.function_name));
@@ -828,7 +828,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 			fci->object->handlers->call_method(func->common.function_name, fci->object, call, fci->retval);
 			EG(current_execute_data) = call->prev_execute_data;
 		} else {
-			zend_throw_error(NULL, "Cannot call overloaded function for non-object");
+			zend_throw_error(NULL, "Tidak bisa memanggil fungsi yang overloaded kecuali di objek");
 		}
 
 		zend_vm_stack_free_args(call);
@@ -1026,9 +1026,9 @@ ZEND_API int zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char
 	int retval;
 
 	if (retval_ptr) {
-		ZVAL_NEW_STR(&pv, zend_string_alloc(str_len + sizeof("return ;")-1, 0));
-		memcpy(Z_STRVAL(pv), "return ", sizeof("return ") - 1);
-		memcpy(Z_STRVAL(pv) + sizeof("return ") - 1, str, str_len);
+		ZVAL_NEW_STR(&pv, zend_string_alloc(str_len + sizeof("kembalikan ;")-1, 0));
+		memcpy(Z_STRVAL(pv), "kembalikan ", sizeof("kembalikan ") - 1);
+		memcpy(Z_STRVAL(pv) + sizeof("kembalikan ") - 1, str, str_len);
 		Z_STRVAL(pv)[Z_STRLEN(pv) - 1] = ';';
 		Z_STRVAL(pv)[Z_STRLEN(pv)] = '\0';
 	} else {
@@ -1129,7 +1129,7 @@ ZEND_API ZEND_NORETURN void zend_timeout(int dummy) /* {{{ */
 	zend_set_timeout_ex(0, 1);
 #endif
 
-	zend_error_noreturn(E_ERROR, "Maximum execution time of " ZEND_LONG_FMT " second%s exceeded", EG(timeout_seconds), EG(timeout_seconds) == 1 ? "" : "s");
+	zend_error_noreturn(E_ERROR, "Waktu eksekusi maksimum " ZEND_LONG_FMT " detik%s sudah lewat", EG(timeout_seconds), EG(timeout_seconds) == 1 ? "" : "");
 }
 /* }}} */
 
@@ -1157,10 +1157,10 @@ static void zend_timeout_handler(int dummy) /* {{{ */
 			}
 		}
 		if (!error_filename) {
-			error_filename = "Unknown";
+			error_filename = "Tidak diketahui";
 		}
 
-		output_len = snprintf(log_buffer, sizeof(log_buffer), "\nFatal error: Maximum execution time of " ZEND_LONG_FMT "+" ZEND_LONG_FMT " seconds exceeded (terminated) in %s on line %d\n", EG(timeout_seconds), EG(hard_timeout), error_filename, error_lineno);
+		output_len = snprintf(log_buffer, sizeof(log_buffer), "\nError: Waktu eksekusi maksimum " ZEND_LONG_FMT "+" ZEND_LONG_FMT " sudah lewat (dihentikan) di %s pada baris %d\n", EG(timeout_seconds), EG(hard_timeout), error_filename, error_lineno);
 		if (output_len > 0) {
 			write(2, log_buffer, MIN(output_len, sizeof(log_buffer)));
 		}
@@ -1231,7 +1231,7 @@ static void zend_set_timeout_ex(zend_long seconds, int reset_signals) /* {{{ */
 	if (NULL != tq_timer) {
 		if (!DeleteTimerQueueTimer(NULL, tq_timer, NULL)) {
 			tq_timer = NULL;
-			zend_error_noreturn(E_ERROR, "Could not delete queued timer");
+			zend_error_noreturn(E_ERROR, "Tidak bisa hapus timer diantrikan");
 			return;
 		}
 		tq_timer = NULL;
@@ -1241,7 +1241,7 @@ static void zend_set_timeout_ex(zend_long seconds, int reset_signals) /* {{{ */
 	eg = ZEND_MODULE_GLOBALS_BULK(executor);
 	if (!CreateTimerQueueTimer(&tq_timer, NULL, (WAITORTIMERCALLBACK)tq_timer_cb, (VOID*)eg, seconds*1000, 0, WT_EXECUTEONLYONCE)) {
 		tq_timer = NULL;
-		zend_error_noreturn(E_ERROR, "Could not queue new timer");
+		zend_error_noreturn(E_ERROR, "Tidak bisa antrikan timer baru");
 		return;
 	}
 #else
@@ -1306,7 +1306,7 @@ void zend_unset_timeout(void) /* {{{ */
 		if (!DeleteTimerQueueTimer(NULL, tq_timer, NULL)) {
 			EG(timed_out) = 0;
 			tq_timer = NULL;
-			zend_error_noreturn(E_ERROR, "Could not delete queued timer");
+			zend_error_noreturn(E_ERROR, "Tidak bisa hapus timer diantrikan");
 			return;
 		}
 		tq_timer = NULL;
@@ -1341,23 +1341,23 @@ check_fetch_type:
 		case ZEND_FETCH_CLASS_SELF:
 			scope = zend_get_executed_scope();
 			if (UNEXPECTED(!scope)) {
-				zend_throw_or_error(fetch_type, NULL, "Cannot access self:: when no class scope is active");
+				zend_throw_or_error(fetch_type, NULL, "Tidak bisa mengakses diri:: kalau tidak di dalam kelas");
 			}
 			return scope;
 		case ZEND_FETCH_CLASS_PARENT:
 			scope = zend_get_executed_scope();
 			if (UNEXPECTED(!scope)) {
-				zend_throw_or_error(fetch_type, NULL, "Cannot access parent:: when no class scope is active");
+				zend_throw_or_error(fetch_type, NULL, "Tidak bisa mengakses induk:: kalau tidak di dalam kelas");
 				return NULL;
 			}
 			if (UNEXPECTED(!scope->parent)) {
-				zend_throw_or_error(fetch_type, NULL, "Cannot access parent:: when current class scope has no parent");
+				zend_throw_or_error(fetch_type, NULL, "Tidak bisa mengakses induk:: kalau kelas ini tidak punya induk");
 			}
 			return scope->parent;
 		case ZEND_FETCH_CLASS_STATIC:
 			ce = zend_get_called_scope(EG(current_execute_data));
 			if (UNEXPECTED(!ce)) {
-				zend_throw_or_error(fetch_type, NULL, "Cannot access static:: when no class scope is active");
+				zend_throw_or_error(fetch_type, NULL, "Tidak bisa mengakses statis:: kalau tidak di dalam kelas");
 				return NULL;
 			}
 			return ce;
@@ -1375,11 +1375,11 @@ check_fetch_type:
 	} else if ((ce = zend_lookup_class_ex(class_name, NULL, 1)) == NULL) {
 		if (!(fetch_type & ZEND_FETCH_CLASS_SILENT) && !EG(exception)) {
 			if (fetch_sub_type == ZEND_FETCH_CLASS_INTERFACE) {
-				zend_throw_or_error(fetch_type, NULL, "Interface '%s' not found", ZSTR_VAL(class_name));
+				zend_throw_or_error(fetch_type, NULL, "Interface '%s' tidak ditemukan", ZSTR_VAL(class_name));
 			} else if (fetch_sub_type == ZEND_FETCH_CLASS_TRAIT) {
-				zend_throw_or_error(fetch_type, NULL, "Trait '%s' not found", ZSTR_VAL(class_name));
+				zend_throw_or_error(fetch_type, NULL, "Sifat '%s' tidak ditemukan", ZSTR_VAL(class_name));
 			} else {
-				zend_throw_or_error(fetch_type, NULL, "Class '%s' not found", ZSTR_VAL(class_name));
+				zend_throw_or_error(fetch_type, NULL, "Kelas '%s' tidak ditemukan", ZSTR_VAL(class_name));
 			}
 		}
 		return NULL;
@@ -1397,11 +1397,11 @@ zend_class_entry *zend_fetch_class_by_name(zend_string *class_name, const zval *
 	} else if ((ce = zend_lookup_class_ex(class_name, key, 1)) == NULL) {
 		if ((fetch_type & ZEND_FETCH_CLASS_SILENT) == 0 && !EG(exception)) {
 			if ((fetch_type & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_INTERFACE) {
-				zend_throw_or_error(fetch_type, NULL, "Interface '%s' not found", ZSTR_VAL(class_name));
+				zend_throw_or_error(fetch_type, NULL, "Interface '%s' tidak ditemukan", ZSTR_VAL(class_name));
 			} else if ((fetch_type & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_TRAIT) {
-				zend_throw_or_error(fetch_type, NULL, "Trait '%s' not found", ZSTR_VAL(class_name));
+				zend_throw_or_error(fetch_type, NULL, "Sifat '%s' tidak ditemukan", ZSTR_VAL(class_name));
 			} else {
-				zend_throw_or_error(fetch_type, NULL, "Class '%s' not found", ZSTR_VAL(class_name));
+				zend_throw_or_error(fetch_type, NULL, "Kelas '%s' tidak ditemukan", ZSTR_VAL(class_name));
 			}
 		}
 		return NULL;
@@ -1457,9 +1457,9 @@ void zend_verify_abstract_class(zend_class_entry *ce) /* {{{ */
 		} ZEND_HASH_FOREACH_END();
 
 		if (ai.cnt) {
-			zend_error_noreturn(E_ERROR, "Class %s contains %d abstract method%s and must therefore be declared abstract or implement the remaining methods (" MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT ")",
+			zend_error_noreturn(E_ERROR, "Kelas %s mengandung %d fungsi abstrak%s sehingga harus dibuat abstrak juga, atau implementasikan fungsi yang masih abstrak (" MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT MAX_ABSTRACT_INFO_FMT ")",
 				ZSTR_VAL(ce->name), ai.cnt,
-				ai.cnt > 1 ? "s" : "",
+				ai.cnt > 1 ? "" : "",
 				DISPLAY_ABSTRACT_FN(0),
 				DISPLAY_ABSTRACT_FN(1),
 				DISPLAY_ABSTRACT_FN(2)
@@ -1673,7 +1673,7 @@ ZEND_API int zend_forbid_dynamic_call(const char *func_name) /* {{{ */
 	ZEND_ASSERT(ex != NULL && ex->func != NULL);
 
 	if (ZEND_CALL_INFO(ex) & ZEND_CALL_DYNAMIC) {
-		zend_error(E_WARNING, "Cannot call %s dynamically", func_name);
+		zend_error(E_WARNING, "Tidak bisa memanggil %s secara dinamis", func_name);
 		return FAILURE;
 	}
 
