@@ -419,7 +419,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_this_not_in_object_context_hel
 	USE_OPLINE
 
 	SAVE_OPLINE();
-	zend_throw_error(NULL, "Using $this when not in object context");
+	zend_throw_error(NULL, "$ini hanya bisa digunakan di dalam kelas");
 	if ((opline+1)->opcode == ZEND_OP_DATA) {
 		FREE_UNFETCHED_OP((opline+1)->op1_type, (opline+1)->op1.var);
 	}
@@ -713,7 +713,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DO_FCALL_BY_NAME_S
 		ZEND_ASSERT(fbc->type == ZEND_INTERNAL_FUNCTION);
 
 		if (UNEXPECTED((fbc->common.fn_flags & ZEND_ACC_DEPRECATED) != 0)) {
-			zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
+			zend_error(E_DEPRECATED, "Fungsi %s%s%s() sudah deprecated",
 				fbc->common.scope ? ZSTR_VAL(fbc->common.scope->name) : "",
 				fbc->common.scope ? "::" : "",
 				ZSTR_VAL(fbc->common.function_name));
@@ -791,7 +791,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DO_FCALL_BY_NAME_S
 		ZEND_ASSERT(fbc->type == ZEND_INTERNAL_FUNCTION);
 
 		if (UNEXPECTED((fbc->common.fn_flags & ZEND_ACC_DEPRECATED) != 0)) {
-			zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
+			zend_error(E_DEPRECATED, "Fungsi %s%s%s() sudah deprecated",
 				fbc->common.scope ? ZSTR_VAL(fbc->common.scope->name) : "",
 				fbc->common.scope ? "::" : "",
 				ZSTR_VAL(fbc->common.function_name));
@@ -855,12 +855,12 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DO_FCALL_SPEC_RETV
 	EX(call) = call->prev_execute_data;
 	if (UNEXPECTED((fbc->common.fn_flags & (ZEND_ACC_ABSTRACT|ZEND_ACC_DEPRECATED)) != 0)) {
 		if (UNEXPECTED((fbc->common.fn_flags & ZEND_ACC_ABSTRACT) != 0)) {
-			zend_throw_error(NULL, "Cannot call abstract method %s::%s()", ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
+			zend_throw_error(NULL, "Tidak bisa memanggil fungsi abstrak %s::%s()", ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 			UNDEF_RESULT();
 			HANDLE_EXCEPTION();
 		}
 		if (UNEXPECTED((fbc->common.fn_flags & ZEND_ACC_DEPRECATED) != 0)) {
-			zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
+			zend_error(E_DEPRECATED, "Fungsi %s%s%s() sudah deprecated",
 				fbc->common.scope ? ZSTR_VAL(fbc->common.scope->name) : "",
 				fbc->common.scope ? "::" : "",
 				ZSTR_VAL(fbc->common.function_name));
@@ -910,7 +910,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DO_FCALL_SPEC_RETV
 		} else {
 			zend_execute_internal(call, ret);
 		}
-
+		
 #if ZEND_DEBUG
 		if (!EG(exception) && call->func) {
 			ZEND_ASSERT(!(call->func->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) ||
@@ -980,12 +980,12 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DO_FCALL_SPEC_RETV
 	EX(call) = call->prev_execute_data;
 	if (UNEXPECTED((fbc->common.fn_flags & (ZEND_ACC_ABSTRACT|ZEND_ACC_DEPRECATED)) != 0)) {
 		if (UNEXPECTED((fbc->common.fn_flags & ZEND_ACC_ABSTRACT) != 0)) {
-			zend_throw_error(NULL, "Cannot call abstract method %s::%s()", ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
+			zend_throw_error(NULL, "Tidak bisa memanggil fungsi abstrak %s::%s()", ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 			UNDEF_RESULT();
 			HANDLE_EXCEPTION();
 		}
 		if (UNEXPECTED((fbc->common.fn_flags & ZEND_ACC_DEPRECATED) != 0)) {
-			zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
+			zend_error(E_DEPRECATED, "Fungsi %s%s%s() sudah deprecated",
 				fbc->common.scope ? ZSTR_VAL(fbc->common.scope->name) : "",
 				fbc->common.scope ? "::" : "",
 				ZSTR_VAL(fbc->common.function_name));
@@ -1035,7 +1035,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DO_FCALL_SPEC_RETV
 		} else {
 			zend_execute_internal(call, ret);
 		}
-
+		
 #if ZEND_DEBUG
 		if (!EG(exception) && call->func) {
 			ZEND_ASSERT(!(call->func->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) ||
@@ -1207,7 +1207,7 @@ send_again:
 
 		ZEND_HASH_FOREACH_STR_KEY_VAL(ht, name, arg) {
 			if (name) {
-				zend_throw_error(NULL, "Cannot unpack array with string keys");
+				zend_throw_error(NULL, "Tidak bisa unpack larik dengan key berupa string");
 				FREE_OP(free_op1);
 				HANDLE_EXCEPTION();
 			}
@@ -1236,7 +1236,7 @@ send_again:
 		zend_object_iterator *iter;
 
 		if (!ce || !ce->get_iterator) {
-			zend_error(E_WARNING, "Only arrays and Traversables can be unpacked");
+			zend_error(E_WARNING, "Hanya array dan objek Traversable yang bisa di-unpack");
 		} else {
 
 			iter = ce->get_iterator(ce, args, 0);
@@ -1244,7 +1244,7 @@ send_again:
 				FREE_OP(free_op1);
 				if (!EG(exception)) {
 					zend_throw_exception_ex(
-						NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name)
+						NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name)
 					);
 				}
 				HANDLE_EXCEPTION();
@@ -1275,7 +1275,7 @@ send_again:
 
 					if (Z_TYPE(key) == IS_STRING) {
 						zend_throw_error(NULL,
-							"Cannot unpack Traversable with string keys");
+							"Tidak bisa unpack Traversable dengan key berupa string");
 						zend_string_release(Z_STR(key));
 						break;
 					}
@@ -1285,8 +1285,8 @@ send_again:
 
 				if (ARG_MUST_BE_SENT_BY_REF(EX(call)->func, arg_num)) {
 					zend_error(
-						E_WARNING, "Cannot pass by-reference argument %d of %s%s%s()"
-						" by unpacking a Traversable, passing by-value instead", arg_num,
+						E_WARNING, "Parameter ke-%d pada fungsi %s%s%s() tidak bisa pass by-reference"
+						" maka di-pass by-value", arg_num,
 						EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 						EX(call)->func->common.scope ? "::" : "",
 						ZSTR_VAL(EX(call)->func->common.function_name)
@@ -1316,7 +1316,7 @@ send_again:
 		if (opline->op1_type == IS_CV && UNEXPECTED(Z_TYPE_P(args) == IS_UNDEF)) {
 			GET_OP1_UNDEF_CV(args, BP_VAR_R);
 		}
-		zend_error(E_WARNING, "Only arrays and Traversables can be unpacked");
+		zend_error(E_WARNING, "Hanya array dan objek Traversable yang bisa di-unpack");
 	}
 
 	FREE_OP(free_op1);
@@ -1339,7 +1339,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_ARRAY_SPEC_HANDLER(ZEND_O
 				goto send_array;
 			}
 		}
-		zend_internal_type_error(EX_USES_STRICT_TYPES(), "call_user_func_array() expects parameter 2 to be array, %s given", zend_get_type_by_const(Z_TYPE_P(args)));
+		zend_internal_type_error(EX_USES_STRICT_TYPES(), "call_user_func_array() butuh parameter 2 suatu larik, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(args)));
 		if (ZEND_CALL_INFO(EX(call)) & ZEND_CALL_CLOSURE) {
 			OBJ_RELEASE((zend_object*)EX(call)->func->common.prototype);
 		}
@@ -1387,7 +1387,7 @@ send_array:
 								/* By-value send is not allowed -- emit a warning,
 								 * but still perform the call. */
 								zend_error(E_WARNING,
-									"Parameter %d to %s%s%s() expected to be a reference, value given",
+									"Parameter ke-%d pada fungsi %s%s%s() seharusnya suatu reference",
 									arg_num,
 									EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 									EX(call)->func->common.scope ? "::" : "",
@@ -1420,7 +1420,7 @@ send_array:
 							/* By-value send is not allowed -- emit a warning,
 							 * but still perform the call. */
 							zend_error(E_WARNING,
-								"Parameter %d to %s%s%s() expected to be a reference, value given",
+								"Parameter ke-%d pada fungsi %s%s%s() seharusnya suatu reference",
 								arg_num,
 								EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 								EX(call)->func->common.scope ? "::" : "",
@@ -1663,7 +1663,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_TRAIT_SPEC_HANDLER(ZEND_OP
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		}
 		if (!(trait->ce_flags & ZEND_ACC_TRAIT)) {
-			zend_error_noreturn(E_ERROR, "%s cannot use %s - it is not a trait", ZSTR_VAL(ce->name), ZSTR_VAL(trait->name));
+			zend_error_noreturn(E_ERROR, "%s tidak bisa gunakan %s karena bukan suatu sifat", ZSTR_VAL(ce->name), ZSTR_VAL(trait->name));
 		}
 		CACHE_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)), trait);
 	}
@@ -1923,9 +1923,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_NAME_SPEC_HANDLER(
 	scope = EX(func)->op_array.scope;
 	if (UNEXPECTED(scope == NULL)) {
 		SAVE_OPLINE();
-		zend_throw_error(NULL, "Cannot use \"%s\" when no class scope is active",
-			fetch_type == ZEND_FETCH_CLASS_SELF ? "self" :
-			fetch_type == ZEND_FETCH_CLASS_PARENT ? "parent" : "static");
+		zend_throw_error(NULL, "Tidak bisa menggunakan \"%s\" kecuali di dalam scope kelas",
+			fetch_type == ZEND_FETCH_CLASS_SELF ? "diri" :
+			fetch_type == ZEND_FETCH_CLASS_PARENT ? "induk" : "statis");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		HANDLE_EXCEPTION();
 	}
@@ -1938,7 +1938,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_NAME_SPEC_HANDLER(
 			if (UNEXPECTED(scope->parent == NULL)) {
 				SAVE_OPLINE();
 				zend_throw_error(NULL,
-					"Cannot use \"parent\" when current class scope has no parent");
+					"Tidak bisa menggunakan \"induk\" karena kelas tidak punya induk");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			}
@@ -2102,7 +2102,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_SPEC_CONST_HANDLER
 		Z_CE_P(EX_VAR(opline->result.var)) = zend_fetch_class(NULL, opline->extended_value);
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 	} else {
-
+		
 		zval *class_name = RT_CONSTANT(opline, opline->op2);
 
 try_class_name:
@@ -2128,7 +2128,7 @@ try_class_name:
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Class name must be a valid object or a string");
+			zend_throw_error(NULL, "Nama kelas harus berupa objek yang valid atau string");
 		}
 
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -2148,7 +2148,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_FCALL_BY_NAME
 		func = zend_hash_find_ex(EG(function_table), Z_STR_P(function_name+1), 1);
 		if (UNEXPECTED(func == NULL)) {
 			SAVE_OPLINE();
-			zend_throw_error(NULL, "Call to undefined function %s()", Z_STRVAL_P(function_name));
+			zend_throw_error(NULL, "Fungsi tidak dikenal: %s()", Z_STRVAL_P(function_name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = Z_FUNC_P(func);
@@ -2168,7 +2168,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_FCALL_BY_NAME
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_DYNAMIC_CALL_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *function_name;
 	zend_execute_data *call;
 
@@ -2192,7 +2192,7 @@ try_function_name:
 				HANDLE_EXCEPTION();
 			}
 		}
-		zend_throw_error(NULL, "Function name must be a string");
+		zend_throw_error(NULL, "Nama fungsi harus berupa string");
 		call = NULL;
 	}
 
@@ -2238,7 +2238,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_NS_FCALL_BY_NAME_SPEC_CON
 			func = zend_hash_find_ex(EG(function_table), Z_STR_P(func_name), 1);
 			if (UNEXPECTED(func == NULL)) {
 				SAVE_OPLINE();
-				zend_throw_error(NULL, "Call to undefined function %s()", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+				zend_throw_error(NULL, "Fungsi tidak dikenal: %s()", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 				HANDLE_EXCEPTION();
 			}
 		}
@@ -2260,7 +2260,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_NS_FCALL_BY_NAME_SPEC_CON
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_FCALL_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *fname = RT_CONSTANT(opline, opline->op2);
 	zval *func;
 	zend_function *fbc;
@@ -2271,7 +2271,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_FCALL_SPEC_CO
 		func = zend_hash_find_ex(EG(function_table), Z_STR_P(fname), 1);
 		if (UNEXPECTED(func == NULL)) {
 		    SAVE_OPLINE();
-			zend_throw_error(NULL, "Call to undefined function %s()", Z_STRVAL_P(fname));
+			zend_throw_error(NULL, "Fungsi tidak dikenal: %s()", Z_STRVAL_P(fname));
 			HANDLE_EXCEPTION();
 		}
 		fbc = Z_FUNC_P(func);
@@ -2342,7 +2342,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_INTERFACE_SPEC_CONST_HANDL
 	}
 
 	if (UNEXPECTED((iface->ce_flags & ZEND_ACC_INTERFACE) == 0)) {
-		zend_error_noreturn(E_ERROR, "%s cannot implement %s - it is not an interface", ZSTR_VAL(ce->name), ZSTR_VAL(iface->name));
+		zend_error_noreturn(E_ERROR, "%s tidak bisa mengimplementasi %s karena bukan interface", ZSTR_VAL(ce->name), ZSTR_VAL(iface->name));
 	}
 	zend_do_implement_interface(ce, iface);
 
@@ -2403,7 +2403,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_SPEC_UNUSED_HANDLE
 		Z_CE_P(EX_VAR(opline->result.var)) = zend_fetch_class(NULL, opline->extended_value);
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 	} else {
-
+		
 		zval *class_name = NULL;
 
 try_class_name:
@@ -2429,7 +2429,7 @@ try_class_name:
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Class name must be a valid object or a string");
+			zend_throw_error(NULL, "Nama kelas harus berupa objek yang valid atau string");
 		}
 
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -2445,7 +2445,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_SPEC_CV_HANDLER(ZE
 		Z_CE_P(EX_VAR(opline->result.var)) = zend_fetch_class(NULL, opline->extended_value);
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 	} else {
-
+		
 		zval *class_name = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 
 try_class_name:
@@ -2471,7 +2471,7 @@ try_class_name:
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Class name must be a valid object or a string");
+			zend_throw_error(NULL, "Nama kelas harus berupa objek yang valid atau string");
 		}
 
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -2481,7 +2481,7 @@ try_class_name:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_DYNAMIC_CALL_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *function_name;
 	zend_execute_data *call;
 
@@ -2505,7 +2505,7 @@ try_function_name:
 				HANDLE_EXCEPTION();
 			}
 		}
-		zend_throw_error(NULL, "Function name must be a string");
+		zend_throw_error(NULL, "Nama fungsi harus berupa string");
 		call = NULL;
 	}
 
@@ -2569,7 +2569,7 @@ try_class_name:
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Class name must be a valid object or a string");
+			zend_throw_error(NULL, "Nama kelas harus berupa objek yang valid atau string");
 		}
 
 		zval_ptr_dtor_nogc(free_op2);
@@ -2604,7 +2604,7 @@ try_function_name:
 				HANDLE_EXCEPTION();
 			}
 		}
-		zend_throw_error(NULL, "Function name must be a string");
+		zend_throw_error(NULL, "Nama fungsi harus berupa string");
 		call = NULL;
 	}
 
@@ -2637,7 +2637,7 @@ try_function_name:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_NOT_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -2657,7 +2657,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_NOT_SPEC_CONST_HANDLER(ZE
 {
 	USE_OPLINE
 	zval *val;
-
+	
 
 	val = RT_CONSTANT(opline, opline->op1);
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
@@ -2681,7 +2681,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_NOT_SPEC_CONST_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ECHO_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *z;
 
 	SAVE_OPLINE();
@@ -2710,11 +2710,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ECHO_SPEC_CONST_HANDLER(ZEND_O
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 
 	val = RT_CONSTANT(opline, opline->op1);
-
+	
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZEND_VM_SET_NEXT_OPCODE(opline + 1);
 		ZEND_VM_CONTINUE();
@@ -2742,7 +2742,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_SPEC_CONST_HA
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPNZ_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 
 	val = RT_CONSTANT(opline, opline->op1);
@@ -2773,7 +2773,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPNZ_SPEC_CONST_H
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZNZ_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 
 	val = RT_CONSTANT(opline, opline->op1);
@@ -2805,7 +2805,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZNZ_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_EX_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 	int ret;
 
@@ -2842,7 +2842,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_EX_SPEC_CONST_HANDLER(ZEN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPNZ_EX_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 	int ret;
 
@@ -2945,7 +2945,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_CONST_HANDL
 {
 	USE_OPLINE
 	zval *retval_ptr;
-
+	
 
 	SAVE_OPLINE();
 
@@ -2953,7 +2953,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_CONST_HANDL
 		if ((IS_CONST & (IS_CONST|IS_TMP_VAR)) ||
 		    (IS_CONST == IS_VAR && opline->extended_value == ZEND_RETURNS_VALUE)) {
 			/* Not supposed to happen, but we'll allow it */
-			zend_error(E_NOTICE, "Only variable references should be returned by reference");
+			zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 
 			retval_ptr = RT_CONSTANT(opline, opline->op1);
 			if (!EX(return_value)) {
@@ -2977,7 +2977,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_CONST_HANDL
 		if (IS_CONST == IS_VAR) {
 			if (retval_ptr == &EG(uninitialized_zval) ||
 			    (opline->extended_value == ZEND_RETURNS_FUNCTION && !Z_ISREF_P(retval_ptr))) {
-				zend_error(E_NOTICE, "Only variable references should be returned by reference");
+				zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 				if (EX(return_value)) {
 					ZVAL_NEW_REF(EX(return_value), retval_ptr);
 				} else {
@@ -3002,7 +3002,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GENERATOR_RETURN_SPEC_CONST_HA
 {
 	USE_OPLINE
 	zval *retval;
-
+	
 
 	zend_generator *generator = zend_get_running_generator(EXECUTE_DATA_C);
 
@@ -3047,7 +3047,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_THROW_SPEC_CONST_HANDLER(ZEND_
 {
 	USE_OPLINE
 	zval *value;
-
+	
 
 	SAVE_OPLINE();
 	value = RT_CONSTANT(opline, opline->op1);
@@ -3066,7 +3066,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_THROW_SPEC_CONST_HANDLER(ZEND_
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Can only throw objects");
+			zend_throw_error(NULL, "Hanya objek yang bisa dilemparkan");
 
 			HANDLE_EXCEPTION();
 		}
@@ -3087,7 +3087,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_SPEC_CONS
 {
 	USE_OPLINE
 	zval *value, *arg;
-
+	
 
 	value = RT_CONSTANT(opline, opline->op1);
 	arg = ZEND_CALL_VAR(EX(call), opline->result.var);
@@ -3104,7 +3104,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_EX_SPEC_C
 {
 	USE_OPLINE
 	zval *value, *arg;
-
+	
 	uint32_t arg_num = opline->op2.num;
 
 	if (EXPECTED(0)) {
@@ -3114,7 +3114,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_EX_SPEC_C
 	} else if (ARG_MUST_BE_SENT_BY_REF(EX(call)->func, arg_num)) {
 send_val_by_ref:
 		SAVE_OPLINE();
-		zend_throw_error(NULL, "Cannot pass parameter %d by reference", arg_num);
+		zend_throw_error(NULL, "Tidak bisa mengirim parameter ke-%d by reference", arg_num);
 
 		arg = ZEND_CALL_VAR(EX(call), opline->result.var);
 		ZVAL_UNDEF(arg);
@@ -3135,7 +3135,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_EX_SPEC_C
 {
 	USE_OPLINE
 	zval *value, *arg;
-
+	
 	uint32_t arg_num = opline->op2.num;
 
 	if (EXPECTED(1)) {
@@ -3145,7 +3145,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_EX_SPEC_C
 	} else if (ARG_MUST_BE_SENT_BY_REF(EX(call)->func, arg_num)) {
 send_val_by_ref:
 		SAVE_OPLINE();
-		zend_throw_error(NULL, "Cannot pass parameter %d by reference", arg_num);
+		zend_throw_error(NULL, "Tidak bisa mengirim parameter ke-%d by reference", arg_num);
 
 		arg = ZEND_CALL_VAR(EX(call), opline->result.var);
 		ZVAL_UNDEF(arg);
@@ -3166,14 +3166,14 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_USER_SPEC_CONST_HANDLER(Z
 {
 	USE_OPLINE
 	zval *arg, *param;
-
+	
 
 	SAVE_OPLINE();
 	arg = RT_CONSTANT(opline, opline->op1);
 	param = ZEND_CALL_VAR(EX(call), opline->result.var);
 
 	if (UNEXPECTED(ARG_MUST_BE_SENT_BY_REF(EX(call)->func, opline->op2.num))) {
-		zend_error(E_WARNING, "Parameter %d to %s%s%s() expected to be a reference, value given",
+		zend_error(E_WARNING, "Parameter ke-%d pada fungsi %s%s%s() seharusnya suatu reference",
 			opline->op2.num,
 			EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 			EX(call)->func->common.scope ? "::" : "",
@@ -3189,7 +3189,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_SPEC_CONST_HANDLER(ZEND_O
 {
 	USE_OPLINE
 	zval *val;
-
+	
 
 	val = RT_CONSTANT(opline, opline->op1);
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
@@ -3285,7 +3285,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_NEW_SPEC_CONST_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *obj;
 	zend_class_entry *ce, *scope;
 	zend_function *clone;
@@ -3314,7 +3314,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_HANDLER(ZEND_
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "__clone method called on non-object");
+			zend_throw_error(NULL, "fungsi __clone dipanggil pada variabel yang bukan objek");
 
 			HANDLE_EXCEPTION();
 		}
@@ -3324,7 +3324,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_HANDLER(ZEND_
 	clone = ce->clone;
 	clone_call = Z_OBJ_HT_P(obj)->clone_obj;
 	if (UNEXPECTED(clone_call == NULL)) {
-		zend_throw_error(NULL, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek dari kelas %s tidak bisa disalin", ZSTR_VAL(ce->name));
 
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		HANDLE_EXCEPTION();
@@ -3336,7 +3336,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_HANDLER(ZEND_
 			 */
 			scope = EX(func)->op_array.scope;
 			if (!zend_check_private(clone, scope, clone->common.function_name)) {
-				zend_throw_error(NULL, "Call to private %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi privat %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -3346,7 +3346,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_HANDLER(ZEND_
 			 */
 			scope = EX(func)->op_array.scope;
 			if (UNEXPECTED(!zend_check_protected(zend_get_function_root_class(clone), scope))) {
-				zend_throw_error(NULL, "Call to protected %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi terproteksi %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -3362,7 +3362,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CAST_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr;
 	zval *result = EX_VAR(opline->result.var);
 
@@ -3444,7 +3444,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INCLUDE_OR_EVAL_SPEC_CONST_HAN
 {
 	USE_OPLINE
 	zend_op_array *new_op_array;
-
+	
 	zval *inc_filename;
 
 	SAVE_OPLINE();
@@ -3511,7 +3511,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INCLUDE_OR_EVAL_SPEC_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *array_ptr, *result;
 
 	SAVE_OPLINE();
@@ -3554,7 +3554,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CONST_HANDLER(
 					OBJ_RELEASE(&iter->std);
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -3594,7 +3594,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CONST_HANDLER(
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 
@@ -3605,7 +3605,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CONST_HANDLER(
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *array_ptr, *array_ref;
 
 	SAVE_OPLINE();
@@ -3681,7 +3681,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_CONST_HANDLER
 
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -3734,7 +3734,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_CONST_HANDLER
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 		if (IS_CONST == IS_VAR) {
@@ -3752,7 +3752,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_EXIT_SPEC_CONST_HANDLER(ZEND_O
 
 	SAVE_OPLINE();
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *ptr = RT_CONSTANT(opline, opline->op1);
 
 		do {
@@ -3778,7 +3778,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_EXIT_SPEC_CONST_HANDLER(ZEND_O
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMP_SET_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *ref = NULL;
 	int ret;
@@ -3828,7 +3828,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMP_SET_SPEC_CONST_HANDLER(ZEN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COALESCE_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *ref = NULL;
 
@@ -3868,7 +3868,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COALESCE_SPEC_CONST_HANDLER(ZE
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *result = EX_VAR(opline->result.var);
 
@@ -3912,13 +3912,13 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CONST_HANDLER(
 	zend_generator *generator = zend_get_running_generator(EXECUTE_DATA_C);
 
 	zval *val;
-
+	
 
 	SAVE_OPLINE();
 	val = RT_CONSTANT(opline, opline->op1);
 
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot use \"yield from\" in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa \"hasilkan dari\" pada generator yang sudah closed");
 
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
@@ -3942,7 +3942,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CONST_HANDLER(
 
 			if (Z_ISUNDEF(new_gen->retval)) {
 				if (UNEXPECTED(zend_generator_get_current(new_gen) == generator)) {
-					zend_throw_error(NULL, "Impossible to yield from the Generator being currently run");
+					zend_throw_error(NULL, "Tidak bisa hasilkan dari generator");
 					zval_ptr_dtor(val);
 					UNDEF_RESULT();
 					HANDLE_EXCEPTION();
@@ -3950,7 +3950,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CONST_HANDLER(
 					zend_generator_yield_from(generator, new_gen);
 				}
 			} else if (UNEXPECTED(new_gen->execute_data == NULL)) {
-				zend_throw_error(NULL, "Generator passed to yield from was aborted without proper return and is unable to continue");
+				zend_throw_error(NULL, "Generator berhenti dan tidak bisa melanjutkan");
 				zval_ptr_dtor(val);
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -3965,7 +3965,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CONST_HANDLER(
 
 			if (UNEXPECTED(!iter) || UNEXPECTED(EG(exception))) {
 				if (!EG(exception)) {
-					zend_throw_error(NULL, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_error(NULL, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -3984,7 +3984,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CONST_HANDLER(
 			ZVAL_OBJ(&generator->values, &iter->std);
 		}
 	} else {
-		zend_throw_error(NULL, "Can use \"yield from\" only with arrays and Traversables");
+		zend_throw_error(NULL, "Hanya bisa \"hasilkan dari\" dari larik dan Traversable");
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
 	}
@@ -4013,7 +4013,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_STRLEN_SPEC_CONST_HANDLER(ZEND
 {
 	USE_OPLINE
 	zval *value;
-
+	
 
 	value = RT_CONSTANT(opline, opline->op1);
 	if (EXPECTED(Z_TYPE_P(value) == IS_STRING)) {
@@ -4050,7 +4050,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_STRLEN_SPEC_CONST_HANDLER(ZEND
 				}
 				zval_ptr_dtor(&tmp);
 			}
-			zend_internal_type_error(strict, "strlen() expects parameter 1 to be string, %s given", zend_get_type_by_const(Z_TYPE_P(value)));
+			zend_internal_type_error(strict, "strlen() butuh parameter 1 suatu string, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(value)));
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} while (0);
 	}
@@ -4063,7 +4063,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_TYPE_CHECK_SPEC_CONST_HANDLER(
 	USE_OPLINE
 	zval *value;
 	int result = 0;
-
+	
 
 	value = RT_CONSTANT(opline, opline->op1);
 	if ((1 << (uint32_t)Z_TYPE_P(value) & opline->extended_value)) {
@@ -4120,7 +4120,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DEFINED_SPEC_CONST_HANDLER(ZEN
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_DOUBLE_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 
 	value = RT_CONSTANT(opline, opline->op1);
@@ -4131,7 +4131,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_DOUBLE_S
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_NOREF_SPEC_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 
 	value = RT_CONSTANT(opline, opline->op1);
@@ -4142,7 +4142,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_NOREF_SP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4185,7 +4185,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CONST_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4228,7 +4228,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CONST_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4274,7 +4274,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CONST_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -4289,7 +4289,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CONST_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4299,7 +4299,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_CONST_HANDLER(Z
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -4328,7 +4328,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4356,7 +4356,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CONST_CONST_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4384,7 +4384,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CONST_CONST_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -4399,7 +4399,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CONST_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4461,7 +4461,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CONST_CONST_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -4479,7 +4479,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CONST_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -4497,7 +4497,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CONST_CO
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4565,7 +4565,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CONST_CONST_HAND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4633,7 +4633,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CONST_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4683,7 +4683,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CONST_CONST_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4733,7 +4733,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -4748,7 +4748,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CONST_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4775,7 +4775,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CONST_CONST_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4802,7 +4802,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CONST_CONST_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -4829,7 +4829,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CONST_CONST_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_XOR_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -4844,7 +4844,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_XOR_SPEC_CONST_CONST_HAND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_CONST_CONST(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 
@@ -4852,7 +4852,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = RT_CONSTANT(opline, opline->op1);
 
 	retval = zend_fetch_static_property_address(varname, IS_CONST, opline->op2, IS_CONST, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 
@@ -4911,7 +4911,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_STATIC_PROP_IS_SPEC_CONS
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value, *result;
 
 	SAVE_OPLINE();
@@ -4947,7 +4947,7 @@ fetch_dim_r_slow:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_IS_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -4968,7 +4968,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -4983,7 +4983,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	} else {
 		if (IS_CONST == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -5000,9 +5000,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -5087,7 +5087,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CONST_CONST_H
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -5106,9 +5106,9 @@ fetch_obj_r_no_object:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -5210,7 +5210,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CONST_
 
 		SAVE_OPLINE();
 		if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -5237,7 +5237,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -5250,7 +5250,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CONST_CONST_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FAST_CONCAT_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	zend_string *op1_str, *op2_str, *str;
 
@@ -5362,7 +5362,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CO
 {
 	USE_OPLINE
 	zval *function_name;
-
+	
 	zval *object;
 	zend_function *fbc;
 	zend_class_entry *called_scope;
@@ -5395,7 +5395,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CO
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 
 			HANDLE_EXCEPTION();
@@ -5418,7 +5418,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CO
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 
 				HANDLE_EXCEPTION();
@@ -5436,7 +5436,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CO
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 
 			HANDLE_EXCEPTION();
@@ -5446,7 +5446,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CO
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CONST == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 
@@ -5527,7 +5527,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_CONST != IS_UNUSED) {
-
+		
 
 		function_name = RT_CONSTANT(opline, opline->op2);
 		if (IS_CONST != IS_CONST) {
@@ -5544,7 +5544,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -5558,7 +5558,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -5580,11 +5580,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -5603,7 +5603,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -5613,7 +5613,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -5622,7 +5622,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 
 	if (IS_CONST == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -5643,7 +5643,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *function_name;
 	zend_fcall_info_cache fcc;
 	char *error = NULL;
@@ -5663,7 +5663,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CONS
 			efree(error);
 			/* This is the only soft error is_callable() can generate */
 			zend_error(E_DEPRECATED,
-				"Non-static method %s::%s() should not be called statically",
+				"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 				ZSTR_VAL(func->common.scope->name), ZSTR_VAL(func->common.function_name));
 			if (UNEXPECTED(EG(exception) != NULL)) {
 
@@ -5697,7 +5697,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CONS
 			init_func_run_time_cache(&func->op_array);
 		}
 	} else {
-		zend_internal_type_error(EX_USES_STRICT_TYPES(), "%s() expects parameter 1 to be a valid callback, %s", Z_STRVAL_P(RT_CONSTANT(opline, opline->op1)), error);
+		zend_internal_type_error(EX_USES_STRICT_TYPES(), "Fungsi %s() butuh parameter 1 suatu callback yang valid, %s", Z_STRVAL_P(RT_CONSTANT(opline, opline->op1)), error);
 		efree(error);
 
 		if (UNEXPECTED(EG(exception))) {
@@ -5719,7 +5719,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CONS
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -5829,7 +5829,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_CONS
 			c = Z_PTR_P(zv);
 			scope = EX(func)->op_array.scope;
 			if (!zend_verify_const_access(c, scope)) {
-				zend_throw_error(NULL, "Cannot access %s const %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(ce->name), Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+				zend_throw_error(NULL, "Tidak bisa mengakses konstanta %s: %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(ce->name), Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			}
@@ -5847,7 +5847,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_CONS
 				CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)), ce, value);
 			}
 		} else {
-			zend_throw_error(NULL, "Undefined class constant '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+			zend_throw_error(NULL, "Konstanta kelas tidak ada: '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
 			HANDLE_EXCEPTION();
 		}
@@ -5861,7 +5861,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_CONS
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -5897,7 +5897,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_C
 	}
 
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *offset = RT_CONSTANT(opline, opline->op2);
 		zend_string *str;
 		zend_ulong hval;
@@ -5936,13 +5936,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -5976,7 +5976,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CONST_C
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
-
+	
 
 	SAVE_OPLINE();
 
@@ -6035,7 +6035,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
@@ -6100,7 +6100,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if (IS_CONST == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if (IS_CONST != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -6122,7 +6122,7 @@ is_static_prop_return:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_DIM_OBJ_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zend_ulong hval;
@@ -6176,7 +6176,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -6205,7 +6205,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -6254,7 +6254,7 @@ isset_dim_obj_exit:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zval *offset;
@@ -6281,7 +6281,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CO
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -6300,7 +6300,7 @@ isset_no_object:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DECLARE_CONST_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *name;
 	zval *val;
 	zend_constant c;
@@ -6337,7 +6337,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CONST_HANDLER
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -6352,7 +6352,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CONST_HANDLER
 
 	/* Set the new yielded value */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -6360,7 +6360,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CONST_HANDLER
 			if (IS_CONST & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = RT_CONSTANT(opline, opline->op1);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -6378,7 +6378,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CONST_HANDLER
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -6413,7 +6413,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CONST_HANDLER
 
 	/* Set the new yielded key */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *key = RT_CONSTANT(opline, opline->op2);
 
 		/* Consts, temporary variables and references need copying */
@@ -6468,7 +6468,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CONST_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_LONG_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op, *jump_zv;
 	HashTable *jumptable;
 
@@ -6497,7 +6497,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_LONG_SPEC_CONST_CONST_H
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_STRING_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op, *jump_zv;
 	HashTable *jumptable;
 
@@ -6531,7 +6531,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_STRING_SPEC_CONST_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IN_ARRAY_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 	HashTable *ht = Z_ARRVAL_P(RT_CONSTANT(opline, opline->op2));
 	int result;
@@ -6571,7 +6571,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IN_ARRAY_SPEC_CONST_CONST_HAND
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_INDEX_SPEC_CONST_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value;
 	zend_long offset;
 
@@ -6611,7 +6611,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -6660,7 +6660,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_TMP_HANDLER(Z
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 		UNDEF_RESULT();
@@ -6675,7 +6675,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_TMP_HANDLER(Z
 
 	/* Set the new yielded value */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -6683,7 +6683,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_TMP_HANDLER(Z
 			if (IS_CONST & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = RT_CONSTANT(opline, opline->op1);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -6701,7 +6701,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_TMP_HANDLER(Z
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -6827,7 +6827,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CONST_VA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_CONST_VAR(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 
@@ -6835,7 +6835,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = RT_CONSTANT(opline, opline->op1);
 
 	retval = zend_fetch_static_property_address(varname, IS_CONST, opline->op2, IS_VAR, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 
@@ -6897,7 +6897,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CONST_V
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
-
+	
 
 	SAVE_OPLINE();
 
@@ -6956,7 +6956,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
@@ -7021,7 +7021,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if (IS_CONST == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if (IS_CONST != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -7048,7 +7048,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_VAR_HANDLER(Z
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 		UNDEF_RESULT();
@@ -7063,7 +7063,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_VAR_HANDLER(Z
 
 	/* Set the new yielded value */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -7071,7 +7071,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_VAR_HANDLER(Z
 			if (IS_CONST & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = RT_CONSTANT(opline, opline->op1);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -7089,7 +7089,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_VAR_HANDLER(Z
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -7179,7 +7179,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_VAR_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_var_address_helper_SPEC_CONST_UNUSED(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 	zend_string *name, *tmp_name;
@@ -7215,7 +7215,7 @@ fetch_this:
 						Z_ADDREF_P(result);
 					} else {
 						ZVAL_NULL(result);
-						zend_error(E_NOTICE,"Undefined variable: this");
+						zend_error(E_NOTICE,"Variabel tidak terdefinisi: this");
 					}
 					break;
 				case BP_VAR_IS:
@@ -7229,11 +7229,11 @@ fetch_this:
 				case BP_VAR_RW:
 				case BP_VAR_W:
 					ZVAL_UNDEF(result);
-					zend_throw_error(NULL, "Cannot re-assign $this");
+					zend_throw_error(NULL, "Tidak bisa mengisi ke $ini");
 					break;
 				case BP_VAR_UNSET:
 					ZVAL_UNDEF(result);
-					zend_throw_error(NULL, "Cannot unset $this");
+					zend_throw_error(NULL, "Tidak bisa menghapus $ini");
 					break;
 				EMPTY_SWITCH_DEFAULT_CASE()
 			}
@@ -7245,13 +7245,13 @@ fetch_this:
 		switch (type) {
 			case BP_VAR_R:
 			case BP_VAR_UNSET:
-				zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+				zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 				/* break missing intentionally */
 			case BP_VAR_IS:
 				retval = &EG(uninitialized_zval);
 				break;
 			case BP_VAR_RW:
-				zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+				zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 				retval = zend_hash_update(target_symbol_table, name, &EG(uninitialized_zval));
 				break;
 			case BP_VAR_W:
@@ -7269,13 +7269,13 @@ fetch_this:
 			switch (type) {
 				case BP_VAR_R:
 				case BP_VAR_UNSET:
-					zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+					zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 					/* break missing intentionally */
 				case BP_VAR_IS:
 					retval = &EG(uninitialized_zval);
 					break;
 				case BP_VAR_RW:
-					zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+					zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 					/* break missing intentionally */
 				case BP_VAR_W:
 					ZVAL_NULL(retval);
@@ -7341,7 +7341,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_IS_SPEC_CONST_UNUSED_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_CONST_UNUSED(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 
@@ -7349,7 +7349,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = RT_CONSTANT(opline, opline->op1);
 
 	retval = zend_fetch_static_property_address(varname, IS_CONST, opline->op2, IS_UNUSED, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 
@@ -7415,7 +7415,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -7430,7 +7430,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	} else {
 		if (IS_UNUSED == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -7486,7 +7486,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		function_name = NULL;
 		if (IS_UNUSED != IS_CONST) {
@@ -7503,7 +7503,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -7517,7 +7517,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -7539,11 +7539,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -7562,7 +7562,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -7572,7 +7572,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -7581,7 +7581,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 
 	if (IS_CONST == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -7607,10 +7607,10 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_CONST_
 	if (IS_CONST == IS_UNUSED) {
 		zend_verify_missing_return_type(EX(func), CACHE_ADDR(opline->op2.num));
 	} else {
-/* prevents "undefined variable opline" errors */
+/* prevents "Variabel tidak terdefinisi opline" errors */
 #if 0 || (IS_CONST != IS_UNUSED)
 		zval *retval_ref, *retval_ptr;
-
+		
 		zend_arg_info *ret_info = EX(func)->common.arg_info - 1;
 
 		retval_ref = retval_ptr = RT_CONSTANT(opline, opline->op1);
@@ -7652,7 +7652,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -7688,7 +7688,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_U
 	}
 
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *offset = NULL;
 		zend_string *str;
 		zend_ulong hval;
@@ -7727,13 +7727,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -7767,7 +7767,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_VAR_SPEC_CONST_UNUSED_HA
 	zval *varname;
 	zend_string *name, *tmp_name;
 	HashTable *target_symbol_table;
-
+	
 
 	SAVE_OPLINE();
 
@@ -7801,7 +7801,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CONST_U
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
-
+	
 
 	SAVE_OPLINE();
 
@@ -7860,7 +7860,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_VAR_SPEC_CONST_U
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	HashTable *target_symbol_table;
@@ -7897,7 +7897,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
@@ -7962,7 +7962,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if (IS_CONST == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if (IS_CONST != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -8017,7 +8017,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_UNUSED_HANDLE
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -8032,7 +8032,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_UNUSED_HANDLE
 
 	/* Set the new yielded value */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -8040,7 +8040,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_UNUSED_HANDLE
 			if (IS_CONST & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = RT_CONSTANT(opline, opline->op1);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -8058,7 +8058,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_UNUSED_HANDLE
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -8093,7 +8093,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_UNUSED_HANDLE
 
 	/* Set the new yielded key */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *key = NULL;
 
 		/* Consts, temporary variables and references need copying */
@@ -8148,7 +8148,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_UNUSED_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COUNT_SPEC_CONST_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 	zend_long count;
 
@@ -8183,7 +8183,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COUNT_SPEC_CONST_UNUSED_HANDLE
 		} else {
 			count = 1;
 		}
-		zend_error(E_WARNING, "count(): Parameter must be an array or an object that implements Countable");
+		zend_error(E_WARNING, "count(): Parameter harus suatu larik atau objek Countable");
 	} while (0);
 
 	ZVAL_LONG(EX_VAR(opline->result.var), count);
@@ -8198,7 +8198,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CONST_UNUSED_HA
 	if (IS_CONST == IS_UNUSED) {
 		if (UNEXPECTED(!EX(func)->common.scope)) {
 			SAVE_OPLINE();
-			zend_error(E_WARNING, "get_class() called without object from outside a class");
+			zend_error(E_WARNING, "get_class() dipanggil tanpa objek dari luar kelas");
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		} else {
@@ -8206,7 +8206,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CONST_UNUSED_HA
 			ZEND_VM_NEXT_OPCODE();
 		}
 	} else {
-
+		
 		zval *op1;
 
 		SAVE_OPLINE();
@@ -8214,7 +8214,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CONST_UNUSED_HA
 		if (Z_TYPE_P(op1) == IS_OBJECT) {
 			ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op1)->name);
 		} else {
-			zend_error(E_WARNING, "get_class() expects parameter 1 to be object, %s given", zend_get_type_by_const(Z_TYPE_P(op1)));
+			zend_error(E_WARNING, "get_class() butuh parameter 1 suatu objek, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(op1)));
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 		}
 
@@ -8225,7 +8225,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CONST_UNUSED_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_CONST_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 	zend_string *type;
 
@@ -8235,7 +8235,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_CONST_UNUSED_HAN
 	if (EXPECTED(type)) {
 		ZVAL_INTERNED_STR(EX_VAR(opline->result.var), type);
 	} else {
-		ZVAL_STRING(EX_VAR(opline->result.var), "unknown type");
+		ZVAL_STRING(EX_VAR(opline->result.var), "tipe tidak diketahui");
 	}
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -8317,7 +8317,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FUNC_GET_ARGS_SPEC_CONST_UNUSE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8360,7 +8360,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CONST_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8403,7 +8403,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CONST_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8449,7 +8449,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CONST_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -8464,7 +8464,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CONST_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8474,7 +8474,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_CV_HANDLER(ZEND
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -8503,7 +8503,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8531,7 +8531,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CONST_CV_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8559,7 +8559,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CONST_CV_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -8574,7 +8574,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CONST_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8636,7 +8636,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CONST_CV_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -8654,7 +8654,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CONST_CV_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -8672,7 +8672,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CONST_CV
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8740,7 +8740,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CONST_CV_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8808,7 +8808,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CONST_CV_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8858,7 +8858,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CONST_CV_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8908,7 +8908,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -8923,7 +8923,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CONST_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8950,7 +8950,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CONST_CV_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -8977,7 +8977,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CONST_CV_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -9004,7 +9004,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CONST_CV_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_XOR_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -9019,7 +9019,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_XOR_SPEC_CONST_CV_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value, *result;
 
 	SAVE_OPLINE();
@@ -9055,7 +9055,7 @@ fetch_dim_r_slow:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_IS_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -9076,7 +9076,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -9091,7 +9091,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	} else {
 		if (IS_CV == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -9108,9 +9108,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -9195,7 +9195,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CONST_CV_HAND
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -9214,9 +9214,9 @@ fetch_obj_r_no_object:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -9318,7 +9318,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CONST_
 
 		SAVE_OPLINE();
 		if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -9345,7 +9345,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -9358,7 +9358,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CONST_CV_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FAST_CONCAT_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	zend_string *op1_str, *op2_str, *str;
 
@@ -9470,7 +9470,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CV
 {
 	USE_OPLINE
 	zval *function_name;
-
+	
 	zval *object;
 	zend_function *fbc;
 	zend_class_entry *called_scope;
@@ -9503,7 +9503,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CV
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 
 			HANDLE_EXCEPTION();
@@ -9526,7 +9526,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CV
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 
 				HANDLE_EXCEPTION();
@@ -9544,7 +9544,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CV
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 
 			HANDLE_EXCEPTION();
@@ -9554,7 +9554,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_CV
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CV == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 
@@ -9635,7 +9635,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_CV != IS_UNUSED) {
-
+		
 
 		function_name = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		if (IS_CV != IS_CONST) {
@@ -9652,7 +9652,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -9666,7 +9666,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -9688,11 +9688,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -9711,7 +9711,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -9721,7 +9721,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -9730,7 +9730,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 
 	if (IS_CONST == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -9751,7 +9751,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *function_name;
 	zend_fcall_info_cache fcc;
 	char *error = NULL;
@@ -9771,7 +9771,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CV_H
 			efree(error);
 			/* This is the only soft error is_callable() can generate */
 			zend_error(E_DEPRECATED,
-				"Non-static method %s::%s() should not be called statically",
+				"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 				ZSTR_VAL(func->common.scope->name), ZSTR_VAL(func->common.function_name));
 			if (UNEXPECTED(EG(exception) != NULL)) {
 
@@ -9805,7 +9805,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_CV_H
 			init_func_run_time_cache(&func->op_array);
 		}
 	} else {
-		zend_internal_type_error(EX_USES_STRICT_TYPES(), "%s() expects parameter 1 to be a valid callback, %s", Z_STRVAL_P(RT_CONSTANT(opline, opline->op1)), error);
+		zend_internal_type_error(EX_USES_STRICT_TYPES(), "Fungsi %s() butuh parameter 1 suatu callback yang valid, %s", Z_STRVAL_P(RT_CONSTANT(opline, opline->op1)), error);
 		efree(error);
 
 		if (UNEXPECTED(EG(exception))) {
@@ -9882,7 +9882,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CATCH_SPEC_CONST_CV_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = RT_CONSTANT(opline, opline->op1);
@@ -9948,7 +9948,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CONST_CV_HANDLER(ZEN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -9984,7 +9984,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_C
 	}
 
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *offset = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		zend_string *str;
 		zend_ulong hval;
@@ -10023,13 +10023,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -10060,7 +10060,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_ARRAY_SPEC_CONST_CV_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_DIM_OBJ_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zend_ulong hval;
@@ -10114,7 +10114,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -10143,7 +10143,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -10192,7 +10192,7 @@ isset_dim_obj_exit:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zval *offset;
@@ -10219,7 +10219,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CO
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -10243,7 +10243,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CV_HANDLER(ZE
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -10258,7 +10258,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CV_HANDLER(ZE
 
 	/* Set the new yielded value */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -10266,7 +10266,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CV_HANDLER(ZE
 			if (IS_CONST & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = RT_CONSTANT(opline, opline->op1);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -10284,7 +10284,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CV_HANDLER(ZE
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -10319,7 +10319,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CV_HANDLER(ZE
 
 	/* Set the new yielded key */
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *key = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 
 		/* Consts, temporary variables and references need copying */
@@ -10374,7 +10374,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CONST_CV_HANDLER(ZE
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_INDEX_SPEC_CONST_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value;
 	zend_long offset;
 
@@ -10414,7 +10414,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -10579,7 +10579,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CONST_TMPVAR_HANDLER(
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -11145,7 +11145,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -11160,7 +11160,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 
 	} else {
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -11177,7 +11177,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CONST_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zend_free_op free_op2;
 	zval *offset;
@@ -11264,7 +11264,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CONST_TMPVAR_
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -11284,7 +11284,7 @@ fetch_obj_r_no_object:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_CONST_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zend_free_op free_op2;
 	zval *offset;
@@ -11389,7 +11389,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CONST_
 
 		SAVE_OPLINE();
 		if ((IS_CONST & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -11574,7 +11574,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_TM
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 			zval_ptr_dtor_nogc(free_op2);
 
 			HANDLE_EXCEPTION();
@@ -11597,7 +11597,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_TM
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 				zval_ptr_dtor_nogc(free_op2);
 
 				HANDLE_EXCEPTION();
@@ -11615,7 +11615,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_TM
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 			zval_ptr_dtor_nogc(free_op2);
 
 			HANDLE_EXCEPTION();
@@ -11625,7 +11625,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CONST_TM
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 
@@ -11724,7 +11724,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 					zval_ptr_dtor_nogc(free_op2);
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -11738,7 +11738,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 			HANDLE_EXCEPTION();
@@ -11760,11 +11760,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -11783,7 +11783,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -11793,7 +11793,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -11802,7 +11802,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_C
 
 	if (IS_CONST == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -11843,7 +11843,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_TMPV
 			efree(error);
 			/* This is the only soft error is_callable() can generate */
 			zend_error(E_DEPRECATED,
-				"Non-static method %s::%s() should not be called statically",
+				"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 				ZSTR_VAL(func->common.scope->name), ZSTR_VAL(func->common.function_name));
 			if (UNEXPECTED(EG(exception) != NULL)) {
 				zval_ptr_dtor_nogc(free_op2);
@@ -11878,7 +11878,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_USER_CALL_SPEC_CONST_TMPV
 			init_func_run_time_cache(&func->op_array);
 		}
 	} else {
-		zend_internal_type_error(EX_USES_STRICT_TYPES(), "%s() expects parameter 1 to be a valid callback, %s", Z_STRVAL_P(RT_CONSTANT(opline, opline->op1)), error);
+		zend_internal_type_error(EX_USES_STRICT_TYPES(), "Fungsi %s() butuh parameter 1 suatu callback yang valid, %s", Z_STRVAL_P(RT_CONSTANT(opline, opline->op1)), error);
 		efree(error);
 		zval_ptr_dtor_nogc(free_op2);
 		if (UNEXPECTED(EG(exception))) {
@@ -11966,7 +11966,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CONST_TMPVAR_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CONST_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -12041,13 +12041,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 		zval_ptr_dtor_nogc(free_op2);
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -12132,7 +12132,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -12161,7 +12161,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -12237,7 +12237,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CO
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -12297,7 +12297,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -12825,7 +12825,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_TMP_HANDLER
 		if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR)) ||
 		    (IS_TMP_VAR == IS_VAR && opline->extended_value == ZEND_RETURNS_VALUE)) {
 			/* Not supposed to happen, but we'll allow it */
-			zend_error(E_NOTICE, "Only variable references should be returned by reference");
+			zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 
 			retval_ptr = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 			if (!EX(return_value)) {
@@ -12849,7 +12849,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_TMP_HANDLER
 		if (IS_TMP_VAR == IS_VAR) {
 			if (retval_ptr == &EG(uninitialized_zval) ||
 			    (opline->extended_value == ZEND_RETURNS_FUNCTION && !Z_ISREF_P(retval_ptr))) {
-				zend_error(E_NOTICE, "Only variable references should be returned by reference");
+				zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 				if (EX(return_value)) {
 					ZVAL_NEW_REF(EX(return_value), retval_ptr);
 				} else {
@@ -12938,7 +12938,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_THROW_SPEC_TMP_HANDLER(ZEND_OP
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Can only throw objects");
+			zend_throw_error(NULL, "Hanya objek yang bisa dilemparkan");
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
 		}
@@ -12969,7 +12969,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_EX_SPEC_T
 	} else if (ARG_MUST_BE_SENT_BY_REF(EX(call)->func, arg_num)) {
 send_val_by_ref:
 		SAVE_OPLINE();
-		zend_throw_error(NULL, "Cannot pass parameter %d by reference", arg_num);
+		zend_throw_error(NULL, "Tidak bisa mengirim parameter ke-%d by reference", arg_num);
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		arg = ZEND_CALL_VAR(EX(call), opline->result.var);
 		ZVAL_UNDEF(arg);
@@ -13000,7 +13000,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAL_EX_SPEC_T
 	} else if (ARG_MUST_BE_SENT_BY_REF(EX(call)->func, arg_num)) {
 send_val_by_ref:
 		SAVE_OPLINE();
-		zend_throw_error(NULL, "Cannot pass parameter %d by reference", arg_num);
+		zend_throw_error(NULL, "Tidak bisa mengirim parameter ke-%d by reference", arg_num);
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		arg = ZEND_CALL_VAR(EX(call), opline->result.var);
 		ZVAL_UNDEF(arg);
@@ -13028,7 +13028,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_USER_SPEC_TMP_HANDLER(ZEN
 	param = ZEND_CALL_VAR(EX(call), opline->result.var);
 
 	if (UNEXPECTED(ARG_MUST_BE_SENT_BY_REF(EX(call)->func, opline->op2.num))) {
-		zend_error(E_WARNING, "Parameter %d to %s%s%s() expected to be a reference, value given",
+		zend_error(E_WARNING, "Parameter ke-%d pada fungsi %s%s%s() seharusnya suatu reference",
 			opline->op2.num,
 			EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 			EX(call)->func->common.scope ? "::" : "",
@@ -13169,7 +13169,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_TMP_HANDLER(ZE
 					OBJ_RELEASE(&iter->std);
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -13210,7 +13210,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_TMP_HANDLER(ZE
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 		zval_ptr_dtor_nogc(free_op1);
@@ -13297,7 +13297,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_TMP_HANDLER(Z
 					zval_ptr_dtor_nogc(free_op1);
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -13350,7 +13350,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_TMP_HANDLER(Z
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 		if (IS_TMP_VAR == IS_VAR) {
@@ -13517,7 +13517,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_TMP_HANDLER(ZE
 	val = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot use \"yield from\" in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa \"hasilkan dari\" pada generator yang sudah closed");
 		zval_ptr_dtor_nogc(free_op1);
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
@@ -13541,7 +13541,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_TMP_HANDLER(ZE
 
 			if (Z_ISUNDEF(new_gen->retval)) {
 				if (UNEXPECTED(zend_generator_get_current(new_gen) == generator)) {
-					zend_throw_error(NULL, "Impossible to yield from the Generator being currently run");
+					zend_throw_error(NULL, "Tidak bisa hasilkan dari generator");
 					zval_ptr_dtor(val);
 					UNDEF_RESULT();
 					HANDLE_EXCEPTION();
@@ -13549,7 +13549,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_TMP_HANDLER(ZE
 					zend_generator_yield_from(generator, new_gen);
 				}
 			} else if (UNEXPECTED(new_gen->execute_data == NULL)) {
-				zend_throw_error(NULL, "Generator passed to yield from was aborted without proper return and is unable to continue");
+				zend_throw_error(NULL, "Generator berhenti dan tidak bisa melanjutkan");
 				zval_ptr_dtor(val);
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -13565,7 +13565,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_TMP_HANDLER(ZE
 
 			if (UNEXPECTED(!iter) || UNEXPECTED(EG(exception))) {
 				if (!EG(exception)) {
-					zend_throw_error(NULL, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_error(NULL, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -13584,7 +13584,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_TMP_HANDLER(ZE
 			ZVAL_OBJ(&generator->values, &iter->std);
 		}
 	} else {
-		zend_throw_error(NULL, "Can use \"yield from\" only with arrays and Traversables");
+		zend_throw_error(NULL, "Hanya bisa \"hasilkan dari\" dari larik dan Traversable");
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
 	}
@@ -13695,7 +13695,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_CO
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -13710,7 +13710,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_CO
 
 	} else {
 		if (IS_CONST == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -13729,7 +13729,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_TMP_CONST_HAN
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -13814,7 +13814,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_TMP_CONST_HAN
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -13842,7 +13842,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_TMP_CO
 
 		SAVE_OPLINE();
 		if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -13869,7 +13869,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_TMP_CO
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_ADD_SPEC_TMP_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zend_string **rope;
 	zval *var;
 
@@ -13905,7 +13905,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_ADD_SPEC_TMP_CONST_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_END_SPEC_TMP_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zend_string **rope;
 	zval *var, *ret;
 	uint32_t i;
@@ -13998,7 +13998,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_TMP_CON
 	}
 
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *offset = RT_CONSTANT(opline, opline->op2);
 		zend_string *str;
 		zend_ulong hval;
@@ -14037,13 +14037,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -14079,7 +14079,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CONST_HANDLER(Z
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -14102,7 +14102,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CONST_HANDLER(Z
 			if (IS_TMP_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -14120,7 +14120,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CONST_HANDLER(Z
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -14155,7 +14155,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CONST_HANDLER(Z
 
 	/* Set the new yielded key */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *key = RT_CONSTANT(opline, opline->op2);
 
 		/* Consts, temporary variables and references need copying */
@@ -14291,7 +14291,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_TMP_HANDLER(ZEN
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -14314,7 +14314,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_TMP_HANDLER(ZEN
 			if (IS_TMP_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -14332,7 +14332,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_TMP_HANDLER(ZEN
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -14463,7 +14463,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_VAR_HANDLER(ZEN
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -14486,7 +14486,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_VAR_HANDLER(ZEN
 			if (IS_TMP_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -14504,7 +14504,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_VAR_HANDLER(ZEN
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -14601,7 +14601,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_UN
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -14616,7 +14616,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_UN
 
 	} else {
 		if (IS_UNUSED == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -14638,7 +14638,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_TMP_UN
 	if (IS_TMP_VAR == IS_UNUSED) {
 		zend_verify_missing_return_type(EX(func), CACHE_ADDR(opline->op2.num));
 	} else {
-/* prevents "undefined variable opline" errors */
+/* prevents "Variabel tidak terdefinisi opline" errors */
 #if 0 || (IS_TMP_VAR != IS_UNUSED)
 		zval *retval_ref, *retval_ptr;
 		zend_free_op free_op1;
@@ -14719,7 +14719,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_TMP_UNU
 	}
 
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *offset = NULL;
 		zend_string *str;
 		zend_ulong hval;
@@ -14758,13 +14758,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -14800,7 +14800,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_UNUSED_HANDLER(
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -14823,7 +14823,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_UNUSED_HANDLER(
 			if (IS_TMP_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -14841,7 +14841,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_UNUSED_HANDLER(
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -14876,7 +14876,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_UNUSED_HANDLER(
 
 	/* Set the new yielded key */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *key = NULL;
 
 		/* Consts, temporary variables and references need copying */
@@ -14966,7 +14966,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COUNT_SPEC_TMP_UNUSED_HANDLER(
 		} else {
 			count = 1;
 		}
-		zend_error(E_WARNING, "count(): Parameter must be an array or an object that implements Countable");
+		zend_error(E_WARNING, "count(): Parameter harus suatu larik atau objek Countable");
 	} while (0);
 
 	ZVAL_LONG(EX_VAR(opline->result.var), count);
@@ -14981,7 +14981,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_TMP_UNUSED_HAND
 	if (IS_TMP_VAR == IS_UNUSED) {
 		if (UNEXPECTED(!EX(func)->common.scope)) {
 			SAVE_OPLINE();
-			zend_error(E_WARNING, "get_class() called without object from outside a class");
+			zend_error(E_WARNING, "get_class() dipanggil tanpa objek dari luar kelas");
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		} else {
@@ -14997,7 +14997,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_TMP_UNUSED_HAND
 		if (Z_TYPE_P(op1) == IS_OBJECT) {
 			ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op1)->name);
 		} else {
-			zend_error(E_WARNING, "get_class() expects parameter 1 to be object, %s given", zend_get_type_by_const(Z_TYPE_P(op1)));
+			zend_error(E_WARNING, "get_class() butuh parameter 1 suatu objek, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(op1)));
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 		}
 		zval_ptr_dtor_nogc(free_op1);
@@ -15018,7 +15018,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_TMP_UNUSED_HANDL
 	if (EXPECTED(type)) {
 		ZVAL_INTERNED_STR(EX_VAR(opline->result.var), type);
 	} else {
-		ZVAL_STRING(EX_VAR(opline->result.var), "unknown type");
+		ZVAL_STRING(EX_VAR(opline->result.var), "tipe tidak diketahui");
 	}
 	zval_ptr_dtor_nogc(free_op1);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -15070,7 +15070,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_CV
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15085,7 +15085,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_CV
 
 	} else {
 		if (IS_CV == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15104,7 +15104,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_TMP_CV_HANDLE
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -15189,7 +15189,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_TMP_CV_HANDLE
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -15217,7 +15217,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_TMP_CV
 
 		SAVE_OPLINE();
 		if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15244,7 +15244,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_TMP_CV
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_ADD_SPEC_TMP_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zend_string **rope;
 	zval *var;
 
@@ -15280,7 +15280,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_ADD_SPEC_TMP_CV_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_END_SPEC_TMP_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zend_string **rope;
 	zval *var, *ret;
 	uint32_t i;
@@ -15373,7 +15373,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_TMP_CV_
 	}
 
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *offset = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		zend_string *str;
 		zend_ulong hval;
@@ -15412,13 +15412,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -15454,7 +15454,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CV_HANDLER(ZEND
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -15477,7 +15477,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CV_HANDLER(ZEND
 			if (IS_TMP_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_tmp(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -15495,7 +15495,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CV_HANDLER(ZEND
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -15530,7 +15530,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_TMP_CV_HANDLER(ZEND
 
 	/* Set the new yielded key */
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *key = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 
 		/* Consts, temporary variables and references need copying */
@@ -15623,7 +15623,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_TM
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15638,7 +15638,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_TMP_TM
 
 	} else {
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15742,7 +15742,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_TMP_TMPVAR_HA
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -15771,7 +15771,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_TMP_TM
 
 		SAVE_OPLINE();
 		if ((IS_TMP_VAR & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15966,13 +15966,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 		zval_ptr_dtor_nogc(free_op2);
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -16299,7 +16299,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_VAR_HANDLER
 		if ((IS_VAR & (IS_CONST|IS_TMP_VAR)) ||
 		    (IS_VAR == IS_VAR && opline->extended_value == ZEND_RETURNS_VALUE)) {
 			/* Not supposed to happen, but we'll allow it */
-			zend_error(E_NOTICE, "Only variable references should be returned by reference");
+			zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 
 			retval_ptr = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 			if (!EX(return_value)) {
@@ -16323,7 +16323,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_VAR_HANDLER
 		if (IS_VAR == IS_VAR) {
 			if (retval_ptr == &EG(uninitialized_zval) ||
 			    (opline->extended_value == ZEND_RETURNS_FUNCTION && !Z_ISREF_P(retval_ptr))) {
-				zend_error(E_NOTICE, "Only variable references should be returned by reference");
+				zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 				if (EX(return_value)) {
 					ZVAL_NEW_REF(EX(return_value), retval_ptr);
 				} else {
@@ -16413,7 +16413,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_THROW_SPEC_VAR_HANDLER(ZEND_OP
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Can only throw objects");
+			zend_throw_error(NULL, "Hanya objek yang bisa dilemparkan");
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
 		}
@@ -16484,7 +16484,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_NO_REF_SPEC_VAR_HANDL
 	}
 
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Only variables should be passed by reference");
+	zend_error(E_NOTICE, "Hanya variabel yang seharusnya dikirim by reference (bukan fungsi)");
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
 
@@ -16524,7 +16524,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_NO_REF_EX_SPEC_VAR_HA
 	}
 
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Only variables should be passed by reference");
+	zend_error(E_NOTICE, "Hanya variabel yang seharusnya dikirim by reference (bukan fungsi)");
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
 
@@ -16564,7 +16564,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_NO_REF_EX_SPEC_VAR_QU
 	}
 
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Only variables should be passed by reference");
+	zend_error(E_NOTICE, "Hanya variabel yang seharusnya dikirim by reference (bukan fungsi)");
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
 
@@ -16706,7 +16706,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_USER_SPEC_VAR_HANDLER(ZEN
 	param = ZEND_CALL_VAR(EX(call), opline->result.var);
 
 	if (UNEXPECTED(ARG_MUST_BE_SENT_BY_REF(EX(call)->func, opline->op2.num))) {
-		zend_error(E_WARNING, "Parameter %d to %s%s%s() expected to be a reference, value given",
+		zend_error(E_WARNING, "Parameter ke-%d pada fungsi %s%s%s() seharusnya suatu reference",
 			opline->op2.num,
 			EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 			EX(call)->func->common.scope ? "::" : "",
@@ -16922,7 +16922,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_VAR_HANDLER(ZE
 					OBJ_RELEASE(&iter->std);
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -16963,7 +16963,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_VAR_HANDLER(ZE
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 		zval_ptr_dtor_nogc(free_op1);
@@ -17050,7 +17050,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_VAR_HANDLER(Z
 					zval_ptr_dtor_nogc(free_op1);
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -17103,7 +17103,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_VAR_HANDLER(Z
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 		if (IS_VAR == IS_VAR) {
@@ -17250,7 +17250,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_FETCH_R_SPEC_VAR_HANDLER(ZE
 			value_type = Z_TYPE_INFO_P(value);
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		if (UNEXPECTED(EG(exception))) {
 			UNDEF_RESULT();
 			HANDLE_EXCEPTION();
@@ -17415,7 +17415,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_FETCH_RW_SPEC_VAR_HANDLER(Z
 			value_type = Z_TYPE_INFO_P(value);
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		if (UNEXPECTED(EG(exception))) {
 			UNDEF_RESULT();
 			HANDLE_EXCEPTION();
@@ -17594,7 +17594,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_VAR_HANDLER(ZE
 	val = _get_zval_ptr_var_deref(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot use \"yield from\" in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa \"hasilkan dari\" pada generator yang sudah closed");
 		zval_ptr_dtor_nogc(free_op1);
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
@@ -17620,7 +17620,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_VAR_HANDLER(ZE
 
 			if (Z_ISUNDEF(new_gen->retval)) {
 				if (UNEXPECTED(zend_generator_get_current(new_gen) == generator)) {
-					zend_throw_error(NULL, "Impossible to yield from the Generator being currently run");
+					zend_throw_error(NULL, "Tidak bisa hasilkan dari generator");
 					zval_ptr_dtor(val);
 					UNDEF_RESULT();
 					HANDLE_EXCEPTION();
@@ -17628,7 +17628,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_VAR_HANDLER(ZE
 					zend_generator_yield_from(generator, new_gen);
 				}
 			} else if (UNEXPECTED(new_gen->execute_data == NULL)) {
-				zend_throw_error(NULL, "Generator passed to yield from was aborted without proper return and is unable to continue");
+				zend_throw_error(NULL, "Generator berhenti dan tidak bisa melanjutkan");
 				zval_ptr_dtor(val);
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -17644,7 +17644,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_VAR_HANDLER(ZE
 
 			if (UNEXPECTED(!iter) || UNEXPECTED(EG(exception))) {
 				if (!EG(exception)) {
-					zend_throw_error(NULL, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_error(NULL, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -17663,7 +17663,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_VAR_HANDLER(ZE
 			ZVAL_OBJ(&generator->values, &iter->std);
 		}
 	} else {
-		zend_throw_error(NULL, "Can use \"yield from\" only with arrays and Traversables");
+		zend_throw_error(NULL, "Hanya bisa \"hasilkan dari\" dari larik dan Traversable");
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
 	}
@@ -17863,7 +17863,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -17917,7 +17917,7 @@ assign_dim_op_new_array:
 		if (IS_CONST == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -17960,7 +17960,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if (IS_CONST == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -17970,7 +17970,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -18030,7 +18030,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -18050,7 +18050,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -18070,7 +18070,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -18277,7 +18277,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -18354,7 +18354,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -18451,7 +18451,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_CO
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -18466,7 +18466,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_CO
 		if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 	} else {
 		if (IS_CONST == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -18503,7 +18503,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_VAR_CONST_HAN
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -18588,7 +18588,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_VAR_CONST_HAN
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -18663,7 +18663,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_VAR_CO
 
 		SAVE_OPLINE();
 		if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -18743,7 +18743,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -18757,7 +18757,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -18839,7 +18839,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -18897,7 +18897,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -18911,7 +18911,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -18993,7 +18993,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -19051,7 +19051,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -19065,7 +19065,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -19147,7 +19147,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -19205,7 +19205,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -19219,7 +19219,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CONST_OP_D
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -19301,7 +19301,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -19332,7 +19332,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_VAR_CONST_OP_D
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -19346,7 +19346,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -19384,7 +19384,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -19400,7 +19400,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -19437,7 +19437,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -19476,7 +19476,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -19492,7 +19492,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -19529,7 +19529,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -19568,7 +19568,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -19584,7 +19584,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -19607,7 +19607,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_VAR_CONST_OP_D
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -19621,7 +19621,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -19659,7 +19659,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -19675,7 +19675,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -19791,7 +19791,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_CONST != IS_UNUSED) {
-
+		
 
 		function_name = RT_CONSTANT(opline, opline->op2);
 		if (IS_CONST != IS_CONST) {
@@ -19808,7 +19808,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -19822,7 +19822,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -19844,11 +19844,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -19867,7 +19867,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -19877,7 +19877,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -19886,7 +19886,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 
 	if (IS_VAR == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -19951,7 +19951,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_VAR_
 			c = Z_PTR_P(zv);
 			scope = EX(func)->op_array.scope;
 			if (!zend_verify_const_access(c, scope)) {
-				zend_throw_error(NULL, "Cannot access %s const %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(ce->name), Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+				zend_throw_error(NULL, "Tidak bisa mengakses konstanta %s: %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(ce->name), Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			}
@@ -19969,7 +19969,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_VAR_
 				CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)), ce, value);
 			}
 		} else {
-			zend_throw_error(NULL, "Undefined class constant '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+			zend_throw_error(NULL, "Konstanta kelas tidak ada: '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
 			HANDLE_EXCEPTION();
 		}
@@ -20019,7 +20019,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_VAR_CON
 	}
 
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *offset = RT_CONSTANT(opline, opline->op2);
 		zend_string *str;
 		zend_ulong hval;
@@ -20058,13 +20058,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -20153,7 +20153,7 @@ num_index_dim:
 				key = ZSTR_EMPTY_ALLOC();
 				goto str_index_dim;
 			} else {
-				zend_error(E_WARNING, "Illegal offset type in unset");
+				zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada saat hapus");
 			}
 			break;
 		} else if (Z_ISREF_P(container)) {
@@ -20170,12 +20170,12 @@ num_index_dim:
 		}
 		if (EXPECTED(Z_TYPE_P(container) == IS_OBJECT)) {
 			if (UNEXPECTED(Z_OBJ_HT_P(container)->unset_dimension == NULL)) {
-				zend_throw_error(NULL, "Cannot use object as array");
+				zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			} else {
 				Z_OBJ_HT_P(container)->unset_dimension(container, offset);
 			}
 		} else if (IS_VAR != IS_UNUSED && UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
-			zend_throw_error(NULL, "Cannot unset string offsets");
+			zend_throw_error(NULL, "Indeks pada string tidak bisa dihapus");
 		}
 	} while (0);
 
@@ -20212,7 +20212,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_VAR_CONST_HANDL
 			Z_OBJ_HT_P(container)->unset_property(container, offset, ((IS_CONST == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -20229,7 +20229,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CONST_HANDLER(Z
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -20252,7 +20252,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CONST_HANDLER(Z
 			if (IS_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -20270,7 +20270,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CONST_HANDLER(Z
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -20306,7 +20306,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CONST_HANDLER(Z
 
 	/* Set the new yielded key */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *key = RT_CONSTANT(opline, opline->op2);
 
 		/* Consts, temporary variables and references need copying */
@@ -20498,7 +20498,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_TMP_HANDLER(ZEN
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -20521,7 +20521,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_TMP_HANDLER(ZEN
 			if (IS_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -20539,7 +20539,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_TMP_HANDLER(ZEN
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -20735,7 +20735,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_VAR_VAR_HANDLE
 	    UNEXPECTED(!Z_ISREF_P(EX_VAR(opline->op1.var))) &&
 	    UNEXPECTED(!Z_ISERROR_P(EX_VAR(opline->op1.var)))) {
 
-		zend_throw_error(NULL, "Cannot assign by reference to overloaded object");
+		zend_throw_error(NULL, "Tidak bisa assign by reference pada objek yang di-overload");
 		if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 		if (UNEXPECTED(free_op2)) {zval_ptr_dtor_nogc(free_op2);};
 		UNDEF_RESULT();
@@ -20744,7 +20744,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_VAR_VAR_HANDLE
 	} else if (IS_VAR == IS_VAR &&
 	           opline->extended_value == ZEND_RETURNS_FUNCTION &&
 			   UNEXPECTED(!Z_ISREF_P(value_ptr))) {
-		zend_error(E_NOTICE, "Only variables should be assigned by reference");
+		zend_error(E_NOTICE, "Hanya variabel yang seharusnya di-assign by reference");
 		if (UNEXPECTED(EG(exception) != NULL)) {
 			if (UNEXPECTED(free_op2)) {zval_ptr_dtor_nogc(free_op2);};
 			UNDEF_RESULT();
@@ -20785,7 +20785,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_VAR_HANDLER(ZEN
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -20808,7 +20808,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_VAR_HANDLER(ZEN
 			if (IS_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -20826,7 +20826,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_VAR_HANDLER(ZEN
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -20932,7 +20932,7 @@ assign_dim_op_new_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -20975,7 +20975,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if (IS_UNUSED == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -20985,7 +20985,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -21016,7 +21016,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_UNUSED(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_UNUSED(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -21127,7 +21127,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_UN
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -21142,7 +21142,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_UN
 		if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 	} else {
 		if (IS_UNUSED == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -21161,7 +21161,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_VAR_UNUSED_OP_
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -21175,7 +21175,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -21213,7 +21213,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -21229,7 +21229,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -21266,7 +21266,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -21305,7 +21305,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -21321,7 +21321,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -21358,7 +21358,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -21397,7 +21397,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -21413,7 +21413,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -21436,7 +21436,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_VAR_UNUSED_OP_
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -21450,7 +21450,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -21488,7 +21488,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -21504,7 +21504,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -21564,7 +21564,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		function_name = NULL;
 		if (IS_UNUSED != IS_CONST) {
@@ -21581,7 +21581,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -21595,7 +21595,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -21617,11 +21617,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -21640,7 +21640,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -21650,7 +21650,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -21659,7 +21659,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 
 	if (IS_VAR == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -21685,7 +21685,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_VAR_UN
 	if (IS_VAR == IS_UNUSED) {
 		zend_verify_missing_return_type(EX(func), CACHE_ADDR(opline->op2.num));
 	} else {
-/* prevents "undefined variable opline" errors */
+/* prevents "Variabel tidak terdefinisi opline" errors */
 #if 0 || (IS_VAR != IS_UNUSED)
 		zval *retval_ref, *retval_ptr;
 		zend_free_op free_op1;
@@ -21766,7 +21766,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_VAR_UNU
 	}
 
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *offset = NULL;
 		zend_string *str;
 		zend_ulong hval;
@@ -21805,13 +21805,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -21862,7 +21862,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_UNUSED_HANDLER(
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -21885,7 +21885,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_UNUSED_HANDLER(
 			if (IS_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -21903,7 +21903,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_UNUSED_HANDLER(
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -21939,7 +21939,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_UNUSED_HANDLER(
 
 	/* Set the new yielded key */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *key = NULL;
 
 		/* Consts, temporary variables and references need copying */
@@ -22057,7 +22057,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COUNT_SPEC_VAR_UNUSED_HANDLER(
 		} else {
 			count = 1;
 		}
-		zend_error(E_WARNING, "count(): Parameter must be an array or an object that implements Countable");
+		zend_error(E_WARNING, "count(): Parameter harus suatu larik atau objek Countable");
 	} while (0);
 
 	ZVAL_LONG(EX_VAR(opline->result.var), count);
@@ -22072,7 +22072,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_VAR_UNUSED_HAND
 	if (IS_VAR == IS_UNUSED) {
 		if (UNEXPECTED(!EX(func)->common.scope)) {
 			SAVE_OPLINE();
-			zend_error(E_WARNING, "get_class() called without object from outside a class");
+			zend_error(E_WARNING, "get_class() dipanggil tanpa objek dari luar kelas");
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		} else {
@@ -22088,7 +22088,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_VAR_UNUSED_HAND
 		if (Z_TYPE_P(op1) == IS_OBJECT) {
 			ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op1)->name);
 		} else {
-			zend_error(E_WARNING, "get_class() expects parameter 1 to be object, %s given", zend_get_type_by_const(Z_TYPE_P(op1)));
+			zend_error(E_WARNING, "get_class() butuh parameter 1 suatu objek, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(op1)));
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 		}
 		zval_ptr_dtor_nogc(free_op1);
@@ -22109,7 +22109,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_VAR_UNUSED_HANDL
 	if (EXPECTED(type)) {
 		ZVAL_INTERNED_STR(EX_VAR(opline->result.var), type);
 	} else {
-		ZVAL_STRING(EX_VAR(opline->result.var), "unknown type");
+		ZVAL_STRING(EX_VAR(opline->result.var), "tipe tidak diketahui");
 	}
 	zval_ptr_dtor_nogc(free_op1);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -22176,7 +22176,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -22230,7 +22230,7 @@ assign_dim_op_new_array:
 		if (IS_CV == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -22273,7 +22273,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if (IS_CV == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -22283,7 +22283,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -22343,7 +22343,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -22363,7 +22363,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -22383,7 +22383,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -22590,7 +22590,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -22667,7 +22667,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -22764,7 +22764,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_CV
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -22779,7 +22779,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_CV
 		if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 	} else {
 		if (IS_CV == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -22816,7 +22816,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_VAR_CV_HANDLE
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -22901,7 +22901,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_VAR_CV_HANDLE
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -22976,7 +22976,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_VAR_CV
 
 		SAVE_OPLINE();
 		if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -23056,7 +23056,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23070,7 +23070,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23152,7 +23152,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -23210,7 +23210,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23224,7 +23224,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23306,7 +23306,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -23364,7 +23364,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23378,7 +23378,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23460,7 +23460,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -23518,7 +23518,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23532,7 +23532,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_CV_OP_DATA
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -23614,7 +23614,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -23645,7 +23645,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_VAR_CV_OP_DATA
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -23659,7 +23659,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -23697,7 +23697,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -23713,7 +23713,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -23750,7 +23750,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -23789,7 +23789,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -23805,7 +23805,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -23842,7 +23842,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -23881,7 +23881,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -23897,7 +23897,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -23920,7 +23920,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_VAR_CV_OP_DATA
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -23934,7 +23934,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -23972,7 +23972,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -23988,7 +23988,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -24078,7 +24078,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_VAR_CV_HANDLER
 	    UNEXPECTED(!Z_ISREF_P(EX_VAR(opline->op1.var))) &&
 	    UNEXPECTED(!Z_ISERROR_P(EX_VAR(opline->op1.var)))) {
 
-		zend_throw_error(NULL, "Cannot assign by reference to overloaded object");
+		zend_throw_error(NULL, "Tidak bisa assign by reference pada objek yang di-overload");
 		if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 
 		UNDEF_RESULT();
@@ -24087,7 +24087,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_VAR_CV_HANDLER
 	} else if (IS_CV == IS_VAR &&
 	           opline->extended_value == ZEND_RETURNS_FUNCTION &&
 			   UNEXPECTED(!Z_ISREF_P(value_ptr))) {
-		zend_error(E_NOTICE, "Only variables should be assigned by reference");
+		zend_error(E_NOTICE, "Hanya variabel yang seharusnya di-assign by reference");
 		if (UNEXPECTED(EG(exception) != NULL)) {
 
 			UNDEF_RESULT();
@@ -24161,7 +24161,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_CV != IS_UNUSED) {
-
+		
 
 		function_name = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		if (IS_CV != IS_CONST) {
@@ -24178,7 +24178,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -24192,7 +24192,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -24214,11 +24214,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -24237,7 +24237,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -24247,7 +24247,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -24256,7 +24256,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 
 	if (IS_VAR == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -24313,7 +24313,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_VAR_CV_
 	}
 
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *offset = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		zend_string *str;
 		zend_ulong hval;
@@ -24352,13 +24352,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -24447,7 +24447,7 @@ num_index_dim:
 				key = ZSTR_EMPTY_ALLOC();
 				goto str_index_dim;
 			} else {
-				zend_error(E_WARNING, "Illegal offset type in unset");
+				zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada saat hapus");
 			}
 			break;
 		} else if (Z_ISREF_P(container)) {
@@ -24464,12 +24464,12 @@ num_index_dim:
 		}
 		if (EXPECTED(Z_TYPE_P(container) == IS_OBJECT)) {
 			if (UNEXPECTED(Z_OBJ_HT_P(container)->unset_dimension == NULL)) {
-				zend_throw_error(NULL, "Cannot use object as array");
+				zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			} else {
 				Z_OBJ_HT_P(container)->unset_dimension(container, offset);
 			}
 		} else if (IS_VAR != IS_UNUSED && UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
-			zend_throw_error(NULL, "Cannot unset string offsets");
+			zend_throw_error(NULL, "Indeks pada string tidak bisa dihapus");
 		}
 	} while (0);
 
@@ -24506,7 +24506,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_VAR_CV_HANDLER(
 			Z_OBJ_HT_P(container)->unset_property(container, offset, ((IS_CV == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -24523,7 +24523,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CV_HANDLER(ZEND
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		UNDEF_RESULT();
@@ -24546,7 +24546,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CV_HANDLER(ZEND
 			if (IS_VAR & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -24564,7 +24564,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CV_HANDLER(ZEND
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -24600,7 +24600,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_VAR_CV_HANDLER(ZEND
 
 	/* Set the new yielded key */
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *key = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 
 		/* Consts, temporary variables and references need copying */
@@ -24781,7 +24781,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -24835,7 +24835,7 @@ assign_dim_op_new_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -24878,7 +24878,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -24888,7 +24888,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -24950,7 +24950,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -24970,7 +24970,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -24990,7 +24990,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_VAR_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_VAR_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -25197,7 +25197,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -25275,7 +25275,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -25373,7 +25373,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_TM
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -25388,7 +25388,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_VAR_TM
 		if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 	} else {
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -25510,7 +25510,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_VAR_TMPVAR_HA
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -25586,7 +25586,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_VAR_TM
 
 		SAVE_OPLINE();
 		if ((IS_VAR & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -25666,7 +25666,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -25680,7 +25680,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -25762,7 +25762,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -25820,7 +25820,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -25834,7 +25834,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -25916,7 +25916,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -25974,7 +25974,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -25988,7 +25988,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -26070,7 +26070,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -26128,7 +26128,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -26142,7 +26142,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_VAR_TMPVAR_OP_
 			} else {
 				if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -26224,7 +26224,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -26269,7 +26269,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -26307,7 +26307,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -26323,7 +26323,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -26360,7 +26360,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -26399,7 +26399,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -26415,7 +26415,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -26452,7 +26452,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -26491,7 +26491,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -26507,7 +26507,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -26544,7 +26544,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -26582,7 +26582,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 				if (UNEXPECTED(free_op1)) {zval_ptr_dtor_nogc(free_op1);};
 				UNDEF_RESULT();
@@ -26598,7 +26598,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_VAR != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -26675,7 +26675,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 					zval_ptr_dtor_nogc(free_op2);
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -26689,7 +26689,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 			HANDLE_EXCEPTION();
@@ -26711,11 +26711,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -26734,7 +26734,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -26744,7 +26744,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -26753,7 +26753,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_V
 
 	if (IS_VAR == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -26849,13 +26849,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 		zval_ptr_dtor_nogc(free_op2);
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -26944,7 +26944,7 @@ num_index_dim:
 				key = ZSTR_EMPTY_ALLOC();
 				goto str_index_dim;
 			} else {
-				zend_error(E_WARNING, "Illegal offset type in unset");
+				zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada saat hapus");
 			}
 			break;
 		} else if (Z_ISREF_P(container)) {
@@ -26961,12 +26961,12 @@ num_index_dim:
 		}
 		if (EXPECTED(Z_TYPE_P(container) == IS_OBJECT)) {
 			if (UNEXPECTED(Z_OBJ_HT_P(container)->unset_dimension == NULL)) {
-				zend_throw_error(NULL, "Cannot use object as array");
+				zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			} else {
 				Z_OBJ_HT_P(container)->unset_dimension(container, offset);
 			}
 		} else if (IS_VAR != IS_UNUSED && UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
-			zend_throw_error(NULL, "Cannot unset string offsets");
+			zend_throw_error(NULL, "Indeks pada string tidak bisa dihapus");
 		}
 	} while (0);
 
@@ -27004,7 +27004,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_VAR_TMPVAR_HAND
 			Z_OBJ_HT_P(container)->unset_property(container, offset, (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -27089,7 +27089,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_NEW_SPEC_UNUSED_HANDLER(ZEND_O
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *obj;
 	zend_class_entry *ce, *scope;
 	zend_function *clone;
@@ -27118,7 +27118,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "__clone method called on non-object");
+			zend_throw_error(NULL, "fungsi __clone dipanggil pada variabel yang bukan objek");
 
 			HANDLE_EXCEPTION();
 		}
@@ -27128,7 +27128,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 	clone = ce->clone;
 	clone_call = Z_OBJ_HT_P(obj)->clone_obj;
 	if (UNEXPECTED(clone_call == NULL)) {
-		zend_throw_error(NULL, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek dari kelas %s tidak bisa disalin", ZSTR_VAL(ce->name));
 
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		HANDLE_EXCEPTION();
@@ -27140,7 +27140,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 			 */
 			scope = EX(func)->op_array.scope;
 			if (!zend_check_private(clone, scope, clone->common.function_name)) {
-				zend_throw_error(NULL, "Call to private %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi privat %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -27150,7 +27150,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 			 */
 			scope = EX(func)->op_array.scope;
 			if (UNEXPECTED(!zend_check_protected(zend_get_function_root_class(clone), scope))) {
-				zend_throw_error(NULL, "Call to protected %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi terproteksi %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -27169,7 +27169,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_EXIT_SPEC_UNUSED_HANDLER(ZEND_
 
 	SAVE_OPLINE();
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *ptr = NULL;
 
 		do {
@@ -27217,7 +27217,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -27268,7 +27268,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_UNUSED_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_UNUSED_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -27336,7 +27336,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_POW_SPEC_UNUSED_CONST_O
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPEC_UNUSED_CONST(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -27355,7 +27355,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -27413,7 +27413,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_OBJ_SPEC_UNUSED_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SPEC_UNUSED_CONST(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -27432,7 +27432,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -27486,9 +27486,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_OBJ_SPEC_UNUSED_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_UNUSED_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -27573,7 +27573,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_UNUSED_CONST_
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -27639,9 +27639,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_RW_SPEC_UNUSED_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_UNUSED_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -27743,7 +27743,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_UNUSED
 
 		SAVE_OPLINE();
 		if ((IS_UNUSED & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -27794,7 +27794,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_UNSET_SPEC_UNUSED_CO
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -27823,7 +27823,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -27837,7 +27837,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -27919,7 +27919,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -27977,7 +27977,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -27991,7 +27991,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -28073,7 +28073,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -28131,7 +28131,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -28145,7 +28145,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -28227,7 +28227,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -28256,7 +28256,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -28285,7 +28285,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -28299,7 +28299,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CONST_O
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -28381,7 +28381,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -28410,7 +28410,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_INIT_SPEC_UNUSED_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zend_string **rope;
 	zval *var;
 
@@ -28447,7 +28447,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 {
 	USE_OPLINE
 	zval *function_name;
-
+	
 	zval *object;
 	zend_function *fbc;
 	zend_class_entry *called_scope;
@@ -28480,7 +28480,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 
 			HANDLE_EXCEPTION();
@@ -28503,7 +28503,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 
 				HANDLE_EXCEPTION();
@@ -28521,7 +28521,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 
 			HANDLE_EXCEPTION();
@@ -28531,7 +28531,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CONST == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 
@@ -28612,7 +28612,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_CONST != IS_UNUSED) {
-
+		
 
 		function_name = RT_CONSTANT(opline, opline->op2);
 		if (IS_CONST != IS_CONST) {
@@ -28629,7 +28629,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -28643,7 +28643,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -28665,11 +28665,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -28688,7 +28688,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -28698,7 +28698,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -28707,7 +28707,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 
 	if (IS_UNUSED == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -28745,11 +28745,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CONSTANT_SPEC_UNUSED_CON
 						actual, Z_STRLEN_P(RT_CONSTANT(opline, opline->op2)) - (actual - Z_STRVAL_P(RT_CONSTANT(opline, opline->op2))));
 			}
 			/* non-qualified constant - allow text substitution */
-			zend_error(E_WARNING, "Use of undefined constant %s - assumed '%s' (this will throw an Error in a future version of PHP)",
+			zend_error(E_WARNING, "Ditemukan konstanta tak terdefinisi %s - diasumsikan sebagai string '%s'",
 					Z_STRVAL_P(EX_VAR(opline->result.var)), Z_STRVAL_P(EX_VAR(opline->result.var)));
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		} else {
-			zend_throw_error(NULL, "Undefined constant '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+			zend_throw_error(NULL, "Konstanta tidak ada: '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
 			HANDLE_EXCEPTION();
 		}
@@ -28809,7 +28809,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_UNUS
 			c = Z_PTR_P(zv);
 			scope = EX(func)->op_array.scope;
 			if (!zend_verify_const_access(c, scope)) {
-				zend_throw_error(NULL, "Cannot access %s const %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(ce->name), Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+				zend_throw_error(NULL, "Tidak bisa mengakses konstanta %s: %s::%s", zend_visibility_string(Z_ACCESS_FLAGS(c->value)), ZSTR_VAL(ce->name), Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			}
@@ -28827,7 +28827,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_UNUS
 				CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)), ce, value);
 			}
 		} else {
-			zend_throw_error(NULL, "Undefined class constant '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
+			zend_throw_error(NULL, "Konstanta kelas tidak ada: '%s'", Z_STRVAL_P(RT_CONSTANT(opline, opline->op2)));
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
 			HANDLE_EXCEPTION();
 		}
@@ -28841,7 +28841,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_CLASS_CONSTANT_SPEC_UNUS
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zval *offset;
 
@@ -28867,7 +28867,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_CONST_HA
 			Z_OBJ_HT_P(container)->unset_property(container, offset, ((IS_CONST == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -28879,7 +28879,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_CONST_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_UNUSED_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zval *offset;
@@ -28906,7 +28906,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_UN
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -28930,7 +28930,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CONST_HANDLE
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -28945,7 +28945,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CONST_HANDLE
 
 	/* Set the new yielded value */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -28953,7 +28953,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CONST_HANDLE
 			if (IS_UNUSED & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = NULL;
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -28971,7 +28971,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CONST_HANDLE
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -29006,7 +29006,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CONST_HANDLE
 
 	/* Set the new yielded key */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *key = RT_CONSTANT(opline, opline->op2);
 
 		/* Consts, temporary variables and references need copying */
@@ -29066,7 +29066,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_TMP_HANDLER(
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 		UNDEF_RESULT();
@@ -29081,7 +29081,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_TMP_HANDLER(
 
 	/* Set the new yielded value */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -29089,7 +29089,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_TMP_HANDLER(
 			if (IS_UNUSED & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = NULL;
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -29107,7 +29107,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_TMP_HANDLER(
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -29202,7 +29202,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_VAR_HANDLER(
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 		UNDEF_RESULT();
@@ -29217,7 +29217,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_VAR_HANDLER(
 
 	/* Set the new yielded value */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -29225,7 +29225,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_VAR_HANDLER(
 			if (IS_UNUSED & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = NULL;
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -29243,7 +29243,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_VAR_HANDLER(
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -29372,7 +29372,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		function_name = NULL;
 		if (IS_UNUSED != IS_CONST) {
@@ -29389,7 +29389,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -29403,7 +29403,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -29425,11 +29425,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -29448,7 +29448,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -29458,7 +29458,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -29467,7 +29467,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 
 	if (IS_UNUSED == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -29493,10 +29493,10 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_UNUSED
 	if (IS_UNUSED == IS_UNUSED) {
 		zend_verify_missing_return_type(EX(func), CACHE_ADDR(opline->op2.num));
 	} else {
-/* prevents "undefined variable opline" errors */
+/* prevents "Variabel tidak terdefinisi opline" errors */
 #if 0 || (IS_UNUSED != IS_UNUSED)
 		zval *retval_ref, *retval_ptr;
-
+		
 		zend_arg_info *ret_info = EX(func)->common.arg_info - 1;
 
 		retval_ref = retval_ptr = NULL;
@@ -29543,7 +29543,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_UNUSED_HANDL
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -29558,7 +29558,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_UNUSED_HANDL
 
 	/* Set the new yielded value */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -29566,7 +29566,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_UNUSED_HANDL
 			if (IS_UNUSED & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = NULL;
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -29584,7 +29584,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_UNUSED_HANDL
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -29619,7 +29619,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_UNUSED_HANDL
 
 	/* Set the new yielded key */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *key = NULL;
 
 		/* Consts, temporary variables and references need copying */
@@ -29704,7 +29704,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_UNUSED_UNUSED_H
 	if (IS_UNUSED == IS_UNUSED) {
 		if (UNEXPECTED(!EX(func)->common.scope)) {
 			SAVE_OPLINE();
-			zend_error(E_WARNING, "get_class() called without object from outside a class");
+			zend_error(E_WARNING, "get_class() dipanggil tanpa objek dari luar kelas");
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		} else {
@@ -29712,7 +29712,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_UNUSED_UNUSED_H
 			ZEND_VM_NEXT_OPCODE();
 		}
 	} else {
-
+		
 		zval *op1;
 
 		SAVE_OPLINE();
@@ -29720,7 +29720,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_UNUSED_UNUSED_H
 		if (Z_TYPE_P(op1) == IS_OBJECT) {
 			ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op1)->name);
 		} else {
-			zend_error(E_WARNING, "get_class() expects parameter 1 to be object, %s given", zend_get_type_by_const(Z_TYPE_P(op1)));
+			zend_error(E_WARNING, "get_class() butuh parameter 1 suatu objek, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(op1)));
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 		}
 
@@ -29740,7 +29740,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CALLED_CLASS_SPEC_UNUSED_U
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 		if (UNEXPECTED(!EX(func)->common.scope)) {
 			SAVE_OPLINE();
-			zend_error(E_WARNING, "get_called_class() called from outside a class");
+			zend_error(E_WARNING, "get_called_class() dipanggil dari luar kelas");
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		}
 	}
@@ -29853,7 +29853,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -29904,7 +29904,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_UNUSED_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_UNUSED_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -29972,7 +29972,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_POW_SPEC_UNUSED_CV_OBJ_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPEC_UNUSED_CV(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -29991,7 +29991,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -30049,7 +30049,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_OBJ_SPEC_UNUSED_CV_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SPEC_UNUSED_CV(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -30068,7 +30068,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -30122,9 +30122,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_OBJ_SPEC_UNUSED_CV_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_UNUSED_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -30209,7 +30209,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_UNUSED_CV_HAN
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -30275,9 +30275,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_RW_SPEC_UNUSED_CV_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_UNUSED_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -30379,7 +30379,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_UNUSED
 
 		SAVE_OPLINE();
 		if ((IS_UNUSED & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -30430,7 +30430,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_UNSET_SPEC_UNUSED_CV
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -30459,7 +30459,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30473,7 +30473,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30555,7 +30555,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -30613,7 +30613,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30627,7 +30627,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30709,7 +30709,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -30767,7 +30767,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30781,7 +30781,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30863,7 +30863,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -30892,7 +30892,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -30921,7 +30921,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -30935,7 +30935,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_CV_OP_D
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -31017,7 +31017,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -31046,7 +31046,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ROPE_INIT_SPEC_UNUSED_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zend_string **rope;
 	zval *var;
 
@@ -31083,7 +31083,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 {
 	USE_OPLINE
 	zval *function_name;
-
+	
 	zval *object;
 	zend_function *fbc;
 	zend_class_entry *called_scope;
@@ -31116,7 +31116,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 
 			HANDLE_EXCEPTION();
@@ -31139,7 +31139,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 
 				HANDLE_EXCEPTION();
@@ -31157,7 +31157,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 
 			HANDLE_EXCEPTION();
@@ -31167,7 +31167,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_C
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CV == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 
@@ -31248,7 +31248,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 	           EXPECTED(CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2))) == ce)) {
 		fbc = CACHED_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op2)) + sizeof(void*));
 	} else if (IS_CV != IS_UNUSED) {
-
+		
 
 		function_name = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		if (IS_CV != IS_CONST) {
@@ -31265,7 +31265,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -31279,7 +31279,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 
 			HANDLE_EXCEPTION();
@@ -31301,11 +31301,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -31324,7 +31324,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -31334,7 +31334,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -31343,7 +31343,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 
 	if (IS_UNUSED == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -31364,7 +31364,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zval *offset;
 
@@ -31390,7 +31390,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_CV_HANDL
 			Z_OBJ_HT_P(container)->unset_property(container, offset, ((IS_CV == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -31402,7 +31402,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_CV_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_UNUSED_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zval *offset;
@@ -31429,7 +31429,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_UN
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -31453,7 +31453,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CV_HANDLER(Z
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -31468,7 +31468,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CV_HANDLER(Z
 
 	/* Set the new yielded value */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -31476,7 +31476,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CV_HANDLER(Z
 			if (IS_UNUSED & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = NULL;
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -31494,7 +31494,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CV_HANDLER(Z
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -31529,7 +31529,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_UNUSED_CV_HANDLER(Z
 
 	/* Set the new yielded key */
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *key = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 
 		/* Consts, temporary variables and references need copying */
@@ -31606,7 +31606,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -31657,7 +31657,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_UNUSED_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_UNUSED_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -31744,7 +31744,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -31822,7 +31822,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -31877,7 +31877,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_OBJ_SPEC_UNUSED_TMPVA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_UNUSED_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zend_free_op free_op2;
 	zval *offset;
@@ -31964,7 +31964,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_UNUSED_TMPVAR
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -32031,7 +32031,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_RW_SPEC_UNUSED_TMPVA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_UNUSED_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zend_free_op free_op2;
 	zval *offset;
@@ -32136,7 +32136,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_UNUSED
 
 		SAVE_OPLINE();
 		if ((IS_UNUSED & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -32216,7 +32216,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32230,7 +32230,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32312,7 +32312,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -32370,7 +32370,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32384,7 +32384,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32466,7 +32466,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -32524,7 +32524,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32538,7 +32538,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32620,7 +32620,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -32678,7 +32678,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32692,7 +32692,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_UNUSED_TMPVAR_
 			} else {
 				if (IS_UNUSED != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -32774,7 +32774,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -32873,7 +32873,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_T
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 			zval_ptr_dtor_nogc(free_op2);
 
 			HANDLE_EXCEPTION();
@@ -32896,7 +32896,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_T
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 				zval_ptr_dtor_nogc(free_op2);
 
 				HANDLE_EXCEPTION();
@@ -32914,7 +32914,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_T
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 			zval_ptr_dtor_nogc(free_op2);
 
 			HANDLE_EXCEPTION();
@@ -32924,7 +32924,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_UNUSED_T
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 
@@ -33023,7 +33023,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 							HANDLE_EXCEPTION();
 						}
 					}
-					zend_throw_error(NULL, "Function name must be a string");
+					zend_throw_error(NULL, "Nama fungsi harus berupa string");
 					zval_ptr_dtor_nogc(free_op2);
 					HANDLE_EXCEPTION();
 				} while (0);
@@ -33037,7 +33037,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 			HANDLE_EXCEPTION();
@@ -33059,11 +33059,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 		}
 	} else {
 		if (UNEXPECTED(ce->constructor == NULL)) {
-			zend_throw_error(NULL, "Cannot call constructor");
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor");
 			HANDLE_EXCEPTION();
 		}
 		if (Z_TYPE(EX(This)) == IS_OBJECT && Z_OBJ(EX(This))->ce != ce->constructor->common.scope && (ce->constructor->common.fn_flags & ZEND_ACC_PRIVATE)) {
-			zend_throw_error(NULL, "Cannot call private %s::__construct()", ZSTR_VAL(ce->name));
+			zend_throw_error(NULL, "Tidak bisa memanggil konstruktor privat pada %s", ZSTR_VAL(ce->name));
 			HANDLE_EXCEPTION();
 		}
 		fbc = ce->constructor;
@@ -33082,7 +33082,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				/* Allowed for PHP 4 compatibility. */
 				zend_error(
 					E_DEPRECATED,
-					"Non-static method %s::%s() should not be called statically",
+					"Fungsi non statis %s::%s() seharusnya tidak dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				if (UNEXPECTED(EG(exception) != NULL)) {
 					HANDLE_EXCEPTION();
@@ -33092,7 +33092,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 				 * So PHP would crash by allowing the call. */
 				zend_throw_error(
 					zend_ce_error,
-					"Non-static method %s::%s() cannot be called statically",
+					"Fungsi non statis %s::%s() tidak bisa dipanggil secara statis (::)",
 					ZSTR_VAL(fbc->common.scope->name), ZSTR_VAL(fbc->common.function_name));
 				HANDLE_EXCEPTION();
 			}
@@ -33101,7 +33101,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_STATIC_METHOD_CALL_SPEC_U
 
 	if (IS_UNUSED == IS_UNUSED) {
 		/* previous opcode is ZEND_FETCH_CLASS */
-		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT ||
+		if ((opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_PARENT || 
 		    (opline->op1.num & ZEND_FETCH_CLASS_MASK) == ZEND_FETCH_CLASS_SELF) {
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
 				ce = Z_OBJCE(EX(This));
@@ -33148,7 +33148,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_UNUSED_TMPVAR_H
 			Z_OBJ_HT_P(container)->unset_property(container, offset, (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -33188,7 +33188,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_UN
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -33208,7 +33208,7 @@ isset_no_object:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_NOT_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -33228,7 +33228,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_NOT_SPEC_CV_HANDLER(ZEND_
 {
 	USE_OPLINE
 	zval *val;
-
+	
 
 	val = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
@@ -33252,7 +33252,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_NOT_SPEC_CV_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_INC_SPEC_CV_RETVAL_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 
 	var_ptr = _get_zval_ptr_cv_undef_BP_VAR_RW(opline->op1.var EXECUTE_DATA_CC);
@@ -33290,7 +33290,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_INC_SPEC_CV_RETVAL_UNUSED_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_INC_SPEC_CV_RETVAL_USED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 
 	var_ptr = _get_zval_ptr_cv_undef_BP_VAR_RW(opline->op1.var EXECUTE_DATA_CC);
@@ -33328,7 +33328,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_INC_SPEC_CV_RETVAL_USED_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_SPEC_CV_RETVAL_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 
 	var_ptr = _get_zval_ptr_cv_undef_BP_VAR_RW(opline->op1.var EXECUTE_DATA_CC);
@@ -33366,7 +33366,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_SPEC_CV_RETVAL_UNUSED_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_SPEC_CV_RETVAL_USED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 
 	var_ptr = _get_zval_ptr_cv_undef_BP_VAR_RW(opline->op1.var EXECUTE_DATA_CC);
@@ -33404,7 +33404,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_SPEC_CV_RETVAL_USED_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_INC_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 
 	var_ptr = _get_zval_ptr_cv_undef_BP_VAR_RW(opline->op1.var EXECUTE_DATA_CC);
@@ -33436,7 +33436,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_INC_SPEC_CV_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 
 	var_ptr = _get_zval_ptr_cv_undef_BP_VAR_RW(opline->op1.var EXECUTE_DATA_CC);
@@ -33468,7 +33468,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_SPEC_CV_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ECHO_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *z;
 
 	SAVE_OPLINE();
@@ -33497,11 +33497,11 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ECHO_SPEC_CV_HANDLER(ZEND_OPCO
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 
 	val = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
-
+	
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZEND_VM_SET_NEXT_OPCODE(opline + 1);
 		ZEND_VM_CONTINUE();
@@ -33529,7 +33529,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_SPEC_CV_HANDL
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPNZ_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 
 	val = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -33560,7 +33560,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPNZ_SPEC_CV_HAND
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZNZ_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 
 	val = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -33592,7 +33592,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZNZ_SPEC_CV_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_EX_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 	int ret;
 
@@ -33629,7 +33629,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_EX_SPEC_CV_HANDLER(ZEND_O
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPNZ_EX_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *val;
 	int ret;
 
@@ -33732,7 +33732,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_CV_HANDLER(
 {
 	USE_OPLINE
 	zval *retval_ptr;
-
+	
 
 	SAVE_OPLINE();
 
@@ -33740,7 +33740,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_CV_HANDLER(
 		if ((IS_CV & (IS_CONST|IS_TMP_VAR)) ||
 		    (IS_CV == IS_VAR && opline->extended_value == ZEND_RETURNS_VALUE)) {
 			/* Not supposed to happen, but we'll allow it */
-			zend_error(E_NOTICE, "Only variable references should be returned by reference");
+			zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 
 			retval_ptr = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 			if (!EX(return_value)) {
@@ -33764,7 +33764,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_RETURN_BY_REF_SPEC_CV_HANDLER(
 		if (IS_CV == IS_VAR) {
 			if (retval_ptr == &EG(uninitialized_zval) ||
 			    (opline->extended_value == ZEND_RETURNS_FUNCTION && !Z_ISREF_P(retval_ptr))) {
-				zend_error(E_NOTICE, "Only variable references should be returned by reference");
+				zend_error(E_NOTICE, "Hanya referensi variabel yang seharusnya dikembalikan by reference");
 				if (EX(return_value)) {
 					ZVAL_NEW_REF(EX(return_value), retval_ptr);
 				} else {
@@ -33789,7 +33789,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GENERATOR_RETURN_SPEC_CV_HANDL
 {
 	USE_OPLINE
 	zval *retval;
-
+	
 
 	zend_generator *generator = zend_get_running_generator(EXECUTE_DATA_C);
 
@@ -33834,7 +33834,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_THROW_SPEC_CV_HANDLER(ZEND_OPC
 {
 	USE_OPLINE
 	zval *value;
-
+	
 
 	SAVE_OPLINE();
 	value = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -33853,7 +33853,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_THROW_SPEC_CV_HANDLER(ZEND_OPC
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Can only throw objects");
+			zend_throw_error(NULL, "Hanya objek yang bisa dilemparkan");
 
 			HANDLE_EXCEPTION();
 		}
@@ -33874,7 +33874,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_SPEC_CV_H
 {
 	USE_OPLINE
 	zval *varptr, *arg;
-
+	
 
 	varptr = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 	if (IS_CV == IS_CV && UNEXPECTED(Z_TYPE_INFO_P(varptr) == IS_UNDEF)) {
@@ -33912,7 +33912,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_SPEC_CV_H
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_REF_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *varptr, *arg;
 
 	SAVE_OPLINE();
@@ -33941,7 +33941,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_EX_SPEC_C
 {
 	USE_OPLINE
 	zval *varptr, *arg;
-
+	
 	uint32_t arg_num = opline->op2.num;
 
 	if (EXPECTED(0)) {
@@ -33990,7 +33990,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_EX_SPEC_C
 {
 	USE_OPLINE
 	zval *varptr, *arg;
-
+	
 	uint32_t arg_num = opline->op2.num;
 
 	if (EXPECTED(1)) {
@@ -34039,14 +34039,14 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_USER_SPEC_CV_HANDLER(ZEND
 {
 	USE_OPLINE
 	zval *arg, *param;
-
+	
 
 	SAVE_OPLINE();
 	arg = _get_zval_ptr_cv_deref_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 	param = ZEND_CALL_VAR(EX(call), opline->result.var);
 
 	if (UNEXPECTED(ARG_MUST_BE_SENT_BY_REF(EX(call)->func, opline->op2.num))) {
-		zend_error(E_WARNING, "Parameter %d to %s%s%s() expected to be a reference, value given",
+		zend_error(E_WARNING, "Parameter ke-%d pada fungsi %s%s%s() seharusnya suatu reference",
 			opline->op2.num,
 			EX(call)->func->common.scope ? ZSTR_VAL(EX(call)->func->common.scope->name) : "",
 			EX(call)->func->common.scope ? "::" : "",
@@ -34062,7 +34062,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_SPEC_CV_HANDLER(ZEND_OPCO
 {
 	USE_OPLINE
 	zval *val;
-
+	
 
 	val = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
@@ -34086,7 +34086,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_SPEC_CV_HANDLER(ZEND_OPCO
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *obj;
 	zend_class_entry *ce, *scope;
 	zend_function *clone;
@@ -34115,7 +34115,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "__clone method called on non-object");
+			zend_throw_error(NULL, "fungsi __clone dipanggil pada variabel yang bukan objek");
 
 			HANDLE_EXCEPTION();
 		}
@@ -34125,7 +34125,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 	clone = ce->clone;
 	clone_call = Z_OBJ_HT_P(obj)->clone_obj;
 	if (UNEXPECTED(clone_call == NULL)) {
-		zend_throw_error(NULL, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek dari kelas %s tidak bisa disalin", ZSTR_VAL(ce->name));
 
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		HANDLE_EXCEPTION();
@@ -34137,7 +34137,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 			 */
 			scope = EX(func)->op_array.scope;
 			if (!zend_check_private(clone, scope, clone->common.function_name)) {
-				zend_throw_error(NULL, "Call to private %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi privat %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -34147,7 +34147,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 			 */
 			scope = EX(func)->op_array.scope;
 			if (UNEXPECTED(!zend_check_protected(zend_get_function_root_class(clone), scope))) {
-				zend_throw_error(NULL, "Call to protected %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi terproteksi %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -34163,7 +34163,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CAST_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr;
 	zval *result = EX_VAR(opline->result.var);
 
@@ -34245,7 +34245,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INCLUDE_OR_EVAL_SPEC_CV_HANDLE
 {
 	USE_OPLINE
 	zend_op_array *new_op_array;
-
+	
 	zval *inc_filename;
 
 	SAVE_OPLINE();
@@ -34312,7 +34312,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INCLUDE_OR_EVAL_SPEC_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *array_ptr, *result;
 
 	SAVE_OPLINE();
@@ -34355,7 +34355,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CV_HANDLER(ZEN
 					OBJ_RELEASE(&iter->std);
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -34395,7 +34395,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CV_HANDLER(ZEN
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 
@@ -34406,7 +34406,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_R_SPEC_CV_HANDLER(ZEN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *array_ptr, *array_ref;
 
 	SAVE_OPLINE();
@@ -34482,7 +34482,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_CV_HANDLER(ZE
 
 				}
 				if (!EG(exception)) {
-					zend_throw_exception_ex(NULL, 0, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_exception_ex(NULL, 0, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -34535,7 +34535,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FE_RESET_RW_SPEC_CV_HANDLER(ZE
 			}
 		}
 	} else {
-		zend_error(E_WARNING, "Invalid argument supplied for foreach()");
+		zend_error(E_WARNING, "Argumen pada untuksetiap(...) tidak valid");
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		Z_FE_ITER_P(EX_VAR(opline->result.var)) = (uint32_t)-1;
 		if (IS_CV == IS_VAR) {
@@ -34553,7 +34553,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_EXIT_SPEC_CV_HANDLER(ZEND_OPCO
 
 	SAVE_OPLINE();
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *ptr = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 
 		do {
@@ -34579,7 +34579,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_EXIT_SPEC_CV_HANDLER(ZEND_OPCO
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMP_SET_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *ref = NULL;
 	int ret;
@@ -34629,7 +34629,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMP_SET_SPEC_CV_HANDLER(ZEND_O
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COALESCE_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *ref = NULL;
 
@@ -34669,7 +34669,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COALESCE_SPEC_CV_HANDLER(ZEND_
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_SPEC_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *result = EX_VAR(opline->result.var);
 
@@ -34713,13 +34713,13 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CV_HANDLER(ZEN
 	zend_generator *generator = zend_get_running_generator(EXECUTE_DATA_C);
 
 	zval *val;
-
+	
 
 	SAVE_OPLINE();
 	val = _get_zval_ptr_cv_deref_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot use \"yield from\" in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa \"hasilkan dari\" pada generator yang sudah closed");
 
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
@@ -34743,7 +34743,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CV_HANDLER(ZEN
 
 			if (Z_ISUNDEF(new_gen->retval)) {
 				if (UNEXPECTED(zend_generator_get_current(new_gen) == generator)) {
-					zend_throw_error(NULL, "Impossible to yield from the Generator being currently run");
+					zend_throw_error(NULL, "Tidak bisa hasilkan dari generator");
 					zval_ptr_dtor(val);
 					UNDEF_RESULT();
 					HANDLE_EXCEPTION();
@@ -34751,7 +34751,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CV_HANDLER(ZEN
 					zend_generator_yield_from(generator, new_gen);
 				}
 			} else if (UNEXPECTED(new_gen->execute_data == NULL)) {
-				zend_throw_error(NULL, "Generator passed to yield from was aborted without proper return and is unable to continue");
+				zend_throw_error(NULL, "Generator berhenti dan tidak bisa melanjutkan");
 				zval_ptr_dtor(val);
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -34766,7 +34766,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CV_HANDLER(ZEN
 
 			if (UNEXPECTED(!iter) || UNEXPECTED(EG(exception))) {
 				if (!EG(exception)) {
-					zend_throw_error(NULL, "Object of type %s did not create an Iterator", ZSTR_VAL(ce->name));
+					zend_throw_error(NULL, "Objek bertipe %s tidak membuat Iterator", ZSTR_VAL(ce->name));
 				}
 				UNDEF_RESULT();
 				HANDLE_EXCEPTION();
@@ -34785,7 +34785,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_FROM_SPEC_CV_HANDLER(ZEN
 			ZVAL_OBJ(&generator->values, &iter->std);
 		}
 	} else {
-		zend_throw_error(NULL, "Can use \"yield from\" only with arrays and Traversables");
+		zend_throw_error(NULL, "Hanya bisa \"hasilkan dari\" dari larik dan Traversable");
 		UNDEF_RESULT();
 		HANDLE_EXCEPTION();
 	}
@@ -34814,7 +34814,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_STRLEN_SPEC_CV_HANDLER(ZEND_OP
 {
 	USE_OPLINE
 	zval *value;
-
+	
 
 	value = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 	if (EXPECTED(Z_TYPE_P(value) == IS_STRING)) {
@@ -34851,7 +34851,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_STRLEN_SPEC_CV_HANDLER(ZEND_OP
 				}
 				zval_ptr_dtor(&tmp);
 			}
-			zend_internal_type_error(strict, "strlen() expects parameter 1 to be string, %s given", zend_get_type_by_const(Z_TYPE_P(value)));
+			zend_internal_type_error(strict, "strlen() butuh parameter 1 suatu string, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(value)));
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} while (0);
 	}
@@ -34864,7 +34864,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_TYPE_CHECK_SPEC_CV_HANDLER(ZEN
 	USE_OPLINE
 	zval *value;
 	int result = 0;
-
+	
 
 	value = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 	if ((1 << (uint32_t)Z_TYPE_P(value) & opline->extended_value)) {
@@ -34903,7 +34903,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_SIMPLE_SP
 {
 	USE_OPLINE
 	zval *varptr, *arg;
-
+	
 
 	varptr = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 	arg = ZEND_CALL_VAR(EX(call), opline->result.var);
@@ -34921,7 +34921,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_EX_SIMPLE
 {
 	USE_OPLINE
 	zval *varptr, *arg;
-
+	
 	uint32_t arg_num = opline->op2.num;
 
 	if (EXPECTED(0)) {
@@ -34949,7 +34949,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SEND_VAR_EX_SIMPLE
 {
 	USE_OPLINE
 	zval *varptr, *arg;
-
+	
 	uint32_t arg_num = opline->op2.num;
 
 	if (EXPECTED(1)) {
@@ -34976,7 +34976,7 @@ send_var_by_ref_simple:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35019,7 +35019,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CV_CONST_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35062,7 +35062,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CV_CONST_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35108,7 +35108,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CV_CONST_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -35123,7 +35123,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CV_CONST_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35133,7 +35133,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_CONST_HANDLER(ZEND
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -35162,7 +35162,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_CONST_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35190,7 +35190,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CV_CONST_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35218,7 +35218,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CV_CONST_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -35233,7 +35233,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CV_CONST_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35295,7 +35295,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CV_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -35313,7 +35313,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CV_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -35331,7 +35331,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CV_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35399,7 +35399,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CV_CONST_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35467,7 +35467,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CV_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35517,7 +35517,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CV_CONST_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35567,7 +35567,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CV_CO
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -35582,7 +35582,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CV_CONST_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35609,7 +35609,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CV_CONST_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35636,7 +35636,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CV_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -35663,7 +35663,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CV_CONST_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_XOR_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -35700,7 +35700,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -35754,7 +35754,7 @@ assign_dim_op_new_array:
 		if (IS_CONST == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -35797,7 +35797,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if (IS_CONST == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -35807,7 +35807,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -35826,7 +35826,7 @@ assign_dim_op_ret_null:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_simple_helper_SPEC_CV_CONST(binary_op_type binary_op ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 	zval *value;
 
@@ -35867,7 +35867,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -35887,7 +35887,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -35907,7 +35907,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_CONST(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -36095,7 +36095,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_POW_SPEC_CV_CONST_OBJ_H
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPEC_CV_CONST(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -36114,7 +36114,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -36172,7 +36172,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_OBJ_SPEC_CV_CONST_HAND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SPEC_CV_CONST(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -36191,7 +36191,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -36245,7 +36245,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_OBJ_SPEC_CV_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_CV_CONST(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 
@@ -36253,7 +36253,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 
 	retval = zend_fetch_static_property_address(varname, IS_CV, opline->op2, IS_CONST, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 
@@ -36312,7 +36312,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_STATIC_PROP_IS_SPEC_CV_C
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value, *result;
 
 	SAVE_OPLINE();
@@ -36384,7 +36384,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_RW_SPEC_CV_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_IS_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -36405,7 +36405,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_CON
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -36420,7 +36420,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_CON
 
 	} else {
 		if (IS_CONST == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -36455,9 +36455,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_UNSET_SPEC_CV_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -36542,7 +36542,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CV_CONST_HAND
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -36608,9 +36608,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_RW_SPEC_CV_CONST_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -36712,7 +36712,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CV_CON
 
 		SAVE_OPLINE();
 		if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -36763,7 +36763,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_UNSET_SPEC_CV_CONST_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -36776,7 +36776,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CV_CONST_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -36805,7 +36805,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -36819,7 +36819,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -36901,7 +36901,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -36959,7 +36959,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -36973,7 +36973,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -37055,7 +37055,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -37113,7 +37113,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -37127,7 +37127,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -37209,7 +37209,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -37238,7 +37238,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -37267,7 +37267,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -37281,7 +37281,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CONST_OP_DA
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -37363,7 +37363,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -37392,9 +37392,9 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CONST_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -37408,7 +37408,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -37446,7 +37446,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -37462,7 +37462,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -37483,7 +37483,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CONST_OP_DATA_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op_data;
 	zval *value;
@@ -37499,7 +37499,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -37538,7 +37538,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -37554,7 +37554,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -37575,7 +37575,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CONST_OP_DATA_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op_data;
 	zval *value;
@@ -37591,7 +37591,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -37630,7 +37630,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -37646,7 +37646,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -37667,9 +37667,9 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CONST_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -37683,7 +37683,7 @@ try_assign_dim_array:
 		if (IS_CONST == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -37721,7 +37721,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CONST == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -37737,7 +37737,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = RT_CONSTANT(opline, opline->op2);
 assign_dim_error:
@@ -37758,7 +37758,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CONST_RETVAL_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *variable_ptr;
 
@@ -37786,7 +37786,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CONST_RETVAL_UN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CONST_RETVAL_USED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *variable_ptr;
 
@@ -37814,7 +37814,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CONST_RETVAL_US
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FAST_CONCAT_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	zend_string *op1_str, *op2_str, *str;
 
@@ -37926,7 +37926,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CONST
 {
 	USE_OPLINE
 	zval *function_name;
-
+	
 	zval *object;
 	zend_function *fbc;
 	zend_class_entry *called_scope;
@@ -37959,7 +37959,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CONST
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 
 			HANDLE_EXCEPTION();
@@ -37982,7 +37982,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CONST
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 
 				HANDLE_EXCEPTION();
@@ -38000,7 +38000,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CONST
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 
 			HANDLE_EXCEPTION();
@@ -38010,7 +38010,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CONST
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CONST == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 
@@ -38052,7 +38052,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CONST
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -38118,7 +38118,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CV_CONST_HANDLER(ZEN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -38154,7 +38154,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_CONS
 	}
 
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *offset = RT_CONSTANT(opline, opline->op2);
 		zend_string *str;
 		zend_ulong hval;
@@ -38193,13 +38193,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -38233,7 +38233,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CV_CONS
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
-
+	
 
 	SAVE_OPLINE();
 
@@ -38290,7 +38290,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CV_CONS
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_DIM_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zval *offset;
 	zend_ulong hval;
@@ -38348,7 +38348,7 @@ num_index_dim:
 				key = ZSTR_EMPTY_ALLOC();
 				goto str_index_dim;
 			} else {
-				zend_error(E_WARNING, "Illegal offset type in unset");
+				zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada saat hapus");
 			}
 			break;
 		} else if (Z_ISREF_P(container)) {
@@ -38365,12 +38365,12 @@ num_index_dim:
 		}
 		if (EXPECTED(Z_TYPE_P(container) == IS_OBJECT)) {
 			if (UNEXPECTED(Z_OBJ_HT_P(container)->unset_dimension == NULL)) {
-				zend_throw_error(NULL, "Cannot use object as array");
+				zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			} else {
 				Z_OBJ_HT_P(container)->unset_dimension(container, offset);
 			}
 		} else if (IS_CV != IS_UNUSED && UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
-			zend_throw_error(NULL, "Cannot unset string offsets");
+			zend_throw_error(NULL, "Indeks pada string tidak bisa dihapus");
 		}
 	} while (0);
 
@@ -38381,7 +38381,7 @@ num_index_dim:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zval *offset;
 
@@ -38407,7 +38407,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_CV_CONST_HANDLE
 			Z_OBJ_HT_P(container)->unset_property(container, offset, ((IS_CONST == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -38421,7 +38421,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
@@ -38486,7 +38486,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if (IS_CV == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if (IS_CV != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -38508,7 +38508,7 @@ is_static_prop_return:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_DIM_OBJ_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zend_ulong hval;
@@ -38562,7 +38562,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -38591,7 +38591,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -38640,7 +38640,7 @@ isset_dim_obj_exit:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zval *offset;
@@ -38667,7 +38667,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CV
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -38686,7 +38686,7 @@ isset_no_object:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INSTANCEOF_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr;
 	zend_bool result;
 
@@ -38740,7 +38740,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CONST_HANDLER(ZE
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -38755,7 +38755,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CONST_HANDLER(ZE
 
 	/* Set the new yielded value */
 	if (IS_CV != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -38763,7 +38763,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CONST_HANDLER(ZE
 			if (IS_CV & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -38781,7 +38781,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CONST_HANDLER(ZE
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -38816,7 +38816,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CONST_HANDLER(ZE
 
 	/* Set the new yielded key */
 	if (IS_CONST != IS_UNUSED) {
-
+		
 		zval *key = RT_CONSTANT(opline, opline->op2);
 
 		/* Consts, temporary variables and references need copying */
@@ -38871,7 +38871,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CONST_HANDLER(ZE
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BIND_GLOBAL_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *value;
 	zval *variable_ptr;
@@ -38959,7 +38959,7 @@ check_indirect:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BIND_STATIC_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	HashTable *ht;
 	zval *varname;
 	zval *value;
@@ -39010,7 +39010,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BIND_STATIC_SPEC_CV_CONST_HAND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_LONG_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op, *jump_zv;
 	HashTable *jumptable;
 
@@ -39039,7 +39039,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_LONG_SPEC_CV_CONST_HAND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_STRING_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op, *jump_zv;
 	HashTable *jumptable;
 
@@ -39073,7 +39073,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SWITCH_STRING_SPEC_CV_CONST_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IN_ARRAY_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 	HashTable *ht = Z_ARRVAL_P(RT_CONSTANT(opline, opline->op2));
 	int result;
@@ -39113,7 +39113,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IN_ARRAY_SPEC_CV_CONST_HANDLER
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_INDEX_SPEC_CV_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value;
 	zend_long offset;
 
@@ -39153,7 +39153,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -39258,7 +39258,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_TMP_HANDLER(ZEND
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 		UNDEF_RESULT();
@@ -39273,7 +39273,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_TMP_HANDLER(ZEND
 
 	/* Set the new yielded value */
 	if (IS_CV != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -39281,7 +39281,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_TMP_HANDLER(ZEND
 			if (IS_CV & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -39299,7 +39299,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_TMP_HANDLER(ZEND
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -39425,7 +39425,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CV_VAR_H
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_CV_VAR(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 
@@ -39433,7 +39433,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 
 	retval = zend_fetch_static_property_address(varname, IS_CV, opline->op2, IS_VAR, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 
@@ -39561,7 +39561,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_CV_VAR_HANDLER
 	    UNEXPECTED(!Z_ISREF_P(EX_VAR(opline->op1.var))) &&
 	    UNEXPECTED(!Z_ISERROR_P(EX_VAR(opline->op1.var)))) {
 
-		zend_throw_error(NULL, "Cannot assign by reference to overloaded object");
+		zend_throw_error(NULL, "Tidak bisa assign by reference pada objek yang di-overload");
 
 		if (UNEXPECTED(free_op2)) {zval_ptr_dtor_nogc(free_op2);};
 		UNDEF_RESULT();
@@ -39570,7 +39570,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_CV_VAR_HANDLER
 	} else if (IS_VAR == IS_VAR &&
 	           opline->extended_value == ZEND_RETURNS_FUNCTION &&
 			   UNEXPECTED(!Z_ISREF_P(value_ptr))) {
-		zend_error(E_NOTICE, "Only variables should be assigned by reference");
+		zend_error(E_NOTICE, "Hanya variabel yang seharusnya di-assign by reference");
 		if (UNEXPECTED(EG(exception) != NULL)) {
 			if (UNEXPECTED(free_op2)) {zval_ptr_dtor_nogc(free_op2);};
 			UNDEF_RESULT();
@@ -39608,7 +39608,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CV_VAR_
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
-
+	
 
 	SAVE_OPLINE();
 
@@ -39667,7 +39667,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
@@ -39732,7 +39732,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if (IS_CV == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if (IS_CV != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -39754,7 +39754,7 @@ is_static_prop_return:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INSTANCEOF_SPEC_CV_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr;
 	zend_bool result;
 
@@ -39808,7 +39808,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_VAR_HANDLER(ZEND
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 		zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 		UNDEF_RESULT();
@@ -39823,7 +39823,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_VAR_HANDLER(ZEND
 
 	/* Set the new yielded value */
 	if (IS_CV != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -39831,7 +39831,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_VAR_HANDLER(ZEND
 			if (IS_CV & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -39849,7 +39849,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_VAR_HANDLER(ZEND
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -39954,7 +39954,7 @@ assign_dim_op_new_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -39997,7 +39997,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if (IS_UNUSED == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -40007,7 +40007,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -40038,7 +40038,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_UNUSED(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_UNUSED(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -40106,7 +40106,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_POW_SPEC_CV_UNUSED_DIM_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_var_address_helper_SPEC_CV_UNUSED(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 	zend_string *name, *tmp_name;
@@ -40142,7 +40142,7 @@ fetch_this:
 						Z_ADDREF_P(result);
 					} else {
 						ZVAL_NULL(result);
-						zend_error(E_NOTICE,"Undefined variable: this");
+						zend_error(E_NOTICE,"Variabel tidak terdefinisi: this");
 					}
 					break;
 				case BP_VAR_IS:
@@ -40156,11 +40156,11 @@ fetch_this:
 				case BP_VAR_RW:
 				case BP_VAR_W:
 					ZVAL_UNDEF(result);
-					zend_throw_error(NULL, "Cannot re-assign $this");
+					zend_throw_error(NULL, "Tidak bisa mengisi ke $ini");
 					break;
 				case BP_VAR_UNSET:
 					ZVAL_UNDEF(result);
-					zend_throw_error(NULL, "Cannot unset $this");
+					zend_throw_error(NULL, "Tidak bisa menghapus $ini");
 					break;
 				EMPTY_SWITCH_DEFAULT_CASE()
 			}
@@ -40172,13 +40172,13 @@ fetch_this:
 		switch (type) {
 			case BP_VAR_R:
 			case BP_VAR_UNSET:
-				zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+				zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 				/* break missing intentionally */
 			case BP_VAR_IS:
 				retval = &EG(uninitialized_zval);
 				break;
 			case BP_VAR_RW:
-				zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+				zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 				retval = zend_hash_update(target_symbol_table, name, &EG(uninitialized_zval));
 				break;
 			case BP_VAR_W:
@@ -40196,13 +40196,13 @@ fetch_this:
 			switch (type) {
 				case BP_VAR_R:
 				case BP_VAR_UNSET:
-					zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+					zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 					/* break missing intentionally */
 				case BP_VAR_IS:
 					retval = &EG(uninitialized_zval);
 					break;
 				case BP_VAR_RW:
-					zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+					zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 					/* break missing intentionally */
 				case BP_VAR_W:
 					ZVAL_NULL(retval);
@@ -40268,7 +40268,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_IS_SPEC_CV_UNUSED_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_CV_UNUSED(int type ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *varname;
 	zval *retval;
 
@@ -40276,7 +40276,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
 
 	retval = zend_fetch_static_property_address(varname, IS_CV, opline->op2, IS_UNUSED, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 
@@ -40378,7 +40378,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_UNU
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -40393,7 +40393,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_UNU
 
 	} else {
 		if (IS_UNUSED == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -40410,9 +40410,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_UNU
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_UNUSED_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -40426,7 +40426,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -40464,7 +40464,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -40480,7 +40480,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -40501,7 +40501,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_UNUSED_OP_DATA_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op_data;
 	zval *value;
@@ -40517,7 +40517,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -40556,7 +40556,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -40572,7 +40572,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -40593,7 +40593,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_UNUSED_OP_DATA_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op_data;
 	zval *value;
@@ -40609,7 +40609,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -40648,7 +40648,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -40664,7 +40664,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -40685,9 +40685,9 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_UNUSED_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -40701,7 +40701,7 @@ try_assign_dim_array:
 		if (IS_UNUSED == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -40739,7 +40739,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_UNUSED == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -40755,7 +40755,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = NULL;
 assign_dim_error:
@@ -40781,10 +40781,10 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_CV_UNU
 	if (IS_CV == IS_UNUSED) {
 		zend_verify_missing_return_type(EX(func), CACHE_ADDR(opline->op2.num));
 	} else {
-/* prevents "undefined variable opline" errors */
+/* prevents "Variabel tidak terdefinisi opline" errors */
 #if 0 || (IS_CV != IS_UNUSED)
 		zval *retval_ref, *retval_ptr;
-
+		
 		zend_arg_info *ret_info = EX(func)->common.arg_info - 1;
 
 		retval_ref = retval_ptr = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
@@ -40826,7 +40826,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_VERIFY_RETURN_TYPE_SPEC_CV_UNU
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -40862,7 +40862,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_UNUS
 	}
 
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *offset = NULL;
 		zend_string *str;
 		zend_ulong hval;
@@ -40901,13 +40901,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -40963,7 +40963,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_VAR_SPEC_CV_UNUSED_HANDL
 	zval *varname;
 	zend_string *name, *tmp_name;
 	HashTable *target_symbol_table;
-
+	
 
 	SAVE_OPLINE();
 
@@ -40997,7 +40997,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_STATIC_PROP_SPEC_CV_UNUS
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
-
+	
 
 	SAVE_OPLINE();
 
@@ -41081,7 +41081,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_VAR_SPEC_CV_UNUS
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	HashTable *target_symbol_table;
@@ -41118,7 +41118,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 	USE_OPLINE
 	zval *value;
 	int result;
-
+	
 	zval *varname;
 	zend_string *name, *tmp_name;
 	zend_class_entry *ce;
@@ -41183,7 +41183,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if (IS_CV == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if (IS_CV != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -41205,7 +41205,7 @@ is_static_prop_return:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INSTANCEOF_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr;
 	zend_bool result;
 
@@ -41259,7 +41259,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_UNUSED_HANDLER(Z
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -41274,7 +41274,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_UNUSED_HANDLER(Z
 
 	/* Set the new yielded value */
 	if (IS_CV != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -41282,7 +41282,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_UNUSED_HANDLER(Z
 			if (IS_CV & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -41300,7 +41300,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_UNUSED_HANDLER(Z
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -41335,7 +41335,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_UNUSED_HANDLER(Z
 
 	/* Set the new yielded key */
 	if (IS_UNUSED != IS_UNUSED) {
-
+		
 		zval *key = NULL;
 
 		/* Consts, temporary variables and references need copying */
@@ -41431,7 +41431,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MAKE_REF_SPEC_CV_UNUSED_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COUNT_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 	zend_long count;
 
@@ -41466,7 +41466,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_COUNT_SPEC_CV_UNUSED_HANDLER(Z
 		} else {
 			count = 1;
 		}
-		zend_error(E_WARNING, "count(): Parameter must be an array or an object that implements Countable");
+		zend_error(E_WARNING, "count(): Parameter harus suatu larik atau objek Countable");
 	} while (0);
 
 	ZVAL_LONG(EX_VAR(opline->result.var), count);
@@ -41481,7 +41481,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CV_UNUSED_HANDL
 	if (IS_CV == IS_UNUSED) {
 		if (UNEXPECTED(!EX(func)->common.scope)) {
 			SAVE_OPLINE();
-			zend_error(E_WARNING, "get_class() called without object from outside a class");
+			zend_error(E_WARNING, "get_class() dipanggil tanpa objek dari luar kelas");
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 			ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 		} else {
@@ -41489,7 +41489,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CV_UNUSED_HANDL
 			ZEND_VM_NEXT_OPCODE();
 		}
 	} else {
-
+		
 		zval *op1;
 
 		SAVE_OPLINE();
@@ -41497,7 +41497,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CV_UNUSED_HANDL
 		if (Z_TYPE_P(op1) == IS_OBJECT) {
 			ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op1)->name);
 		} else {
-			zend_error(E_WARNING, "get_class() expects parameter 1 to be object, %s given", zend_get_type_by_const(Z_TYPE_P(op1)));
+			zend_error(E_WARNING, "get_class() butuh parameter 1 suatu objek, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(op1)));
 			ZVAL_FALSE(EX_VAR(opline->result.var));
 		}
 
@@ -41508,7 +41508,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_CLASS_SPEC_CV_UNUSED_HANDL
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1;
 	zend_string *type;
 
@@ -41518,7 +41518,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_CV_UNUSED_HANDLE
 	if (EXPECTED(type)) {
 		ZVAL_INTERNED_STR(EX_VAR(opline->result.var), type);
 	} else {
-		ZVAL_STRING(EX_VAR(opline->result.var), "unknown type");
+		ZVAL_STRING(EX_VAR(opline->result.var), "tipe tidak diketahui");
 	}
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -41527,7 +41527,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_GET_TYPE_SPEC_CV_UNUSED_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41570,7 +41570,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_SPEC_CV_CV_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41613,7 +41613,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SUB_SPEC_CV_CV_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41659,7 +41659,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MUL_SPEC_CV_CV_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -41674,7 +41674,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_DIV_SPEC_CV_CV_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41684,7 +41684,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_CV_HANDLER(ZEND_OP
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -41713,7 +41713,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_CV_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41741,7 +41741,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SL_SPEC_CV_CV_HANDLER(ZEND_OPC
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41769,7 +41769,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SR_SPEC_CV_CV_HANDLER(ZEND_OPC
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -41784,7 +41784,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POW_SPEC_CV_CV_HANDLER(ZEND_OP
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41846,7 +41846,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CONCAT_SPEC_CV_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -41864,7 +41864,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_IDENTICAL_SPEC_CV_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	int result;
 
@@ -41882,7 +41882,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_IDENTICAL_SPEC_CV_CV_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -41950,7 +41950,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_EQUAL_SPEC_CV_CV_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -42018,7 +42018,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_NOT_EQUAL_SPEC_CV_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -42068,7 +42068,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_SPEC_CV_CV_HANDLER(
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -42118,7 +42118,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_IS_SMALLER_OR_EQUAL_SPEC_CV_CV
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -42133,7 +42133,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_SPACESHIP_SPEC_CV_CV_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -42160,7 +42160,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_OR_SPEC_CV_CV_HANDLER(ZEND_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -42187,7 +42187,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_AND_SPEC_CV_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -42214,7 +42214,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BW_XOR_SPEC_CV_CV_HANDLER(ZEND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BOOL_XOR_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 
 	SAVE_OPLINE();
@@ -42251,7 +42251,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -42305,7 +42305,7 @@ assign_dim_op_new_array:
 		if (IS_CV == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -42348,7 +42348,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if (IS_CV == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -42358,7 +42358,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -42377,7 +42377,7 @@ assign_dim_op_ret_null:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_simple_helper_SPEC_CV_CV(binary_op_type binary_op ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *var_ptr;
 	zval *value;
 
@@ -42418,7 +42418,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -42438,7 +42438,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -42458,7 +42458,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_CV(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -42646,7 +42646,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_POW_SPEC_CV_CV_OBJ_HAND
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPEC_CV_CV(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -42665,7 +42665,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -42723,7 +42723,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_PRE_DEC_OBJ_SPEC_CV_CV_HANDLER
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SPEC_CV_CV(int inc ZEND_OPCODE_HANDLER_ARGS_DC)
 {
 	USE_OPLINE
-
+	
 	zval *object;
 	zval *property;
 	zval *zptr;
@@ -42742,7 +42742,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -42796,7 +42796,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_OBJ_SPEC_CV_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value, *result;
 
 	SAVE_OPLINE();
@@ -42868,7 +42868,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_RW_SPEC_CV_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_IS_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -42889,7 +42889,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_CV_
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -42904,7 +42904,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_CV_
 
 	} else {
 		if (IS_CV == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -42939,9 +42939,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_UNSET_SPEC_CV_CV_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -43026,7 +43026,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CV_CV_HANDLER
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -43092,9 +43092,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_RW_SPEC_CV_CV_HANDLE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -43196,7 +43196,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CV_CV_
 
 		SAVE_OPLINE();
 		if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -43247,7 +43247,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_UNSET_SPEC_CV_CV_HAN
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 
 	SAVE_OPLINE();
@@ -43260,7 +43260,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_LIST_SPEC_CV_CV_HANDLER(
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -43289,7 +43289,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43303,7 +43303,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43385,7 +43385,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -43443,7 +43443,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43457,7 +43457,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43539,7 +43539,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -43597,7 +43597,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43611,7 +43611,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43693,7 +43693,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -43722,7 +43722,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object, *property, *value, tmp;
 
 	SAVE_OPLINE();
@@ -43751,7 +43751,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43765,7 +43765,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_CV_OP_DATA_
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -43847,7 +43847,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -43876,9 +43876,9 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CV_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -43892,7 +43892,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -43930,7 +43930,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -43946,7 +43946,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -43967,7 +43967,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CV_OP_DATA_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op_data;
 	zval *value;
@@ -43983,7 +43983,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -44022,7 +44022,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -44038,7 +44038,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -44059,7 +44059,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CV_OP_DATA_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op_data;
 	zval *value;
@@ -44075,7 +44075,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -44114,7 +44114,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -44130,7 +44130,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -44151,9 +44151,9 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_CV_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
-
+	
 	zval *value;
 	zval *variable_ptr;
 	zval *dim;
@@ -44167,7 +44167,7 @@ try_assign_dim_array:
 		if (IS_CV == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -44205,7 +44205,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if (IS_CV == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -44221,7 +44221,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 assign_dim_error:
@@ -44242,7 +44242,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CV_RETVAL_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *variable_ptr;
 
@@ -44270,7 +44270,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CV_RETVAL_UNUSE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CV_RETVAL_USED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 	zval *variable_ptr;
 
@@ -44298,7 +44298,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_SPEC_CV_CV_RETVAL_USED_
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *variable_ptr;
 	zval *value_ptr;
 
@@ -44311,7 +44311,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_CV_CV_HANDLER(
 	    UNEXPECTED(!Z_ISREF_P(EX_VAR(opline->op1.var))) &&
 	    UNEXPECTED(!Z_ISERROR_P(EX_VAR(opline->op1.var)))) {
 
-		zend_throw_error(NULL, "Cannot assign by reference to overloaded object");
+		zend_throw_error(NULL, "Tidak bisa assign by reference pada objek yang di-overload");
 
 
 		UNDEF_RESULT();
@@ -44320,7 +44320,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_CV_CV_HANDLER(
 	} else if (IS_CV == IS_VAR &&
 	           opline->extended_value == ZEND_RETURNS_FUNCTION &&
 			   UNEXPECTED(!Z_ISREF_P(value_ptr))) {
-		zend_error(E_NOTICE, "Only variables should be assigned by reference");
+		zend_error(E_NOTICE, "Hanya variabel yang seharusnya di-assign by reference");
 		if (UNEXPECTED(EG(exception) != NULL)) {
 
 			UNDEF_RESULT();
@@ -44354,7 +44354,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_REF_SPEC_CV_CV_HANDLER(
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FAST_CONCAT_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2;
 	zend_string *op1_str, *op2_str, *str;
 
@@ -44466,7 +44466,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CV_HA
 {
 	USE_OPLINE
 	zval *function_name;
-
+	
 	zval *object;
 	zend_function *fbc;
 	zend_class_entry *called_scope;
@@ -44499,7 +44499,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CV_HA
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 
 			HANDLE_EXCEPTION();
@@ -44522,7 +44522,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CV_HA
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 
 				HANDLE_EXCEPTION();
@@ -44540,7 +44540,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CV_HA
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 
 			HANDLE_EXCEPTION();
@@ -44550,7 +44550,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CV_HA
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CV == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 
@@ -44592,7 +44592,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_CV_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *op1, *op2, *result;
 
 	op1 = _get_zval_ptr_cv_undef(opline->op1.var EXECUTE_DATA_CC);
@@ -44658,7 +44658,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CV_CV_HANDLER(ZEND_O
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -44694,7 +44694,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_CV_H
 	}
 
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *offset = _get_zval_ptr_cv_undef(opline->op2.var EXECUTE_DATA_CC);
 		zend_string *str;
 		zend_ulong hval;
@@ -44733,13 +44733,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -44770,7 +44770,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_ARRAY_SPEC_CV_CV_HANDLER(
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_DIM_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zval *offset;
 	zend_ulong hval;
@@ -44828,7 +44828,7 @@ num_index_dim:
 				key = ZSTR_EMPTY_ALLOC();
 				goto str_index_dim;
 			} else {
-				zend_error(E_WARNING, "Illegal offset type in unset");
+				zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada saat hapus");
 			}
 			break;
 		} else if (Z_ISREF_P(container)) {
@@ -44845,12 +44845,12 @@ num_index_dim:
 		}
 		if (EXPECTED(Z_TYPE_P(container) == IS_OBJECT)) {
 			if (UNEXPECTED(Z_OBJ_HT_P(container)->unset_dimension == NULL)) {
-				zend_throw_error(NULL, "Cannot use object as array");
+				zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			} else {
 				Z_OBJ_HT_P(container)->unset_dimension(container, offset);
 			}
 		} else if (IS_CV != IS_UNUSED && UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
-			zend_throw_error(NULL, "Cannot unset string offsets");
+			zend_throw_error(NULL, "Indeks pada string tidak bisa dihapus");
 		}
 	} while (0);
 
@@ -44861,7 +44861,7 @@ num_index_dim:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zval *offset;
 
@@ -44887,7 +44887,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_CV_CV_HANDLER(Z
 			Z_OBJ_HT_P(container)->unset_property(container, offset, ((IS_CV == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -44899,7 +44899,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_CV_CV_HANDLER(Z
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_DIM_OBJ_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zend_ulong hval;
@@ -44953,7 +44953,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -44982,7 +44982,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -45031,7 +45031,7 @@ isset_dim_obj_exit:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	int result;
 	zval *offset;
@@ -45058,7 +45058,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CV
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -45082,7 +45082,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CV_HANDLER(ZEND_
 
 	SAVE_OPLINE();
 	if (UNEXPECTED(generator->flags & ZEND_GENERATOR_FORCED_CLOSE)) {
-		zend_throw_error(NULL, "Cannot yield from finally in a force-closed generator");
+		zend_throw_error(NULL, "Tidak bisa hasilkan dari 'akhirnya'");
 
 
 		UNDEF_RESULT();
@@ -45097,7 +45097,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CV_HANDLER(ZEND_
 
 	/* Set the new yielded value */
 	if (IS_CV != IS_UNUSED) {
-
+		
 
 		if (UNEXPECTED(EX(func)->op_array.fn_flags & ZEND_ACC_RETURN_REFERENCE)) {
 			/* Constants and temporary variables aren't yieldable by reference,
@@ -45105,7 +45105,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CV_HANDLER(ZEND_
 			if (IS_CV & (IS_CONST|IS_TMP_VAR)) {
 				zval *value;
 
-				zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+				zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 
 				value = _get_zval_ptr_cv_BP_VAR_R(opline->op1.var EXECUTE_DATA_CC);
 				ZVAL_COPY_VALUE(&generator->value, value);
@@ -45123,7 +45123,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CV_HANDLER(ZEND_
 				    (value_ptr == &EG(uninitialized_zval) ||
 				     (opline->extended_value == ZEND_RETURNS_FUNCTION &&
 				      !Z_ISREF_P(value_ptr)))) {
-					zend_error(E_NOTICE, "Only variable references should be yielded by reference");
+					zend_error(E_NOTICE, "Seharusnya hanya referensi variabel yang di-hasilkan by reference");
 				} else {
 					ZVAL_MAKE_REF(value_ptr);
 				}
@@ -45158,7 +45158,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CV_HANDLER(ZEND_
 
 	/* Set the new yielded key */
 	if (IS_CV != IS_UNUSED) {
-
+		
 		zval *key = _get_zval_ptr_cv_BP_VAR_R(opline->op2.var EXECUTE_DATA_CC);
 
 		/* Consts, temporary variables and references need copying */
@@ -45213,7 +45213,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_YIELD_SPEC_CV_CV_HANDLER(ZEND_
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_R_INDEX_SPEC_CV_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container, *dim, *value;
 	zend_long offset;
 
@@ -45253,7 +45253,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -45418,7 +45418,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_CV_TMPVAR_HANDLER(ZEN
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -45949,7 +45949,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_binary_assign_op_obj_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Pemberian properti '%s' pada variabel yang bukan suatu objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -46003,7 +46003,7 @@ assign_dim_op_new_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			var_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(container), &EG(uninitialized_zval));
 			if (UNEXPECTED(!var_ptr)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_op_ret_null;
 			}
 		} else {
@@ -46046,7 +46046,7 @@ assign_dim_op_convert_to_array:
 		} else {
 			if (UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
 				if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-					zend_throw_error(NULL, "[] operator not supported for strings");
+					zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				} else {
 					zend_check_string_offset(dim, BP_VAR_RW EXECUTE_DATA_CC);
 					zend_wrong_string_offset(EXECUTE_DATA_C);
@@ -46056,7 +46056,7 @@ assign_dim_op_convert_to_array:
 				goto assign_dim_op_convert_to_array;
 			} else {
 				if (UNEXPECTED(IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(container)))) {
-					zend_error(E_WARNING, "Cannot use a scalar value as an array");
+					zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 				}
 assign_dim_op_ret_null:
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -46118,7 +46118,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -46138,7 +46138,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -46158,7 +46158,7 @@ static zend_always_inline ZEND_OPCODE_HANDLER_RET zend_binary_assign_op_helper_S
 		ZEND_VM_TAIL_CALL(zend_binary_assign_op_dim_helper_SPEC_CV_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 	}
 # endif
-
+	
 	ZEND_VM_TAIL_CALL(zend_binary_assign_op_obj_helper_SPEC_CV_TMPVAR(binary_op ZEND_OPCODE_HANDLER_ARGS_PASSTHRU_CC));
 #endif
 }
@@ -46365,7 +46365,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_pre_incdec_property_helper_SPE
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 					ZVAL_NULL(EX_VAR(opline->result.var));
@@ -46443,7 +46443,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_post_incdec_property_helper_SP
 			ZVAL_DEREF(object);
 			if (UNEXPECTED(!make_real_object(object))) {
 				zend_string *property_name = zval_get_string(property);
-				zend_error(E_WARNING, "Attempt to increment/decrement property '%s' of non-object", ZSTR_VAL(property_name));
+				zend_error(E_WARNING, "Tidak bisa menambah/mengurangi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 				zend_string_release(property_name);
 				ZVAL_NULL(EX_VAR(opline->result.var));
 				break;
@@ -46591,7 +46591,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_TMP
 
 	if (zend_is_by_ref_func_arg_fetch(opline, EX(call))) {
         if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-            zend_throw_error(NULL, "Cannot use temporary expression in write context");
+            zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -46606,7 +46606,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_FUNC_ARG_SPEC_CV_TMP
 
 	} else {
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-			zend_throw_error(NULL, "Cannot use [] for reading");
+			zend_throw_error(NULL, "Tidak bisa menggunakan [] untuk membaca");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -46641,7 +46641,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_DIM_UNSET_SPEC_CV_TMPVAR
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CV_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zend_free_op free_op2;
 	zval *offset;
@@ -46728,7 +46728,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_R_SPEC_CV_TMPVAR_HAN
 			zend_string *property_name;
 fetch_obj_r_no_object:
 			property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to get property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa mengakses properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} else {
@@ -46795,7 +46795,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_RW_SPEC_CV_TMPVAR_HA
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_CV_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *container;
 	zend_free_op free_op2;
 	zval *offset;
@@ -46900,7 +46900,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_FUNC_ARG_SPEC_CV_TMP
 
 		SAVE_OPLINE();
 		if ((IS_CV & (IS_CONST|IS_TMP_VAR))) {
-			zend_throw_error(NULL, "Cannot use temporary expression in write context");
+			zend_throw_error(NULL, "Tidak bisa menggunakan ekspresi sementara untuk menulis");
 			zval_ptr_dtor_nogc(EX_VAR(opline->op2.var));
 
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -46993,7 +46993,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47007,7 +47007,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47089,7 +47089,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -47147,7 +47147,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47161,7 +47161,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47243,7 +47243,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -47301,7 +47301,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47315,7 +47315,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47397,7 +47397,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -47455,7 +47455,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 				object_init(object);
 				Z_ADDREF_P(object);
 				obj = Z_OBJ_P(object);
-				zend_error(E_WARNING, "Creating default object from empty value");
+				zend_error(E_WARNING, "Membuat objek default dari nilai kosong");
 				if (GC_REFCOUNT(obj) == 1) {
 					/* the enclosing container was deleted, obj is unreferenced */
 					if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47469,7 +47469,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_OBJ_SPEC_CV_TMPVAR_OP_D
 			} else {
 				if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object))) {
 					zend_string *property_name = zval_get_string(property);
-					zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+					zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 					zend_string_release(property_name);
 				}
 				if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
@@ -47551,7 +47551,7 @@ fast_assign_obj:
 
 	if (!Z_OBJ_HT_P(object)->write_property) {
 		zend_string *property_name = zval_get_string(property);
-		zend_error(E_WARNING, "Attempt to assign property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_WARNING, "Tidak bisa mengisi properti '%s' dari variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 		if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
 			ZVAL_NULL(EX_VAR(opline->result.var));
@@ -47580,7 +47580,7 @@ exit_assign_obj:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_TMPVAR_OP_DATA_CONST_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op2;
 	zval *value;
@@ -47596,7 +47596,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -47634,7 +47634,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -47650,7 +47650,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -47671,7 +47671,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_TMPVAR_OP_DATA_TMP_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op2, free_op_data;
 	zval *value;
@@ -47687,7 +47687,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -47726,7 +47726,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -47742,7 +47742,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -47763,7 +47763,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_TMPVAR_OP_DATA_VAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op2, free_op_data;
 	zval *value;
@@ -47779,7 +47779,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -47818,7 +47818,7 @@ try_assign_dim_array:
 			zval_ptr_dtor_nogc(free_op_data);
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 				zval_ptr_dtor_nogc(EX_VAR((opline+1)->op1.var));
 
 				UNDEF_RESULT();
@@ -47834,7 +47834,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -47855,7 +47855,7 @@ assign_dim_error:
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ASSIGN_DIM_SPEC_CV_TMPVAR_OP_DATA_CV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *object_ptr;
 	zend_free_op free_op2;
 	zval *value;
@@ -47871,7 +47871,7 @@ try_assign_dim_array:
 		if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
 			variable_ptr = zend_hash_next_index_insert(Z_ARRVAL_P(object_ptr), &EG(uninitialized_zval));
 			if (UNEXPECTED(variable_ptr == NULL)) {
-				zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+				zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 				goto assign_dim_error;
 			}
 		} else {
@@ -47909,7 +47909,7 @@ try_assign_dim_array:
 
 		} else if (EXPECTED(Z_TYPE_P(object_ptr) == IS_STRING)) {
 			if ((IS_TMP_VAR|IS_VAR) == IS_UNUSED) {
-				zend_throw_error(NULL, "[] operator not supported for strings");
+				zend_throw_error(NULL, "operator [] tidak bisa untuk string");
 
 
 				UNDEF_RESULT();
@@ -47925,7 +47925,7 @@ try_assign_dim_array:
 			goto try_assign_dim_array;
 		} else {
 			if (IS_CV != IS_VAR || EXPECTED(!Z_ISERROR_P(object_ptr))) {
-				zend_error(E_WARNING, "Cannot use a scalar value as an array");
+				zend_error(E_WARNING, "Tidak bisa mengakses nilai tunggal sebagai larik");
 			}
 			dim = _get_zval_ptr_var(opline->op2.var, &free_op2 EXECUTE_DATA_CC);
 assign_dim_error:
@@ -48091,7 +48091,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_TMPVA
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 			zval_ptr_dtor_nogc(free_op2);
 
 			HANDLE_EXCEPTION();
@@ -48114,7 +48114,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_TMPVA
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 				zval_ptr_dtor_nogc(free_op2);
 
 				HANDLE_EXCEPTION();
@@ -48132,7 +48132,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_TMPVA
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 			zval_ptr_dtor_nogc(free_op2);
 
 			HANDLE_EXCEPTION();
@@ -48142,7 +48142,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_CV_TMPVA
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 
@@ -48251,7 +48251,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CASE_SPEC_CV_TMPVAR_HANDLER(ZE
 static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ADD_ARRAY_ELEMENT_SPEC_CV_TMPVAR_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *expr_ptr, new_expr;
 
 	SAVE_OPLINE();
@@ -48326,13 +48326,13 @@ num_index:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 		zval_ptr_dtor_nogc(free_op2);
 	} else {
 		if (!zend_hash_next_index_insert(Z_ARRVAL_P(EX_VAR(opline->result.var)), expr_ptr)) {
-			zend_error(E_WARNING, "Cannot add element to the array as the next element is already occupied");
+			zend_error(E_WARNING, "Tidak bisa menambahkan elemen karena elemen selanjutnya sudah ada yang menempati");
 			zval_ptr_dtor_nogc(expr_ptr);
 		}
 	}
@@ -48421,7 +48421,7 @@ num_index_dim:
 				key = ZSTR_EMPTY_ALLOC();
 				goto str_index_dim;
 			} else {
-				zend_error(E_WARNING, "Illegal offset type in unset");
+				zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada saat hapus");
 			}
 			break;
 		} else if (Z_ISREF_P(container)) {
@@ -48438,12 +48438,12 @@ num_index_dim:
 		}
 		if (EXPECTED(Z_TYPE_P(container) == IS_OBJECT)) {
 			if (UNEXPECTED(Z_OBJ_HT_P(container)->unset_dimension == NULL)) {
-				zend_throw_error(NULL, "Cannot use object as array");
+				zend_throw_error(NULL, "Objek tidak bisa digunakan sebagai larik");
 			} else {
 				Z_OBJ_HT_P(container)->unset_dimension(container, offset);
 			}
 		} else if (IS_CV != IS_UNUSED && UNEXPECTED(Z_TYPE_P(container) == IS_STRING)) {
-			zend_throw_error(NULL, "Cannot unset string offsets");
+			zend_throw_error(NULL, "Indeks pada string tidak bisa dihapus");
 		}
 	} while (0);
 
@@ -48481,7 +48481,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_UNSET_OBJ_SPEC_CV_TMPVAR_HANDL
 			Z_OBJ_HT_P(container)->unset_property(container, offset, (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? CACHE_ADDR(Z_CACHE_SLOT_P(offset)) : NULL));
 		} else {
 			zend_string *property_name = zval_get_string(offset);
-			zend_error(E_NOTICE, "Trying to unset property '%s' of non-object", ZSTR_VAL(property_name));
+			zend_error(E_NOTICE, "Tidak bisa hapus properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 			zend_string_release(property_name);
 		}
 	} while (0);
@@ -48548,7 +48548,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -48577,7 +48577,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -48653,7 +48653,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_CV
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -48713,7 +48713,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -48799,7 +48799,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_JMPZ_SPEC_TMPVAR_H
 	zval *val;
 
 	val = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
-
+	
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZEND_VM_SET_NEXT_OPCODE(opline + 1);
 		ZEND_VM_CONTINUE();
@@ -49058,7 +49058,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "__clone method called on non-object");
+			zend_throw_error(NULL, "fungsi __clone dipanggil pada variabel yang bukan objek");
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
 		}
@@ -49068,7 +49068,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 	clone = ce->clone;
 	clone_call = Z_OBJ_HT_P(obj)->clone_obj;
 	if (UNEXPECTED(clone_call == NULL)) {
-		zend_throw_error(NULL, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek dari kelas %s tidak bisa disalin", ZSTR_VAL(ce->name));
 		zval_ptr_dtor_nogc(free_op1);
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		HANDLE_EXCEPTION();
@@ -49080,7 +49080,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 			 */
 			scope = EX(func)->op_array.scope;
 			if (!zend_check_private(clone, scope, clone->common.function_name)) {
-				zend_throw_error(NULL, "Call to private %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi privat %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 				zval_ptr_dtor_nogc(free_op1);
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -49090,7 +49090,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 			 */
 			scope = EX(func)->op_array.scope;
 			if (UNEXPECTED(!zend_check_protected(zend_get_function_root_class(clone), scope))) {
-				zend_throw_error(NULL, "Call to protected %s::__clone() from context '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi terproteksi %s::__clone() dari konteks '%s'", ZSTR_VAL(clone->common.scope->name), scope ? ZSTR_VAL(scope->name) : "");
 				zval_ptr_dtor_nogc(free_op1);
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
@@ -49242,7 +49242,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_STRLEN_SPEC_TMPVAR_HANDLER(ZEN
 				}
 				zval_ptr_dtor(&tmp);
 			}
-			zend_internal_type_error(strict, "strlen() expects parameter 1 to be string, %s given", zend_get_type_by_const(Z_TYPE_P(value)));
+			zend_internal_type_error(strict, "strlen() butuh parameter 1 suatu string, tapi dikasihnya %s", zend_get_type_by_const(Z_TYPE_P(value)));
 			ZVAL_NULL(EX_VAR(opline->result.var));
 		} while (0);
 	}
@@ -49410,7 +49410,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_TMPVAR_CONST_HANDLER(
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -49927,7 +49927,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 
 	retval = zend_fetch_static_property_address(varname, (IS_TMP_VAR|IS_VAR), opline->op2, IS_CONST, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 			zval_ptr_dtor_nogc(free_op1);
@@ -50040,7 +50040,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_TMPVAR_CONST
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -50291,7 +50291,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
@@ -50314,7 +50314,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 				zval_ptr_dtor_nogc(free_op1);
 				HANDLE_EXCEPTION();
@@ -50332,7 +50332,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
@@ -50342,7 +50342,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CONST == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 			zval_ptr_dtor_nogc(free_op1);
@@ -50578,7 +50578,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if ((IS_TMP_VAR|IS_VAR) == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if ((IS_TMP_VAR|IS_VAR) != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -50655,7 +50655,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -50684,7 +50684,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -50760,7 +50760,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_TM
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -50931,7 +50931,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 	zval_ptr_dtor_nogc(free_op1);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -50947,7 +50947,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 
 	retval = zend_fetch_static_property_address(varname, (IS_TMP_VAR|IS_VAR), opline->op2, IS_VAR, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 			zval_ptr_dtor_nogc(free_op1);
@@ -51135,7 +51135,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if ((IS_TMP_VAR|IS_VAR) == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if ((IS_TMP_VAR|IS_VAR) != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -51243,7 +51243,7 @@ fetch_this:
 						Z_ADDREF_P(result);
 					} else {
 						ZVAL_NULL(result);
-						zend_error(E_NOTICE,"Undefined variable: this");
+						zend_error(E_NOTICE,"Variabel tidak terdefinisi: this");
 					}
 					break;
 				case BP_VAR_IS:
@@ -51257,11 +51257,11 @@ fetch_this:
 				case BP_VAR_RW:
 				case BP_VAR_W:
 					ZVAL_UNDEF(result);
-					zend_throw_error(NULL, "Cannot re-assign $this");
+					zend_throw_error(NULL, "Tidak bisa mengisi ke $ini");
 					break;
 				case BP_VAR_UNSET:
 					ZVAL_UNDEF(result);
-					zend_throw_error(NULL, "Cannot unset $this");
+					zend_throw_error(NULL, "Tidak bisa menghapus $ini");
 					break;
 				EMPTY_SWITCH_DEFAULT_CASE()
 			}
@@ -51273,13 +51273,13 @@ fetch_this:
 		switch (type) {
 			case BP_VAR_R:
 			case BP_VAR_UNSET:
-				zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+				zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 				/* break missing intentionally */
 			case BP_VAR_IS:
 				retval = &EG(uninitialized_zval);
 				break;
 			case BP_VAR_RW:
-				zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+				zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 				retval = zend_hash_update(target_symbol_table, name, &EG(uninitialized_zval));
 				break;
 			case BP_VAR_W:
@@ -51297,13 +51297,13 @@ fetch_this:
 			switch (type) {
 				case BP_VAR_R:
 				case BP_VAR_UNSET:
-					zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+					zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 					/* break missing intentionally */
 				case BP_VAR_IS:
 					retval = &EG(uninitialized_zval);
 					break;
 				case BP_VAR_RW:
-					zend_error(E_NOTICE,"Undefined variable: %s", ZSTR_VAL(name));
+					zend_error(E_NOTICE,"Variabel tidak terdefinisi: %s", ZSTR_VAL(name));
 					/* break missing intentionally */
 				case BP_VAR_W:
 					ZVAL_NULL(retval);
@@ -51377,7 +51377,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL zend_fetch_static_prop_helper_SPEC_
 	varname = _get_zval_ptr_var(opline->op1.var, &free_op1 EXECUTE_DATA_CC);
 
 	retval = zend_fetch_static_property_address(varname, (IS_TMP_VAR|IS_VAR), opline->op2, IS_UNUSED, type EXECUTE_DATA_CC OPLINE_CC);
-
+	
 	if (UNEXPECTED(retval == NULL)) {
 		if (EG(exception)) {
 			zval_ptr_dtor_nogc(free_op1);
@@ -51637,7 +51637,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_STATIC_PROP_SPEC
 
 	if ((IS_TMP_VAR|IS_VAR) == IS_CONST && value) {
 		CACHE_POLYMORPHIC_PTR(Z_CACHE_SLOT_P(RT_CONSTANT(opline, opline->op1)), ce, value);
-	}
+	}		
 
 	if ((IS_TMP_VAR|IS_VAR) != IS_CONST) {
 		zend_tmp_string_release(tmp_name);
@@ -51866,7 +51866,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_TMPVAR_CV_HANDLER(ZEN
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -52427,7 +52427,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_FETCH_OBJ_IS_SPEC_TMPVAR_CV_HA
 	USE_OPLINE
 	zend_free_op free_op1;
 	zval *container;
-
+	
 	zval *offset;
 	void **cache_slot = NULL;
 
@@ -52678,7 +52678,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
@@ -52701,7 +52701,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 
 				zval_ptr_dtor_nogc(free_op1);
 				HANDLE_EXCEPTION();
@@ -52719,7 +52719,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
@@ -52729,7 +52729,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_C
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), ((IS_CV == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 
 			zval_ptr_dtor_nogc(free_op1);
@@ -52892,7 +52892,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -52921,7 +52921,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -52997,7 +52997,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_TM
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -53056,7 +53056,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 	zval_ptr_dtor_nogc(free_op1);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -53221,7 +53221,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_MOD_SPEC_TMPVAR_TMPVAR_HANDLER
 			result = EX_VAR(opline->result.var);
 			if (UNEXPECTED(Z_LVAL_P(op2) == 0)) {
 				SAVE_OPLINE();
-				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+				zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			} else if (UNEXPECTED(Z_LVAL_P(op2) == -1)) {
@@ -54034,7 +54034,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_T
 					HANDLE_EXCEPTION();
 				}
 			}
-			zend_throw_error(NULL, "Method name must be a string");
+			zend_throw_error(NULL, "Nama fungsi harus berupa string");
 			zval_ptr_dtor_nogc(free_op2);
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
@@ -54057,7 +54057,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_T
 						HANDLE_EXCEPTION();
 					}
 				}
-				zend_throw_error(NULL, "Call to a member function %s() on %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
+				zend_throw_error(NULL, "Pemanggilan fungsi %s() pada %s", Z_STRVAL_P(function_name), zend_get_type_by_const(Z_TYPE_P(object)));
 				zval_ptr_dtor_nogc(free_op2);
 				zval_ptr_dtor_nogc(free_op1);
 				HANDLE_EXCEPTION();
@@ -54075,7 +54075,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_T
 	    zend_object *orig_obj = obj;
 
 		if (UNEXPECTED(obj->handlers->get_method == NULL)) {
-			zend_throw_error(NULL, "Object does not support method calls");
+			zend_throw_error(NULL, "Objek tidak bisa dipanggil fungsinya");
 			zval_ptr_dtor_nogc(free_op2);
 			zval_ptr_dtor_nogc(free_op1);
 			HANDLE_EXCEPTION();
@@ -54085,7 +54085,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_INIT_METHOD_CALL_SPEC_TMPVAR_T
 		fbc = obj->handlers->get_method(&obj, Z_STR_P(function_name), (((IS_TMP_VAR|IS_VAR) == IS_CONST) ? (RT_CONSTANT(opline, opline->op2) + 1) : NULL));
 		if (UNEXPECTED(fbc == NULL)) {
 			if (EXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Call to undefined method %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
+				zend_throw_error(NULL, "Fungsi tidak dikenal %s::%s()", ZSTR_VAL(obj->ce->name), Z_STRVAL_P(function_name));
 			}
 			zval_ptr_dtor_nogc(free_op2);
 			zval_ptr_dtor_nogc(free_op1);
@@ -54249,7 +54249,7 @@ num_index_prop:
 			str = ZSTR_EMPTY_ALLOC();
 			goto str_index_prop;
 		} else {
-			zend_error(E_WARNING, "Illegal offset type in isset or empty");
+			zend_error(E_WARNING, "Tipe indeks (offset) tidak valid pada diset() atau kosong()");
 			goto isset_not_found;
 		}
 
@@ -54278,7 +54278,7 @@ num_index_prop:
 				((opline->extended_value & ZEND_ISSET) == 0) ^
 				Z_OBJ_HT_P(container)->has_dimension(container, offset, (opline->extended_value & ZEND_ISSET) == 0);
 		} else {
-			zend_error(E_NOTICE, "Trying to check element of non-array");
+			zend_error(E_NOTICE, "Variabel bukan larik tidak bisa dicek elemennya");
 			goto isset_not_found;
 		}
 	} else if (EXPECTED(Z_TYPE_P(container) == IS_STRING)) { /* string offsets */
@@ -54354,7 +54354,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_ISSET_ISEMPTY_PROP_OBJ_SPEC_TM
 	}
 	if (UNEXPECTED(!Z_OBJ_HT_P(container)->has_property)) {
 		zend_string *property_name = zval_get_string(offset);
-		zend_error(E_NOTICE, "Trying to check property '%s' of non-object", ZSTR_VAL(property_name));
+		zend_error(E_NOTICE, "Tidak bisa cek properti '%s' pada variabel yang bukan objek", ZSTR_VAL(property_name));
 		zend_string_release(property_name);
 isset_no_object:
 		result = ((opline->extended_value & ZEND_ISSET) == 0);
@@ -54414,7 +54414,7 @@ fetch_dim_r_index_slow:
 fetch_dim_r_index_undef:
 	ZVAL_NULL(EX_VAR(opline->result.var));
 	SAVE_OPLINE();
-	zend_error(E_NOTICE, "Undefined offset: " ZEND_LONG_FMT, offset);
+	zend_error(E_NOTICE, "Indeks/offset tidak ada: " ZEND_LONG_FMT, offset);
 	zval_ptr_dtor_nogc(free_op1);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
@@ -54668,7 +54668,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_POST_DEC_LONG_OR_D
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_DOUBLE_SPEC_TMPVARCV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 
 	value = EX_VAR(opline->op1.var);
@@ -54679,7 +54679,7 @@ static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_DOUBLE_S
 static ZEND_VM_HOT ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_QM_ASSIGN_NOREF_SPEC_TMPVARCV_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
 {
 	USE_OPLINE
-
+	
 	zval *value;
 
 	value = EX_VAR(opline->op1.var);
