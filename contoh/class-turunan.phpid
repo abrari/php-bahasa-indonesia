@@ -1,7 +1,7 @@
 <?phpid
 
 // file lain di contoh ini
-sertakan 'class.php';
+sertakan 'class.phpid';
 
 // interface
 interface Test {

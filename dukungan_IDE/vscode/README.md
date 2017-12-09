@@ -3,7 +3,7 @@ Package untuk Visual Studio Code
 
 Di folder ini terdapat folder "phpid" yang merupakan package Visual Studio Code
 untuk PHP Berbahasa Indonesia. Dengan menginstal package tersebut, VS Code 
-akan memberi syntax highlight pada source code `.php` maupun `.phpid`. Selain itu
+akan memberi syntax highlight pada source code `.phpid`. Selain itu
 terdapat juga fasilitas snippet yang bisa auto-complete.
 
 ![Preview](vscode.png)

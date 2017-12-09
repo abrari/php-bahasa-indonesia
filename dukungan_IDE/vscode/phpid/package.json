@@ -14,7 +14,7 @@
         "languages": [{
             "id": "phpid",
             "aliases": ["PHPID", "phpid"],
-            "extensions": [".php", ".phpid"],
+            "extensions": [".phpid"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{

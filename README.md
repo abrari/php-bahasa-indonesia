@@ -26,13 +26,14 @@ $ make -j 4
 Hasil build (PHP CLI) akan berada di folder `sapi/cli`.
 ```
 $ sapi/cli/php --version
-PHP 7.3.0-dev (cli) (built: Dec  3 2017 14:16:56) ( NTS )
-Copyright (c) 1997-2017 The PHP Group
+Interpreter PHP Bahasa Indonesia
+Basis PHP 7.3.0-dev (cli) (dikompilasi: Dec  3 2017 14:16:56) ( NTS )
+Hak cipta (c) 1997-2017 The PHP Group
 Zend Engine v3.3.0-dev, Copyright (c) 1998-2017 Zend Technologies
 ```
 
 ## Kompilasi (Windows)
-Untuk kompilasi di Windows, ikuti langkah-langkah pada [link berikut](https://github.com/Microsoft/php-sdk-binary-tools). Sebelumnya Visual Studio 2015 atau 2017 harus sudah terinstal.
+Untuk kompilasi di Windows, ikuti langkah-langkah pada [link berikut](https://github.com/Microsoft/php-sdk-binary-tools). Sebelumnya Visual Studio 2015 atau 2017 harus sudah terinstal. Hasil kompilasi akan berada pada folder `Release_TS`.
 
 ## Perbedaan dengan PHP
 Secara umum, beberapa hal yang berbeda dari PHP asli antara lain:
@@ -49,7 +50,7 @@ Secara umum, beberapa hal yang berbeda dari PHP asli antara lain:
  - Sebagian kecil fungsi bawaan PHP telah diterjemahkan
 
 ## Contoh-contoh Sintaks
-Contoh-contoh ini ada di dalam folder **contoh** di repositori ini. Dapat langsung dicoba dengan interactive mode di PHP CLI (`php -a`) atau disimpan dalam file dan dieksekusi (`php namafile.php`).
+Contoh-contoh ini ada di dalam folder **contoh** di repositori ini. Dapat langsung dicoba dengan interactive mode di PHP CLI (`php -a`) atau disimpan dalam file dan dieksekusi (`php namafile.phpid`).
 
 Halo dunia:
 ```php
@@ -226,10 +227,10 @@ untuksetiap (generator(5) sebagai $x) cetak $x;
 jalankan("cetak 'ini dievaluasi';");
 
 // include, include_once, require, require_once
-sertakan 'hello-world.php';
-sertakan_satu_kali 'hello-world.php';
-butuh 'hello-world.php';
-butuh_satu_kali 'hello-world.php';
+sertakan 'hello-world.phpid';
+sertakan_satu_kali 'hello-world.phpid';
+butuh 'hello-world.phpid';
+butuh_satu_kali 'hello-world.phpid';
 ```
 
 ## Contoh-contoh OOP
@@ -300,7 +301,7 @@ cetak Contoh::test() . "\n";
 Pewarisan class dan interface:
 ```php
 // file lain di contoh ini
-sertakan 'class.php';
+sertakan 'class.phpid';
 
 // interface
 interface Test {
@@ -373,11 +374,6 @@ ruangnama {
     $contoh->test();
 }
 ```
-
-## Catatan
-
-Kode-kode program ini menggunakan ekstensi `.php` namun sudah bukan merupakan sintaks PHP yang valid.
-Jika dibuka di IDE atau editor, *linter* pasti akan melaporkan kesalahan sintaks.
 
 ## Dukungan Text Editor
 

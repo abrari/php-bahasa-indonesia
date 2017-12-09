@@ -3,7 +3,7 @@
 
 	"completions":
 	[
-		"php",
+		"phpid",
 
 		{ "trigger": "abs", "contents": "abs(${1:number})" },
 		{ "trigger": "acos", "contents": "acos(${1:arg})" },

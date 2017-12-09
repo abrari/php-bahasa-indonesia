@@ -29,7 +29,7 @@ untuksetiap (generator(5) sebagai $x) cetak $x;
 jalankan("cetak 'ini dievaluasi';");
 
 // include, include_once, require, require_once
-sertakan 'hello-world.php';
-sertakan_satu_kali 'hello-world.php';
-butuh 'hello-world.php';
-butuh_satu_kali 'hello-world.php';
+sertakan 'hello-world.phpid';
+sertakan_satu_kali 'hello-world.phpid';
+butuh 'hello-world.phpid';
+butuh_satu_kali 'hello-world.phpid';
