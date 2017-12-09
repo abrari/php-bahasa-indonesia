@@ -92,14 +92,14 @@ ZEND_API void zend_objects_destroy_object(zend_object *object)
 
 					if (object->ce != scope) {
 						zend_throw_error(NULL,
-							"Call to private %s::__destruct() from context '%s'",
+							"Pemanggilan %s::__destruct() privat dari konteks '%s'",
 							ZSTR_VAL(object->ce->name),
 							scope ? ZSTR_VAL(scope->name) : "");
 						return;
 					}
 				} else {
 					zend_error(E_WARNING,
-						"Call to private %s::__destruct() from context '' during shutdown ignored",
+						"Pemanggilan %s::__destruct() privat dari konteks '' ketika shutdown diabaikan",
 						ZSTR_VAL(object->ce->name));
 					return;
 				}
@@ -111,14 +111,14 @@ ZEND_API void zend_objects_destroy_object(zend_object *object)
 
 					if (!zend_check_protected(zend_get_function_root_class(destructor), scope)) {
 						zend_throw_error(NULL,
-							"Call to protected %s::__destruct() from context '%s'",
+							"Pemanggilan %s::__destruct() terproteksi dari konteks '%s'",
 							ZSTR_VAL(object->ce->name),
 							scope ? ZSTR_VAL(scope->name) : "");
 						return;
 					}
 				} else {
 					zend_error(E_WARNING,
-						"Call to protected %s::__destruct() from context '' during shutdown ignored",
+						"Pemanggilan %s::__destruct() terproteksi dari konteks '' ketika shutdown diabaikan",
 						ZSTR_VAL(object->ce->name));
 					return;
 				}

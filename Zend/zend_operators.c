@@ -151,7 +151,7 @@ try_again:
 				if ((Z_TYPE_INFO_P(op)=is_numeric_string(ZSTR_VAL(str), ZSTR_LEN(str), &Z_LVAL_P(op), &Z_DVAL_P(op), silent ? 1 : -1)) == 0) {
 					ZVAL_LONG(op, 0);
 					if (!silent) {
-						zend_error(E_WARNING, "A non-numeric value encountered");
+						zend_error(E_WARNING, "Nilai tidak numerik");
 					}
 				}
 				zend_string_release(str);
@@ -195,7 +195,7 @@ ZEND_API void ZEND_FASTCALL convert_scalar_to_number(zval *op) /* {{{ */
 					if ((Z_TYPE_INFO(holder)=is_numeric_string(Z_STRVAL_P(op), Z_STRLEN_P(op), &Z_LVAL(holder), &Z_DVAL(holder), silent ? 1 : -1)) == 0) {	\
 						ZVAL_LONG(&(holder), 0);					\
 						if (!silent) {								\
-							zend_error(E_WARNING, "A non-numeric value encountered");	\
+							zend_error(E_WARNING, "Nilai tidak numerik");	\
 						}											\
 					}												\
 					(op) = &(holder);								\
@@ -243,7 +243,7 @@ ZEND_API void ZEND_FASTCALL convert_scalar_to_number(zval *op) /* {{{ */
 	if (Z_OBJ_HT_P(op)->cast_object) {														\
 		if (Z_OBJ_HT_P(op)->cast_object(op, dst, ctype) == FAILURE) {				\
 			zend_error(E_RECOVERABLE_ERROR,													\
-				"Object of class %s could not be converted to %s", ZSTR_VAL(Z_OBJCE_P(op)->name),\
+				"Objek dari kelas %s tidak bisa dikonversi ke %s", ZSTR_VAL(Z_OBJCE_P(op)->name),\
 			zend_get_type_by_const(ctype));													\
 		} 																					\
 	} else if (Z_OBJ_HT_P(op)->get) {														\
@@ -552,7 +552,7 @@ try_again:
 			break;
 		}
 		case IS_ARRAY:
-			zend_error(E_NOTICE, "Array to string conversion");
+			zend_error(E_NOTICE, "Konversi dari array ke string");
 			zval_ptr_dtor(op);
 			ZVAL_NEW_STR(op, zend_string_init("Array", sizeof("Array")-1, 0));
 			break;
@@ -753,7 +753,7 @@ try_again:
 				double dval;
 				if (0 == (type = is_numeric_string(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, silent ? 1 : -1))) {
 					if (!silent) {
-						zend_error(E_WARNING, "A non-numeric value encountered");
+						zend_error(E_WARNING, "Nilai tidak numerik");
 					}
 					return 0;
 				} else if (EXPECTED(type == IS_LONG)) {
@@ -863,7 +863,7 @@ try_again:
 			return zend_strpprintf(0, "%.*G", (int) EG(precision), Z_DVAL_P(op));
 		}
 		case IS_ARRAY:
-			zend_error(E_NOTICE, "Array to string conversion");
+			zend_error(E_NOTICE, "Konversi dari array ke string");
 			return zend_string_init("Array", sizeof("Array")-1, 0);
 		case IS_OBJECT: {
 			zval tmp;
@@ -880,7 +880,7 @@ try_again:
 				}
 				zval_ptr_dtor(z);
 			}
-			zend_error(EG(exception) ? E_ERROR : E_RECOVERABLE_ERROR, "Object of class %s could not be converted to string", ZSTR_VAL(Z_OBJCE_P(op)->name));
+			zend_error(EG(exception) ? E_ERROR : E_RECOVERABLE_ERROR, "Objek dari kelas %s tidak bisa diubah menjadi string", ZSTR_VAL(Z_OBJCE_P(op)->name));
 			return ZSTR_EMPTY_ALLOC();
 		}
 		case IS_REFERENCE:
@@ -949,7 +949,7 @@ ZEND_API int ZEND_FASTCALL add_function(zval *result, zval *op1, zval *op2) /* {
 					if (result != op1) {
 						ZVAL_UNDEF(result);
 					}
-					zend_throw_error(NULL, "Unsupported operand types");
+					zend_throw_error(NULL, "Jenis operand tidak valid");
 					return FAILURE; /* unknown datatype */
 				}
 		}
@@ -999,7 +999,7 @@ ZEND_API int ZEND_FASTCALL sub_function(zval *result, zval *op1, zval *op2) /* {
 					if (result != op1) {
 						ZVAL_UNDEF(result);
 					}
-					zend_throw_error(NULL, "Unsupported operand types");
+					zend_throw_error(NULL, "Jenis operand tidak valid");
 					return FAILURE; /* unknown datatype */
 				}
 		}
@@ -1054,7 +1054,7 @@ ZEND_API int ZEND_FASTCALL mul_function(zval *result, zval *op1, zval *op2) /* {
 					if (result != op1) {
 						ZVAL_UNDEF(result);
 					}
-					zend_throw_error(NULL, "Unsupported operand types");
+					zend_throw_error(NULL, "Jenis operand tidak valid");
 					return FAILURE; /* unknown datatype */
 				}
 		}
@@ -1155,7 +1155,7 @@ ZEND_API int ZEND_FASTCALL pow_function(zval *result, zval *op1, zval *op2) /* {
 					if (result != op1) {
 						ZVAL_UNDEF(result);
 					}
-					zend_throw_error(NULL, "Unsupported operand types");
+					zend_throw_error(NULL, "Jenis operand tidak valid");
 					return FAILURE;
 				}
 		}
@@ -1172,7 +1172,7 @@ ZEND_API int ZEND_FASTCALL div_function(zval *result, zval *op1, zval *op2) /* {
 		switch (TYPE_PAIR(Z_TYPE_P(op1), Z_TYPE_P(op2))) {
 			case TYPE_PAIR(IS_LONG, IS_LONG):
 				if (Z_LVAL_P(op2) == 0) {
-					zend_error(E_WARNING, "Division by zero");
+					zend_error(E_WARNING, "Pembagian dengan nol");
 					ZVAL_DOUBLE(result, ((double) Z_LVAL_P(op1) / (double) Z_LVAL_P(op2)));
 					return SUCCESS;
 				} else if (Z_LVAL_P(op2) == -1 && Z_LVAL_P(op1) == ZEND_LONG_MIN) {
@@ -1189,21 +1189,21 @@ ZEND_API int ZEND_FASTCALL div_function(zval *result, zval *op1, zval *op2) /* {
 
 			case TYPE_PAIR(IS_DOUBLE, IS_LONG):
 				if (Z_LVAL_P(op2) == 0) {
-					zend_error(E_WARNING, "Division by zero");
+					zend_error(E_WARNING, "Pembagian dengan nol");
 				}
 				ZVAL_DOUBLE(result, Z_DVAL_P(op1) / (double)Z_LVAL_P(op2));
 				return SUCCESS;
 
 			case TYPE_PAIR(IS_LONG, IS_DOUBLE):
 				if (Z_DVAL_P(op2) == 0) {
-					zend_error(E_WARNING, "Division by zero");
+					zend_error(E_WARNING, "Pembagian dengan nol");
 				}
 				ZVAL_DOUBLE(result, (double)Z_LVAL_P(op1) / Z_DVAL_P(op2));
 				return SUCCESS;
 
 			case TYPE_PAIR(IS_DOUBLE, IS_DOUBLE):
 				if (Z_DVAL_P(op2) == 0) {
-					zend_error(E_WARNING, "Division by zero");
+					zend_error(E_WARNING, "Pembagian dengan nol");
 				}
 				ZVAL_DOUBLE(result, Z_DVAL_P(op1) / Z_DVAL_P(op2));
 				return SUCCESS;
@@ -1228,7 +1228,7 @@ ZEND_API int ZEND_FASTCALL div_function(zval *result, zval *op1, zval *op2) /* {
 					if (result != op1) {
 						ZVAL_UNDEF(result);
 					}
-					zend_throw_error(NULL, "Unsupported operand types");
+					zend_throw_error(NULL, "Jenis operand tidak valid");
 					return FAILURE; /* unknown datatype */
 				}
 		}
@@ -1245,9 +1245,9 @@ ZEND_API int ZEND_FASTCALL mod_function(zval *result, zval *op1, zval *op2) /* {
 	if (op2_lval == 0) {
 		/* modulus by zero */
 		if (EG(current_execute_data) && !CG(in_compilation)) {
-			zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo by zero");
+			zend_throw_exception_ex(zend_ce_division_by_zero_error, 0, "Modulo dengan nol");
 		} else {
-			zend_error_noreturn(E_ERROR, "Modulo by zero");
+			zend_error_noreturn(E_ERROR, "Modulo dengan nol");
 		}
 		if (op1 != result) {
 			ZVAL_UNDEF(result);
@@ -1379,7 +1379,7 @@ try_again:
 			if (result != op1) {
 				ZVAL_UNDEF(result);
 			}
-			zend_throw_error(NULL, "Unsupported operand types");
+			zend_throw_error(NULL, "Jenis operand tidak valid");
 			return FAILURE;
 	}
 }
@@ -1635,9 +1635,9 @@ ZEND_API int ZEND_FASTCALL shift_left_function(zval *result, zval *op1, zval *op
 			return SUCCESS;
 		} else {
 			if (EG(current_execute_data) && !CG(in_compilation)) {
-				zend_throw_exception_ex(zend_ce_arithmetic_error, 0, "Bit shift by negative number");
+				zend_throw_exception_ex(zend_ce_arithmetic_error, 0, "Pergeseran bit dengan nilai negatif");
 			} else {
-				zend_error_noreturn(E_ERROR, "Bit shift by negative number");
+				zend_error_noreturn(E_ERROR, "Pergeseran bit dengan nilai negatif");
 			}
 			if (op1 != result) {
 				ZVAL_UNDEF(result);
@@ -1671,9 +1671,9 @@ ZEND_API int ZEND_FASTCALL shift_right_function(zval *result, zval *op1, zval *o
 			return SUCCESS;
 		} else {
 			if (EG(current_execute_data) && !CG(in_compilation)) {
-				zend_throw_exception_ex(zend_ce_arithmetic_error, 0, "Bit shift by negative number");
+				zend_throw_exception_ex(zend_ce_arithmetic_error, 0, "Pergeseran bit dengan nilai negatif");
 			} else {
-				zend_error_noreturn(E_ERROR, "Bit shift by negative number");
+				zend_error_noreturn(E_ERROR, "Pergeseran bit dengan nilai negatif");
 			}
 			if (op1 != result) {
 				ZVAL_UNDEF(result);
@@ -1764,7 +1764,7 @@ ZEND_API int ZEND_FASTCALL concat_function(zval *result, zval *op1, zval *op2) /
 		zend_string *result_str;
 
 		if (UNEXPECTED(op1_len > SIZE_MAX - op2_len)) {
-			zend_throw_error(NULL, "String size overflow");
+			zend_throw_error(NULL, "Ukuran string overflow");
 			if (UNEXPECTED(use_copy1)) {
 				zval_dtor(op1);
 			}
@@ -2520,7 +2520,7 @@ ZEND_API int ZEND_FASTCALL zend_object_is_true(zval *op) /* {{{ */
 		if (Z_OBJ_HT_P(op)->cast_object(op, &tmp, _IS_BOOL) == SUCCESS) {
 			return Z_TYPE(tmp) == IS_TRUE;
 		}
-		zend_error(E_RECOVERABLE_ERROR, "Object of class %s could not be converted to boolean", ZSTR_VAL(Z_OBJ_P(op)->ce->name));
+		zend_error(E_RECOVERABLE_ERROR, "Objek dari kelas %s tidak bisa dikonversi ke boolean", ZSTR_VAL(Z_OBJ_P(op)->ce->name));
 	} else if (Z_OBJ_HT_P(op)->get) {
 		int result;
 		zval rv;
@@ -2980,7 +2980,7 @@ process_double:
 			return 0;
 		}
 		if (allow_errors == -1) {
-			zend_error(E_NOTICE, "A non well formed numeric value encountered");
+			zend_error(E_NOTICE, "Bukan nilai numerik yang benar");
 		}
 	}
 

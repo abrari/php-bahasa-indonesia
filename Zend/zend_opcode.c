@@ -535,7 +535,7 @@ static void zend_check_finally_breakout(zend_op_array *op_array, uint32_t op_num
 			CG(in_compilation) = 1;
 			CG(active_op_array) = op_array;
 			CG(zend_lineno) = op_array->opcodes[op_num].lineno;
-			zend_error_noreturn(E_COMPILE_ERROR, "jump into a finally block is disallowed");
+			zend_error_noreturn(E_COMPILE_ERROR, "tidak bisa lompat ke blok 'akhirnya'");
 		} else if ((op_num >= op_array->try_catch_array[i].finally_op
 					&& op_num <= op_array->try_catch_array[i].finally_end)
 				&& (dst_num > op_array->try_catch_array[i].finally_end
@@ -543,7 +543,7 @@ static void zend_check_finally_breakout(zend_op_array *op_array, uint32_t op_num
 			CG(in_compilation) = 1;
 			CG(active_op_array) = op_array;
 			CG(zend_lineno) = op_array->opcodes[op_num].lineno;
-			zend_error_noreturn(E_COMPILE_ERROR, "jump out of a finally block is disallowed");
+			zend_error_noreturn(E_COMPILE_ERROR, "tidak bisa lompat dari blok 'akhirnya'");
 		}
 	}
 }

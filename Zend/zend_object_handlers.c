@@ -170,7 +170,7 @@ ZEND_API HashTable *zend_std_get_debug_info(zval *object, int *is_temp) /* {{{ *
 		return ht;
 	}
 
-	zend_error_noreturn(E_ERROR, ZEND_DEBUGINFO_FUNC_NAME "() must return an array");
+	zend_error_noreturn(E_ERROR, ZEND_DEBUGINFO_FUNC_NAME "() harus mengembalikan array");
 
 	return NULL; /* Compilers are dumb and don't understand that noreturn means that the function does NOT need a return value... */
 }
@@ -299,7 +299,7 @@ static zend_always_inline uintptr_t zend_get_property_offset(zend_class_entry *c
 
 	if (UNEXPECTED(ZSTR_VAL(member)[0] == '\0' && ZSTR_LEN(member) != 0)) {
 		if (!silent) {
-			zend_throw_error(NULL, "Cannot access property started with '\\0'");
+			zend_throw_error(NULL, "Tidak bisa mengakses property yang diawali dengan '\\0'");
 		}
 		return ZEND_WRONG_PROPERTY_OFFSET;
 	}
@@ -321,7 +321,7 @@ static zend_always_inline uintptr_t zend_get_property_offset(zend_class_entry *c
 					|| UNEXPECTED((flags & ZEND_ACC_PRIVATE))) {
 					if (UNEXPECTED((flags & ZEND_ACC_STATIC) != 0)) {
 						if (!silent) {
-							zend_error(E_NOTICE, "Accessing static property %s::$%s as non static", ZSTR_VAL(ce->name), ZSTR_VAL(member));
+							zend_error(E_NOTICE, "Mengakses property %s::$%s sebagai non statis", ZSTR_VAL(ce->name), ZSTR_VAL(member));
 						}
 						return ZEND_DYNAMIC_PROPERTY_OFFSET;
 					}
@@ -358,7 +358,7 @@ exit_dynamic:
 	} else if (UNEXPECTED(property_info == ZEND_WRONG_PROPERTY_INFO)) {
 		/* Information was available, but we were denied access.  Error out. */
 		if (!silent) {
-			zend_throw_error(NULL, "Cannot access %s property %s::$%s", zend_visibility_string(flags), ZSTR_VAL(ce->name), ZSTR_VAL(member));
+			zend_throw_error(NULL, "Tidak bisa mengakses property %s %s::$%s", zend_visibility_string(flags), ZSTR_VAL(ce->name), ZSTR_VAL(member));
 		}
 		return ZEND_WRONG_PROPERTY_OFFSET;
 	}
@@ -380,7 +380,7 @@ ZEND_API zend_property_info *zend_get_property_info(zend_class_entry *ce, zend_s
 
 	if (UNEXPECTED(ZSTR_VAL(member)[0] == '\0' && ZSTR_LEN(member) != 0)) {
 		if (!silent) {
-			zend_throw_error(NULL, "Cannot access property started with '\\0'");
+			zend_throw_error(NULL, "Tidak bisa mengakses property yang diawali dengan '\\0'");
 		}
 		return ZEND_WRONG_PROPERTY_INFO;
 	}
@@ -402,7 +402,7 @@ ZEND_API zend_property_info *zend_get_property_info(zend_class_entry *ce, zend_s
 					|| UNEXPECTED((flags & ZEND_ACC_PRIVATE))) {
 					if (UNEXPECTED((flags & ZEND_ACC_STATIC) != 0)) {
 						if (!silent) {
-							zend_error(E_NOTICE, "Accessing static property %s::$%s as non static", ZSTR_VAL(ce->name), ZSTR_VAL(member));
+							zend_error(E_NOTICE, "Mengakses property %s::$%s sebagai non statis", ZSTR_VAL(ce->name), ZSTR_VAL(member));
 						}
 					}
 					goto exit;
@@ -432,7 +432,7 @@ exit_dynamic:
 	} else if (UNEXPECTED(property_info == ZEND_WRONG_PROPERTY_INFO)) {
 		/* Information was available, but we were denied access.  Error out. */
 		if (!silent) {
-			zend_throw_error(NULL, "Cannot access %s property %s::$%s", zend_visibility_string(flags), ZSTR_VAL(ce->name), ZSTR_VAL(member));
+			zend_throw_error(NULL, "Tidak bisa mengakses property %s %s::$%s", zend_visibility_string(flags), ZSTR_VAL(ce->name), ZSTR_VAL(member));
 		}
 		return ZEND_WRONG_PROPERTY_INFO;
 	}
@@ -652,7 +652,7 @@ zval *zend_std_read_property(zval *object, zval *member, int type, void **cache_
 				    (type == BP_VAR_W || type == BP_VAR_RW  || type == BP_VAR_UNSET)) {
 					SEPARATE_ZVAL_NOREF(rv);
 					if (UNEXPECTED(Z_TYPE_P(rv) != IS_OBJECT)) {
-						zend_error(E_NOTICE, "Indirect modification of overloaded property %s::$%s has no effect", ZSTR_VAL(zobj->ce->name), Z_STRVAL_P(member));
+						zend_error(E_NOTICE, "Modifikasi property yang overloaded %s::$%s tidak berefek", ZSTR_VAL(zobj->ce->name), Z_STRVAL_P(member));
 					}
 				}
 			} else {
@@ -662,7 +662,7 @@ zval *zend_std_read_property(zval *object, zval *member, int type, void **cache_
 			goto exit;
 		} else if (Z_STRVAL_P(member)[0] == '\0' && Z_STRLEN_P(member) != 0) {
 			zval_ptr_dtor(&tmp_object);
-			zend_throw_error(NULL, "Cannot access property started with '\\0'");
+			zend_throw_error(NULL, "Tidak bisa mengakses property yang diawali dengan '\\0'");
 			retval = &EG(uninitialized_zval);
 			goto exit;
 		}
@@ -671,7 +671,7 @@ zval *zend_std_read_property(zval *object, zval *member, int type, void **cache_
 	zval_ptr_dtor(&tmp_object);
 
 	if ((type != BP_VAR_IS)) {
-		zend_error(E_NOTICE,"Undefined property: %s::$%s", ZSTR_VAL(zobj->ce->name), Z_STRVAL_P(member));
+		zend_error(E_NOTICE,"Property tidak ada: %s::$%s", ZSTR_VAL(zobj->ce->name), Z_STRVAL_P(member));
 	}
 	retval = &EG(uninitialized_zval);
 
@@ -741,7 +741,7 @@ found:
 			goto write_std_property;
 		} else {
 			if (Z_STRVAL_P(member)[0] == '\0' && Z_STRLEN_P(member) != 0) {
-				zend_throw_error(NULL, "Cannot access property started with '\\0'");
+				zend_throw_error(NULL, "Tidak bisa mengakses property yang diawali dengan '\\0'");
 				goto exit;
 			}
 		}
@@ -813,13 +813,13 @@ zval *zend_std_read_dimension(zval *object, zval *offset, int type, zval *rv) /*
 
 		if (UNEXPECTED(Z_TYPE_P(rv) == IS_UNDEF)) {
 			if (UNEXPECTED(!EG(exception))) {
-				zend_throw_error(NULL, "Undefined offset for object of type %s used as array", ZSTR_VAL(ce->name));
+				zend_throw_error(NULL, "Indeks tak terdefinisi untuk objek tipe %s digunakan sebagai larik", ZSTR_VAL(ce->name));
 			}
 			return NULL;
 		}
 		return rv;
 	} else {
-		zend_throw_error(NULL, "Cannot use object of type %s as array", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek tipe %s tidak bisa digunakan sebagai larik", ZSTR_VAL(ce->name));
 		return NULL;
 	}
 }
@@ -842,7 +842,7 @@ static void zend_std_write_dimension(zval *object, zval *offset, zval *value) /*
 		zval_ptr_dtor(&tmp_object);
 		zval_ptr_dtor(&tmp_offset);
 	} else {
-		zend_throw_error(NULL, "Cannot use object of type %s as array", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek tipe %s tidak bisa digunakan sebagai larik", ZSTR_VAL(ce->name));
 	}
 }
 /* }}} */
@@ -874,7 +874,7 @@ static int zend_std_has_dimension(zval *object, zval *offset, int check_empty) /
 		zval_ptr_dtor(&tmp_object);
 		zval_ptr_dtor(&tmp_offset);
 	} else {
-		zend_throw_error(NULL, "Cannot use object of type %s as array", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek tipe %s tidak bisa digunakan sebagai larik", ZSTR_VAL(ce->name));
 		return 0;
 	}
 	return result;
@@ -906,7 +906,7 @@ static zval *zend_std_get_property_ptr_ptr(zval *object, zval *member, int type,
 				/* Notice is thrown after creation of the property, to avoid EG(std_property_info)
 				 * being overwritten in an error handler. */
 				if (UNEXPECTED(type == BP_VAR_RW || type == BP_VAR_R)) {
-					zend_error(E_NOTICE, "Undefined property: %s::$%s", ZSTR_VAL(zobj->ce->name), ZSTR_VAL(name));
+					zend_error(E_NOTICE, "Property tidak ada: %s::$%s", ZSTR_VAL(zobj->ce->name), ZSTR_VAL(name));
 				}
 			} else {
 				/* we do have getter - fail and let it try again with usual get/set */
@@ -935,7 +935,7 @@ static zval *zend_std_get_property_ptr_ptr(zval *object, zval *member, int type,
 			/* Notice is thrown after creation of the property, to avoid EG(std_property_info)
 			 * being overwritten in an error handler. */
 			if (UNEXPECTED(type == BP_VAR_RW || type == BP_VAR_R)) {
-				zend_error(E_NOTICE, "Undefined property: %s::$%s", ZSTR_VAL(zobj->ce->name), ZSTR_VAL(name));
+				zend_error(E_NOTICE, "Property tidak ada: %s::$%s", ZSTR_VAL(zobj->ce->name), ZSTR_VAL(name));
 			}
 		}
 	}
@@ -1002,7 +1002,7 @@ static void zend_std_unset_property(zval *object, zval *member, void **cache_slo
 			zval_ptr_dtor(&tmp_object);
 		} else {
 			if (Z_STRVAL_P(member)[0] == '\0' && Z_STRLEN_P(member) != 0) {
-				zend_throw_error(NULL, "Cannot access property started with '\\0'");
+				zend_throw_error(NULL, "Tidak bisa mengakses property yang diawali dengan '\\0'");
 				goto exit;
 			}
 		}
@@ -1028,7 +1028,7 @@ static void zend_std_unset_dimension(zval *object, zval *offset) /* {{{ */
 		zval_ptr_dtor(&tmp_object);
 		zval_ptr_dtor(&tmp_offset);
 	} else {
-		zend_throw_error(NULL, "Cannot use object of type %s as array", ZSTR_VAL(ce->name));
+		zend_throw_error(NULL, "Objek tipe %s tidak bisa digunakan sebagai larik", ZSTR_VAL(ce->name));
 	}
 }
 /* }}} */
@@ -1209,7 +1209,7 @@ static union _zend_function *zend_std_get_method(zend_object **obj_ptr, zend_str
 				fbc = zend_get_user_call_function(zobj->ce, method_name);
 			} else {
 				scope = zend_get_executed_scope();
-				zend_throw_error(NULL, "Call to %s method %s::%s() from context '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(method_name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi %s %s::%s() dari konteks '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(method_name), scope ? ZSTR_VAL(scope->name) : "");
 				fbc = NULL;
 			}
 		}
@@ -1239,7 +1239,7 @@ static union _zend_function *zend_std_get_method(zend_object **obj_ptr, zend_str
 				if (zobj->ce->__call) {
 					fbc = zend_get_user_call_function(zobj->ce, method_name);
 				} else {
-					zend_throw_error(NULL, "Call to %s method %s::%s() from context '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(method_name), scope ? ZSTR_VAL(scope->name) : "");
+					zend_throw_error(NULL, "Pemanggilan fungsi %s %s::%s() dari konteks '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(method_name), scope ? ZSTR_VAL(scope->name) : "");
 					fbc = NULL;
 				}
 			}
@@ -1313,7 +1313,7 @@ ZEND_API zend_function *zend_std_get_static_method(zend_class_entry *ce, zend_st
 	/* right now this function is used for non static method lookup too */
 	/* Is the function static */
 	if (UNEXPECTED(!(fbc->common.fn_flags & ZEND_ACC_STATIC))) {
-		zend_error_noreturn(E_ERROR, "Cannot call non static method %s::%s() without object", ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(fbc->common.function_name));
+		zend_error_noreturn(E_ERROR, "Tidak bisa memanggil fungsi non statis %s::%s() tanpa objeknya", ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(fbc->common.function_name));
 	}
 #endif
 	if (fbc->op_array.fn_flags & ZEND_ACC_PUBLIC) {
@@ -1331,7 +1331,7 @@ ZEND_API zend_function *zend_std_get_static_method(zend_class_entry *ce, zend_st
 			if (ce->__callstatic) {
 				fbc = zend_get_user_callstatic_function(ce, function_name);
 			} else {
-				zend_throw_error(NULL, "Call to %s method %s::%s() from context '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(function_name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi %s %s::%s() dari konteks '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(function_name), scope ? ZSTR_VAL(scope->name) : "");
 				fbc = NULL;
 			}
 		}
@@ -1343,7 +1343,7 @@ ZEND_API zend_function *zend_std_get_static_method(zend_class_entry *ce, zend_st
 			if (ce->__callstatic) {
 				fbc = zend_get_user_callstatic_function(ce, function_name);
 			} else {
-				zend_throw_error(NULL, "Call to %s method %s::%s() from context '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(function_name), scope ? ZSTR_VAL(scope->name) : "");
+				zend_throw_error(NULL, "Pemanggilan fungsi %s %s::%s() dari konteks '%s'", zend_visibility_string(fbc->common.fn_flags), ZEND_FN_SCOPE_NAME(fbc), ZSTR_VAL(function_name), scope ? ZSTR_VAL(scope->name) : "");
 				fbc = NULL;
 			}
 		}
@@ -1368,7 +1368,7 @@ ZEND_API zval *zend_std_get_static_property(zend_class_entry *ce, zend_string *p
 
 	if (UNEXPECTED(!zend_verify_property_access(property_info, ce))) {
 		if (!silent) {
-			zend_throw_error(NULL, "Cannot access %s property %s::$%s", zend_visibility_string(property_info->flags), ZSTR_VAL(ce->name), ZSTR_VAL(property_name));
+			zend_throw_error(NULL, "Tidak bisa mengakses property %s %s::$%s", zend_visibility_string(property_info->flags), ZSTR_VAL(ce->name), ZSTR_VAL(property_name));
 		}
 		return NULL;
 	}
@@ -1388,7 +1388,7 @@ ZEND_API zval *zend_std_get_static_property(zend_class_entry *ce, zend_string *p
 	if (UNEXPECTED(CE_STATIC_MEMBERS(ce) == NULL)) {
 undeclared_property:
 		if (!silent) {
-			zend_throw_error(NULL, "Access to undeclared static property: %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(property_name));
+			zend_throw_error(NULL, "Properti statis tidak ada: %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(property_name));
 		}
 		ret = NULL;
 	}
@@ -1399,7 +1399,7 @@ undeclared_property:
 
 ZEND_API ZEND_COLD zend_bool zend_std_unset_static_property(zend_class_entry *ce, zend_string *property_name) /* {{{ */
 {
-	zend_throw_error(NULL, "Attempt to unset static property %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(property_name));
+	zend_throw_error(NULL, "Penghapusan properti statis %s::$%s", ZSTR_VAL(ce->name), ZSTR_VAL(property_name));
 	return 0;
 }
 /* }}} */
@@ -1422,10 +1422,10 @@ ZEND_API union _zend_function *zend_std_get_constructor(zend_object *zobj) /* {{
 			}
 			if (UNEXPECTED(constructor->common.scope != scope)) {
 				if (scope) {
-					zend_throw_error(NULL, "Call to private %s::%s() from context '%s'", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name), ZSTR_VAL(scope->name));
+					zend_throw_error(NULL, "Pemanggilan fungsi privat %s::%s() dari konteks '%s'", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name), ZSTR_VAL(scope->name));
 					constructor = NULL;
 				} else {
-					zend_throw_error(NULL, "Call to private %s::%s() from invalid context", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name));
+					zend_throw_error(NULL, "Pemanggilan fungsi privat %s::%s() dari konteks yang tidak valid", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name));
 					constructor = NULL;
 				}
 			}
@@ -1441,10 +1441,10 @@ ZEND_API union _zend_function *zend_std_get_constructor(zend_object *zobj) /* {{
 			}
 			if (UNEXPECTED(!zend_check_protected(zend_get_function_root_class(constructor), scope))) {
 				if (scope) {
-					zend_throw_error(NULL, "Call to protected %s::%s() from context '%s'", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name), ZSTR_VAL(scope->name));
+					zend_throw_error(NULL, "Pemanggilan fungsi terproteksi %s::%s() dari konteks", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name), ZSTR_VAL(scope->name));
 					constructor = NULL;
 				} else {
-					zend_throw_error(NULL, "Call to protected %s::%s() from invalid context", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name));
+					zend_throw_error(NULL, "Pemanggilan fungsi terproteksi %s::%s() dari konteks yang tidak valid", ZSTR_VAL(constructor->common.scope->name), ZSTR_VAL(constructor->common.function_name));
 					constructor = NULL;
 				}
 			}
@@ -1484,7 +1484,7 @@ static int zend_std_compare_objects(zval *o1, zval *o2) /* {{{ */
 		 */
 		/* use bitwise OR to make only one conditional jump */
 		if (UNEXPECTED(Z_IS_RECURSIVE_P(o1))) {
-			zend_error_noreturn(E_ERROR, "Nesting level too deep - recursive dependency?");
+			zend_error_noreturn(E_ERROR, "Level nesting terlalu dalam - recursive dependency?");
 		}
 		Z_PROTECT_RECURSION_P(o1);
 		do {
@@ -1673,7 +1673,7 @@ ZEND_API int zend_std_cast_object_tostring(zval *readobj, zval *writeobj, int ty
 						msg = &rv;
 					}
 					zend_error_noreturn(E_ERROR,
-							"Method %s::__toString() must not throw an exception, caught %s: %s",
+							"Fungsi %s::__toString() tidak boleh melempar exception, tertangkap %s: %s",
 							ZSTR_VAL(ce->name), ZSTR_VAL(Z_OBJCE(ex)->name), Z_STRVAL_P(msg));
 					return FAILURE;
 				}
@@ -1689,7 +1689,7 @@ ZEND_API int zend_std_cast_object_tostring(zval *readobj, zval *writeobj, int ty
 						zval_ptr_dtor(readobj);
 					}
 					ZVAL_EMPTY_STRING(writeobj);
-					zend_error(E_RECOVERABLE_ERROR, "Method %s::__toString() must return a string value", ZSTR_VAL(ce->name));
+					zend_error(E_RECOVERABLE_ERROR, "Fungsi %s::__toString() harus mengembalikan nilai strng", ZSTR_VAL(ce->name));
 					return SUCCESS;
 				}
 			}
@@ -1699,7 +1699,7 @@ ZEND_API int zend_std_cast_object_tostring(zval *readobj, zval *writeobj, int ty
 			return SUCCESS;
 		case IS_LONG:
 			ce = Z_OBJCE_P(readobj);
-			zend_error(E_NOTICE, "Object of class %s could not be converted to int", ZSTR_VAL(ce->name));
+			zend_error(E_NOTICE, "Objek dari kelas %s tidak bisa dikonversi ke int", ZSTR_VAL(ce->name));
 			if (readobj == writeobj) {
 				zval_dtor(readobj);
 			}
@@ -1707,7 +1707,7 @@ ZEND_API int zend_std_cast_object_tostring(zval *readobj, zval *writeobj, int ty
 			return SUCCESS;
 		case IS_DOUBLE:
 			ce = Z_OBJCE_P(readobj);
-			zend_error(E_NOTICE, "Object of class %s could not be converted to float", ZSTR_VAL(ce->name));
+			zend_error(E_NOTICE, "Objek dari kelas %s tidak bisa dikonversi ke float", ZSTR_VAL(ce->name));
 			if (readobj == writeobj) {
 				zval_dtor(readobj);
 			}

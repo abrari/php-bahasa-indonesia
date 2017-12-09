@@ -73,7 +73,7 @@ ZEND_API zval* zend_call_method(zval *object, zend_class_entry *obj_ce, zend_fun
 				function_table, function_name, function_name_len);
 			if (fcic.function_handler == NULL) {
 				/* error at c-level */
-				zend_error_noreturn(E_CORE_ERROR, "Couldn't find implementation for method %s%s%s", obj_ce ? ZSTR_VAL(obj_ce->name) : "", obj_ce ? "::" : "", function_name);
+				zend_error_noreturn(E_CORE_ERROR, "Tidak ditemukan implementasi untuk fungsi %s%s%s", obj_ce ? ZSTR_VAL(obj_ce->name) : "", obj_ce ? "::" : "", function_name);
 			}
 			if (fn_proxy) {
 				*fn_proxy = fcic.function_handler;
@@ -105,7 +105,7 @@ ZEND_API zval* zend_call_method(zval *object, zend_class_entry *obj_ce, zend_fun
 			obj_ce = object ? Z_OBJCE_P(object) : NULL;
 		}
 		if (!EG(exception)) {
-			zend_error_noreturn(E_CORE_ERROR, "Couldn't execute method %s%s%s", obj_ce ? ZSTR_VAL(obj_ce->name) : "", obj_ce ? "::" : "", function_name);
+			zend_error_noreturn(E_CORE_ERROR, "Tidak bisa mengeksekusi fungsi %s%s%s", obj_ce ? ZSTR_VAL(obj_ce->name) : "", obj_ce ? "::" : "", function_name);
 		}
 	}
 	if (!retval_ptr) {
@@ -194,7 +194,7 @@ ZEND_API void zend_user_it_get_current_key(zend_object_iterator *_iter, zval *ke
 		ZVAL_ZVAL(key, &retval, 1, 1);
 	} else {
 		if (!EG(exception)) {
-			zend_error(E_WARNING, "Nothing returned from %s::key()", ZSTR_VAL(iter->ce->name));
+			zend_error(E_WARNING, "Tidak ada yang dikembalikan dari %s::key()", ZSTR_VAL(iter->ce->name));
 		}
 
 		ZVAL_LONG(key, 0);
@@ -240,7 +240,7 @@ static zend_object_iterator *zend_user_it_get_iterator(zend_class_entry *ce, zva
 	zend_user_iterator *iterator;
 
 	if (by_ref) {
-		zend_throw_error(NULL, "An iterator cannot be used with foreach by reference");
+		zend_throw_error(NULL, "Iterator tidak bisa digunakan dengan untuksetiap by reference");
 		return NULL;
 	}
 
@@ -268,7 +268,7 @@ ZEND_API zend_object_iterator *zend_user_it_get_new_iterator(zend_class_entry *c
 
 	if (!ce_it || !ce_it->get_iterator || (ce_it->get_iterator == zend_user_it_get_new_iterator && Z_OBJ(iterator) == Z_OBJ_P(object))) {
 		if (!EG(exception)) {
-			zend_throw_exception_ex(NULL, 0, "Objects returned by %s::getIterator() must be traversable or implement interface Iterator", ce ? ZSTR_VAL(ce->name) : ZSTR_VAL(Z_OBJCE_P(object)->name));
+			zend_throw_exception_ex(NULL, 0, "Objek hasil %s::getIterator() harus mengimplementasi Iterator", ce ? ZSTR_VAL(ce->name) : ZSTR_VAL(Z_OBJCE_P(object)->name));
 		}
 		zval_ptr_dtor(&iterator);
 		return NULL;
@@ -294,7 +294,7 @@ static int zend_implement_traversable(zend_class_entry *interface, zend_class_en
 			return SUCCESS;
 		}
 	}
-	zend_error_noreturn(E_CORE_ERROR, "Class %s must implement interface %s as part of either %s or %s",
+	zend_error_noreturn(E_CORE_ERROR, "Kelas %s harus mengimplementasi %s sebagai bagian dari %s atau %s",
 		ZSTR_VAL(class_type->name),
 		ZSTR_VAL(zend_ce_traversable->name),
 		ZSTR_VAL(zend_ce_iterator->name),
@@ -318,7 +318,7 @@ static int zend_implement_aggregate(zend_class_entry *interface, zend_class_entr
 			if (class_type->num_interfaces) {
 				for (i = 0; i < class_type->num_interfaces; i++) {
 					if (class_type->interfaces[i] == zend_ce_iterator) {
-						zend_error_noreturn(E_ERROR, "Class %s cannot implement both %s and %s at the same time",
+						zend_error_noreturn(E_ERROR, "Kelas %s tidak bisa mengimplementasi %s dan %s sekaligus",
 									ZSTR_VAL(class_type->name),
 									ZSTR_VAL(interface->name),
 									ZSTR_VAL(zend_ce_iterator->name));
@@ -350,7 +350,7 @@ static int zend_implement_iterator(zend_class_entry *interface, zend_class_entry
 		} else {
 			/* c-level get_iterator cannot be changed */
 			if (class_type->get_iterator == zend_user_it_get_new_iterator) {
-				zend_error_noreturn(E_ERROR, "Class %s cannot implement both %s and %s at the same time",
+				zend_error_noreturn(E_ERROR, "Kelas %s tidak bisa mengimplementasi %s dan %s sekaligus",
 							ZSTR_VAL(class_type->name),
 							ZSTR_VAL(interface->name),
 							ZSTR_VAL(zend_ce_aggregate->name));
@@ -409,7 +409,7 @@ ZEND_API int zend_user_serialize(zval *object, unsigned char **buffer, size_t *b
 	}
 
 	if (result == FAILURE && !EG(exception)) {
-		zend_throw_exception_ex(NULL, 0, "%s::serialize() must return a string or NULL", ZSTR_VAL(ce->name));
+		zend_throw_exception_ex(NULL, 0, "%s::serialize() harus mengembalikan string atau NULL", ZSTR_VAL(ce->name));
 	}
 	return result;
 }
@@ -441,14 +441,14 @@ ZEND_API int zend_user_unserialize(zval *object, zend_class_entry *ce, const uns
 ZEND_API int zend_class_serialize_deny(zval *object, unsigned char **buffer, size_t *buf_len, zend_serialize_data *data) /* {{{ */
 {
 	zend_class_entry *ce = Z_OBJCE_P(object);
-	zend_throw_exception_ex(NULL, 0, "Serialization of '%s' is not allowed", ZSTR_VAL(ce->name));
+	zend_throw_exception_ex(NULL, 0, "Serialization dari '%s' tidak dibenarkan", ZSTR_VAL(ce->name));
 	return FAILURE;
 }
 /* }}} */
 
 ZEND_API int zend_class_unserialize_deny(zval *object, zend_class_entry *ce, const unsigned char *buf, size_t buf_len, zend_unserialize_data *data) /* {{{ */
 {
-	zend_throw_exception_ex(NULL, 0, "Unserialization of '%s' is not allowed", ZSTR_VAL(ce->name));
+	zend_throw_exception_ex(NULL, 0, "Unserialization dari '%s' tidak dibenarkan", ZSTR_VAL(ce->name));
 	return FAILURE;
 }
 /* }}} */

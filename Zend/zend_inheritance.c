@@ -141,7 +141,7 @@ static void do_inherit_parent_constructor(zend_class_entry *ce) /* {{{ */
 
 	if (ce->constructor) {
 		if (ce->parent->constructor && UNEXPECTED(ce->parent->constructor->common.fn_flags & ZEND_ACC_FINAL)) {
-			zend_error_noreturn(E_ERROR, "Cannot override final %s::%s() with %s::%s()",
+			zend_error_noreturn(E_ERROR, "Tidak bisa menimpa %s::%s() dengan %s::%s() karena final",
 				ZSTR_VAL(ce->parent->name), ZSTR_VAL(ce->parent->constructor->common.function_name),
 				ZSTR_VAL(ce->name), ZSTR_VAL(ce->constructor->common.function_name));
 		}
@@ -155,13 +155,13 @@ static void do_inherit_parent_constructor(zend_class_entry *ce) /* {{{ */
 char *zend_visibility_string(uint32_t fn_flags) /* {{{ */
 {
 	if (fn_flags & ZEND_ACC_PRIVATE) {
-		return "private";
+		return "privat";
 	}
 	if (fn_flags & ZEND_ACC_PROTECTED) {
-		return "protected";
+		return "terproteksi";
 	}
 	if (fn_flags & ZEND_ACC_PUBLIC) {
-		return "public";
+		return "publik";
 	}
 	return "";
 }
@@ -556,7 +556,7 @@ static void do_inheritance_check_on_method(zend_function *child, zend_function *
 	uint32_t parent_flags = parent->common.fn_flags;
 
 	if (UNEXPECTED(parent_flags & ZEND_ACC_FINAL)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot override final method %s::%s()", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name));
+		zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa menimpa fungsi yang final %s::%s()", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name));
 	}
 
 	child_flags	= child->common.fn_flags;
@@ -564,21 +564,21 @@ static void do_inheritance_check_on_method(zend_function *child, zend_function *
 	 */
 	if (UNEXPECTED((child_flags & ZEND_ACC_STATIC) != (parent_flags & ZEND_ACC_STATIC))) {
 		if (child->common.fn_flags & ZEND_ACC_STATIC) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot make non static method %s::%s() static in class %s", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name), ZEND_FN_SCOPE_NAME(child));
+			zend_error_noreturn(E_COMPILE_ERROR, "Fungsi non statis %s::%s() tidak bisa dibuat statis pada kelas %s", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name), ZEND_FN_SCOPE_NAME(child));
 		} else {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot make static method %s::%s() non static in class %s", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name), ZEND_FN_SCOPE_NAME(child));
+			zend_error_noreturn(E_COMPILE_ERROR, "Fungsi statis %s::%s() tidak bisa dibuat non statis pada kelas %s", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name), ZEND_FN_SCOPE_NAME(child));
 		}
 	}
 
 	/* Disallow making an inherited method abstract. */
 	if (UNEXPECTED((child_flags & ZEND_ACC_ABSTRACT) > (parent_flags & ZEND_ACC_ABSTRACT))) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Cannot make non abstract method %s::%s() abstract in class %s", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name), ZEND_FN_SCOPE_NAME(child));
+		zend_error_noreturn(E_COMPILE_ERROR, "Fungsi non abstrak %s::%s() tidak bisa dibuat abstrak pada kelas %s", ZEND_FN_SCOPE_NAME(parent), ZSTR_VAL(child->common.function_name), ZEND_FN_SCOPE_NAME(child));
 	}
 
 	/* Prevent derived classes from restricting access that was available in parent classes (except deriving from non-abstract ctors) */
 	if (UNEXPECTED((!(child_flags & ZEND_ACC_CTOR) || (parent_flags & (ZEND_ACC_ABSTRACT | ZEND_ACC_IMPLEMENTED_ABSTRACT))) &&
 		(child_flags & ZEND_ACC_PPP_MASK) > (parent_flags & ZEND_ACC_PPP_MASK))) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Access level to %s::%s() must be %s (as in class %s)%s", ZEND_FN_SCOPE_NAME(child), ZSTR_VAL(child->common.function_name), zend_visibility_string(parent_flags), ZEND_FN_SCOPE_NAME(parent), (parent_flags&ZEND_ACC_PUBLIC) ? "" : " or weaker");
+		zend_error_noreturn(E_COMPILE_ERROR, "Modifier %s::%s() harus %s (seperti pada kelas %s)%s", ZEND_FN_SCOPE_NAME(child), ZSTR_VAL(child->common.function_name), zend_visibility_string(parent_flags), ZEND_FN_SCOPE_NAME(parent), (parent_flags&ZEND_ACC_PUBLIC) ? "" : " atau lebih rendah");
 	}
 
 	if (((child_flags & ZEND_ACC_PPP_MASK) < (parent_flags & ZEND_ACC_PPP_MASK))
@@ -613,18 +613,18 @@ static void do_inheritance_check_on_method(zend_function *child, zend_function *
 			child->common.prototype->common.fn_flags & ZEND_ACC_ABSTRACT
 		)) {
 			error_level = E_COMPILE_ERROR;
-			error_verb = "must";
+			error_verb = "harus";
 		} else if ((parent->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) &&
                    (!(child->common.fn_flags & ZEND_ACC_HAS_RETURN_TYPE) ||
 		            !zend_do_perform_type_hint_check(child, child->common.arg_info - 1, parent, parent->common.arg_info - 1) ||
 		            (ZEND_TYPE_ALLOW_NULL(child->common.arg_info[-1].type) && !ZEND_TYPE_ALLOW_NULL(parent->common.arg_info[-1].type)))) {
 			error_level = E_COMPILE_ERROR;
-			error_verb = "must";
+			error_verb = "harus";
 		} else {
 			error_level = E_WARNING;
-			error_verb = "should";
+			error_verb = "seharusnya";
 		}
-		zend_error(error_level, "Declaration of %s %s be compatible with %s", ZSTR_VAL(child_prototype), error_verb, ZSTR_VAL(method_prototype));
+		zend_error(error_level, "Deklarasi %s %s kompatibel dengan %s", ZSTR_VAL(child_prototype), error_verb, ZSTR_VAL(method_prototype));
 		zend_string_free(child_prototype);
 		zend_string_free(method_prototype);
 	}
@@ -672,9 +672,9 @@ static void do_inherit_property(zend_property_info *parent_info, zend_string *ke
 			child_info->flags |= ZEND_ACC_CHANGED;
 		} else {
 			if (UNEXPECTED((parent_info->flags & ZEND_ACC_STATIC) != (child_info->flags & ZEND_ACC_STATIC))) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Cannot redeclare %s%s::$%s as %s%s::$%s",
-					(parent_info->flags & ZEND_ACC_STATIC) ? "static " : "non static ", ZSTR_VAL(ce->parent->name), ZSTR_VAL(key),
-					(child_info->flags & ZEND_ACC_STATIC) ? "static " : "non static ", ZSTR_VAL(ce->name), ZSTR_VAL(key));
+				zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa deklarasi ulang %s%s::$%s sebagai %s%s::$%s",
+					(parent_info->flags & ZEND_ACC_STATIC) ? "statis " : "non statis ", ZSTR_VAL(ce->parent->name), ZSTR_VAL(key),
+					(child_info->flags & ZEND_ACC_STATIC) ? "statis " : "non statis ", ZSTR_VAL(ce->name), ZSTR_VAL(key));
 			}
 
 			if (parent_info->flags & ZEND_ACC_CHANGED) {
@@ -682,7 +682,7 @@ static void do_inherit_property(zend_property_info *parent_info, zend_string *ke
 			}
 
 			if (UNEXPECTED((child_info->flags & ZEND_ACC_PPP_MASK) > (parent_info->flags & ZEND_ACC_PPP_MASK))) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Access level to %s::$%s must be %s (as in class %s)%s", ZSTR_VAL(ce->name), ZSTR_VAL(key), zend_visibility_string(parent_info->flags), ZSTR_VAL(ce->parent->name), (parent_info->flags&ZEND_ACC_PUBLIC) ? "" : " or weaker");
+				zend_error_noreturn(E_COMPILE_ERROR, "Modifier %s::%s() harus %s (seperti pada kelas %s)%s", ZSTR_VAL(ce->name), ZSTR_VAL(key), zend_visibility_string(parent_info->flags), ZSTR_VAL(ce->parent->name), (parent_info->flags&ZEND_ACC_PUBLIC) ? "" : " atau lebih rendah");
 			} else if ((child_info->flags & ZEND_ACC_STATIC) == 0) {
 				int parent_num = OBJ_PROP_TO_NUM(parent_info->offset);
 				int child_num = OBJ_PROP_TO_NUM(child_info->offset);
@@ -718,10 +718,10 @@ static void do_inherit_property(zend_property_info *parent_info, zend_string *ke
 static inline void do_implement_interface(zend_class_entry *ce, zend_class_entry *iface) /* {{{ */
 {
 	if (!(ce->ce_flags & ZEND_ACC_INTERFACE) && iface->interface_gets_implemented && iface->interface_gets_implemented(iface, ce) == FAILURE) {
-		zend_error_noreturn(E_CORE_ERROR, "Class %s could not implement interface %s", ZSTR_VAL(ce->name), ZSTR_VAL(iface->name));
+		zend_error_noreturn(E_CORE_ERROR, "Kelas %s tidak bisa mengimplementasi interface %s", ZSTR_VAL(ce->name), ZSTR_VAL(iface->name));
 	}
 	if (UNEXPECTED(ce == iface)) {
-		zend_error_noreturn(E_ERROR, "Interface %s cannot implement itself", ZSTR_VAL(ce->name));
+		zend_error_noreturn(E_ERROR, "Interface %s tidak bisa mengimplementasi dirinya sendiri", ZSTR_VAL(ce->name));
 	}
 }
 /* }}} */
@@ -771,8 +771,8 @@ static void do_inherit_class_constant(zend_string *name, zend_class_constant *pa
 	if (zv != NULL) {
 		c = (zend_class_constant*)Z_PTR_P(zv);
 		if (UNEXPECTED((Z_ACCESS_FLAGS(c->value) & ZEND_ACC_PPP_MASK) > (Z_ACCESS_FLAGS(parent_const->value) & ZEND_ACC_PPP_MASK))) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Access level to %s::%s must be %s (as in class %s)%s",
-				ZSTR_VAL(ce->name), ZSTR_VAL(name), zend_visibility_string(Z_ACCESS_FLAGS(parent_const->value)), ZSTR_VAL(ce->parent->name), (Z_ACCESS_FLAGS(parent_const->value) & ZEND_ACC_PUBLIC) ? "" : " or weaker");
+			zend_error_noreturn(E_COMPILE_ERROR, "Modifier %s::%s() harus %s (seperti pada kelas %s)%s",
+				ZSTR_VAL(ce->name), ZSTR_VAL(name), zend_visibility_string(Z_ACCESS_FLAGS(parent_const->value)), ZSTR_VAL(ce->parent->name), (Z_ACCESS_FLAGS(parent_const->value) & ZEND_ACC_PUBLIC) ? "" : " atau lebih rendah");
 		}
 	} else if (!(Z_ACCESS_FLAGS(parent_const->value) & ZEND_ACC_PRIVATE)) {
 		if (Z_TYPE(parent_const->value) == IS_CONSTANT_AST) {
@@ -797,19 +797,19 @@ ZEND_API void zend_do_inheritance(zend_class_entry *ce, zend_class_entry *parent
 	if (UNEXPECTED(ce->ce_flags & ZEND_ACC_INTERFACE)) {
 		/* Interface can only inherit other interfaces */
 		if (UNEXPECTED(!(parent_ce->ce_flags & ZEND_ACC_INTERFACE))) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Interface %s may not inherit from class (%s)", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Interface %s tidak bisa turunan dari kelas (%s)", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
 		}
 	} else if (UNEXPECTED(parent_ce->ce_flags & (ZEND_ACC_INTERFACE|ZEND_ACC_TRAIT|ZEND_ACC_FINAL))) {
 		/* Class declaration must not extend traits or interfaces */
 		if (parent_ce->ce_flags & ZEND_ACC_INTERFACE) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Class %s cannot extend from interface %s", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Kelas %s tidak bisa mewarisi interface %s", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
 		} else if (parent_ce->ce_flags & ZEND_ACC_TRAIT) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Class %s cannot extend from trait %s", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Kelas %s tidak bisa mewarisi sifat %s", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
 		}
 
 		/* Class must not extend a final class */
 		if (parent_ce->ce_flags & ZEND_ACC_FINAL) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Class %s may not inherit from final class (%s)", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Kelas %s tidak bisa turunan dari kelas final (%s)", ZSTR_VAL(ce->name), ZSTR_VAL(parent_ce->name));
 		}
 	}
 
@@ -998,7 +998,7 @@ static zend_bool do_inherit_constant_check(HashTable *child_constants_table, zen
 	if (zv != NULL) {
 		old_constant = (zend_class_constant*)Z_PTR_P(zv);
 		if (old_constant->ce != parent_constant->ce) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Cannot inherit previously-inherited or override constant %s from interface %s", ZSTR_VAL(name), ZSTR_VAL(iface->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "Tidak bisa mewarisi konstanta %s dari interface %s", ZSTR_VAL(name), ZSTR_VAL(iface->name));
 		}
 		return 0;
 	}
@@ -1040,7 +1040,7 @@ ZEND_API void zend_do_implement_interface(zend_class_entry *ce, zend_class_entry
 			if (EXPECTED(i < parent_iface_num)) {
 				ignore = 1;
 			} else {
-				zend_error_noreturn(E_COMPILE_ERROR, "Class %s cannot implement previously implemented interface %s", ZSTR_VAL(ce->name), ZSTR_VAL(iface->name));
+				zend_error_noreturn(E_COMPILE_ERROR, "Kelas %s tidak bisa mengimplementasi interface yang sudah terimplementasi: %s", ZSTR_VAL(ce->name), ZSTR_VAL(iface->name));
 			}
 		}
 	}
@@ -1123,7 +1123,7 @@ static void zend_add_magic_methods(zend_class_entry* ce, zend_string* mname, zen
 		ce->clone = fe;
 	} else if (zend_string_equals_literal(mname, ZEND_CONSTRUCTOR_FUNC_NAME) || zend_string_equals_literal(mname, ZEND_KONSTRUKTOR_FUNC_NAME)) {
 		if (ce->constructor && (!ce->parent || ce->constructor != ce->parent->constructor)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "%s has colliding constructor definitions coming from traits", ZSTR_VAL(ce->name));
+			zend_error_noreturn(E_COMPILE_ERROR, "%s bentrok definisi konstruktor dengan sifat (trait)", ZSTR_VAL(ce->name));
 		}
 		ce->constructor = fe; fe->common.fn_flags |= ZEND_ACC_CTOR;
 	} else if (zend_string_equals_literal(mname, ZEND_DESTRUCTOR_FUNC_NAME)) {
@@ -1153,7 +1153,7 @@ static void zend_add_magic_methods(zend_class_entry* ce, zend_string* mname, zen
 		lowercase_name = zend_new_interned_string(lowercase_name);
 		if (!memcmp(ZSTR_VAL(mname), ZSTR_VAL(lowercase_name), ZSTR_LEN(mname))) {
 			if (ce->constructor  && (!ce->parent || ce->constructor != ce->parent->constructor)) {
-				zend_error_noreturn(E_COMPILE_ERROR, "%s has colliding constructor definitions coming from traits", ZSTR_VAL(ce->name));
+				zend_error_noreturn(E_COMPILE_ERROR, "%s bentrok definisi konstruktor dengan sifat (trait)", ZSTR_VAL(ce->name));
 			}
 			ce->constructor = fe;
 			fe->common.fn_flags |= ZEND_ACC_CTOR;
@@ -1182,7 +1182,7 @@ static void zend_add_trait_method(zend_class_entry *ce, const char *name, zend_s
 					if (existing_fn->common.fn_flags & ZEND_ACC_ABSTRACT) {
 						/* Make sure the trait method is compatible with previosly declared abstract method */
 						if (UNEXPECTED(!zend_traits_method_compatibility_check(fn, existing_fn))) {
-							zend_error_noreturn(E_COMPILE_ERROR, "Declaration of %s must be compatible with %s",
+							zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi %s harus kompatibel dengan %s",
 								ZSTR_VAL(zend_get_function_declaration(fn)),
 								ZSTR_VAL(zend_get_function_declaration(existing_fn)));
 						}
@@ -1190,7 +1190,7 @@ static void zend_add_trait_method(zend_class_entry *ce, const char *name, zend_s
 					if (fn->common.fn_flags & ZEND_ACC_ABSTRACT) {
 						/* Make sure the abstract declaration is compatible with previous declaration */
 						if (UNEXPECTED(!zend_traits_method_compatibility_check(existing_fn, fn))) {
-							zend_error_noreturn(E_COMPILE_ERROR, "Declaration of %s must be compatible with %s",
+							zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi %s harus kompatibel dengan %s",
 								ZSTR_VAL(zend_get_function_declaration(existing_fn)),
 								ZSTR_VAL(zend_get_function_declaration(fn)));
 						}
@@ -1207,14 +1207,14 @@ static void zend_add_trait_method(zend_class_entry *ce, const char *name, zend_s
 				(existing_fn->common.scope->ce_flags & ZEND_ACC_INTERFACE) == 0) {
 			/* Make sure the trait method is compatible with previosly declared abstract method */
 			if (UNEXPECTED(!zend_traits_method_compatibility_check(fn, existing_fn))) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Declaration of %s must be compatible with %s",
+				zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi %s harus kompatibel dengan %s",
 					ZSTR_VAL(zend_get_function_declaration(fn)),
 					ZSTR_VAL(zend_get_function_declaration(existing_fn)));
 			}
 		} else if (fn->common.fn_flags & ZEND_ACC_ABSTRACT) {
 			/* Make sure the abstract declaration is compatible with previous declaration */
 			if (UNEXPECTED(!zend_traits_method_compatibility_check(existing_fn, fn))) {
-				zend_error_noreturn(E_COMPILE_ERROR, "Declaration of %s must be compatible with %s",
+				zend_error_noreturn(E_COMPILE_ERROR, "Deklarasi %s harus kompatibel dengan %s",
 					ZSTR_VAL(zend_get_function_declaration(existing_fn)),
 					ZSTR_VAL(zend_get_function_declaration(fn)));
 			}
@@ -1222,7 +1222,7 @@ static void zend_add_trait_method(zend_class_entry *ce, const char *name, zend_s
 		} else if (UNEXPECTED(existing_fn->common.scope->ce_flags & ZEND_ACC_TRAIT)) {
 			/* two traits can't define the same non-abstract method */
 #if 1
-			zend_error_noreturn(E_COMPILE_ERROR, "Trait method %s has not been applied, because there are collisions with other trait methods on %s",
+			zend_error_noreturn(E_COMPILE_ERROR, "Fungsi pada sifat %s tidak diambil karena bentrok dengan fungsi pada sifat %s",
 				name, ZSTR_VAL(ce->name));
 #else		/* TODO: better error message */
 			zend_error_noreturn(E_COMPILE_ERROR, "Trait method %s::%s has not been applied as %s::%s, because of collision with %s::%s",
@@ -1340,7 +1340,7 @@ static void zend_check_trait_usage(zend_class_entry *ce, zend_class_entry *trait
 	uint32_t i;
 
 	if (UNEXPECTED((trait->ce_flags & ZEND_ACC_TRAIT) != ZEND_ACC_TRAIT)) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Class %s is not a trait, Only traits may be used in 'as' and 'insteadof' statements", ZSTR_VAL(trait->name));
+		zend_error_noreturn(E_COMPILE_ERROR, "Kelas %s bukan suatu sifat", ZSTR_VAL(trait->name));
 	}
 
 	for (i = 0; i < ce->num_traits; i++) {
@@ -1348,7 +1348,7 @@ static void zend_check_trait_usage(zend_class_entry *ce, zend_class_entry *trait
 			return;
 		}
 	}
-	zend_error_noreturn(E_COMPILE_ERROR, "Required Trait %s wasn't added to %s", ZSTR_VAL(trait->name), ZSTR_VAL(ce->name));
+	zend_error_noreturn(E_COMPILE_ERROR, "Sifat yang diperlukan %s tidak ditambahkan ke kelas %s", ZSTR_VAL(trait->name), ZSTR_VAL(ce->name));
 }
 /* }}} */
 
@@ -1372,7 +1372,7 @@ static void zend_traits_init_trait_structures(zend_class_entry *ce) /* {{{ */
 				cur_method_ref = cur_precedence->trait_method;
 				if (!(cur_precedence->trait_method->ce = zend_fetch_class(cur_method_ref->class_name,
 								ZEND_FETCH_CLASS_TRAIT|ZEND_FETCH_CLASS_NO_AUTOLOAD))) {
-					zend_error_noreturn(E_COMPILE_ERROR, "Could not find trait %s", ZSTR_VAL(cur_method_ref->class_name));
+					zend_error_noreturn(E_COMPILE_ERROR, "Sifat tidak ditemukan: %s", ZSTR_VAL(cur_method_ref->class_name));
 				}
 				zend_check_trait_usage(ce, cur_precedence->trait_method->ce);
 
@@ -1383,7 +1383,7 @@ static void zend_traits_init_trait_structures(zend_class_entry *ce) /* {{{ */
 				zend_string_release(lcname);
 				if (!method_exists) {
 					zend_error_noreturn(E_COMPILE_ERROR,
-							   "A precedence rule was defined for %s::%s but this method does not exist",
+							   "Fungsi tidak ada: %s::%s",
 							   ZSTR_VAL(cur_method_ref->ce->name),
 							   ZSTR_VAL(cur_method_ref->method_name));
 				}
@@ -1399,7 +1399,7 @@ static void zend_traits_init_trait_structures(zend_class_entry *ce) /* {{{ */
 					zend_string* class_name = cur_precedence->exclude_from_classes[j].class_name;
 
 					if (!(cur_precedence->exclude_from_classes[j].ce = zend_fetch_class(class_name, ZEND_FETCH_CLASS_TRAIT |ZEND_FETCH_CLASS_NO_AUTOLOAD))) {
-						zend_error_noreturn(E_COMPILE_ERROR, "Could not find trait %s", ZSTR_VAL(class_name));
+						zend_error_noreturn(E_COMPILE_ERROR, "Sifat tidak ditemukan %s", ZSTR_VAL(class_name));
 					}
 					zend_check_trait_usage(ce, cur_precedence->exclude_from_classes[j].ce);
 
@@ -1430,7 +1430,7 @@ static void zend_traits_init_trait_structures(zend_class_entry *ce) /* {{{ */
 			if (ce->trait_aliases[i]->trait_method->class_name) {
 				cur_method_ref = ce->trait_aliases[i]->trait_method;
 				if (!(cur_method_ref->ce = zend_fetch_class(cur_method_ref->class_name, ZEND_FETCH_CLASS_TRAIT|ZEND_FETCH_CLASS_NO_AUTOLOAD))) {
-					zend_error_noreturn(E_COMPILE_ERROR, "Could not find trait %s", ZSTR_VAL(cur_method_ref->class_name));
+					zend_error_noreturn(E_COMPILE_ERROR, "Sifat tidak ditemukan %s", ZSTR_VAL(cur_method_ref->class_name));
 				}
 				zend_check_trait_usage(ce, cur_method_ref->ce);
 
@@ -1441,7 +1441,7 @@ static void zend_traits_init_trait_structures(zend_class_entry *ce) /* {{{ */
 				zend_string_release(lcname);
 
 				if (!method_exists) {
-					zend_error_noreturn(E_COMPILE_ERROR, "An alias was defined for %s::%s but this method does not exist", ZSTR_VAL(cur_method_ref->ce->name), ZSTR_VAL(cur_method_ref->method_name));
+					zend_error_noreturn(E_COMPILE_ERROR, "Fungsi tidak ada: %s::%s", ZSTR_VAL(cur_method_ref->ce->name), ZSTR_VAL(cur_method_ref->method_name));
 				}
 			}
 			i++;
@@ -1563,7 +1563,7 @@ static void zend_do_traits_property_binding(zend_class_entry *ce) /* {{{ */
 
 	/* In the following steps the properties are inserted into the property table
 	 * for that, a very strict approach is applied:
-	 * - check for compatibility, if not compatible with any property in class -> fatal
+	 * - check for compatibility, if not compatible with any property pada kelas -> fatal
 	 * - if compatible, then strict notice
 	 */
 	for (i = 0; i < ce->num_traits; i++) {
@@ -1754,7 +1754,7 @@ static zend_bool zend_has_deprecated_constructor(const zend_class_entry *ce) /* 
 void zend_check_deprecated_constructor(const zend_class_entry *ce) /* {{{ */
 {
 	if (zend_has_deprecated_constructor(ce)) {
-		zend_error(E_DEPRECATED, "Methods with the same name as their class will not be constructors in a future version of PHP; %s has a deprecated constructor", ZSTR_VAL(ce->name));
+		zend_error(E_DEPRECATED, "Fungsi dengan nama yang sama dengan nama kelas tidak lagi akan dianggap konstruktor; %s memiliki konstruktor yang deprecated", ZSTR_VAL(ce->name));
 	}
 }
 /* }}} */

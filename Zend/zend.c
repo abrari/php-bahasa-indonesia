@@ -1395,7 +1395,7 @@ ZEND_API ZEND_COLD void zend_throw_error(zend_class_entry *exception_ce, const c
 	
 	if (exception_ce) {
 		if (!instanceof_function(exception_ce, zend_ce_error)) {
-			zend_error(E_NOTICE, "Error exceptions must be derived from Error");
+			zend_error(E_NOTICE, "Error exception harus merupakan turunan dari Error");
 			exception_ce = zend_ce_error;
 		}
 	} else {
@@ -1569,7 +1569,7 @@ ZEND_API char *zend_make_compiled_string_description(const char *name) /* {{{ */
 		cur_filename = zend_get_executed_filename();
 		cur_lineno = zend_get_executed_lineno();
 	} else {
-		cur_filename = "Unknown";
+		cur_filename = "Tidak diketahui";
 		cur_lineno = 0;
 	}
 
