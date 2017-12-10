@@ -204,10 +204,10 @@ typedef struct php_cli_server_http_response_status_code_pair {
 } php_cli_server_http_response_status_code_pair;
 
 static php_cli_server_http_response_status_code_pair template_map[] = {
-	{ 400, "<h1>%s</h1><p>Your browser sent a request that this server could not understand.</p>" },
-	{ 404, "<h1>%s</h1><p>The requested resource <code class=\"url\">%s</code> was not found on this server.</p>" },
-	{ 500, "<h1>%s</h1><p>The server is temporarily unavailable.</p>" },
-	{ 501, "<h1>%s</h1><p>Request method not supported.</p>" }
+	{ 400, "<h1>%s</h1><p>Request dari browser tidak bisa dimengerti oleh server.</p>" },
+	{ 404, "<h1>%s</h1><p>File <code class=\"url\">%s</code> tidak ditemukan.</p>" },
+	{ 500, "<h1>%s</h1><p>Server sedang tidak bisa diakses.</p>" },
+	{ 501, "<h1>%s</h1><p>Request method tidak didukung.</p>" }
 };
 
 #if HAVE_UNISTD_H
@@ -1348,7 +1348,7 @@ static void php_cli_server_request_dtor(php_cli_server_request *req) /* {{{ */
 static void php_cli_server_request_translate_vpath(php_cli_server_request *request, const char *document_root, size_t document_root_len) /* {{{ */
 {
 	zend_stat_t sb;
-	static const char *index_files[] = { "index.php", "index.html", NULL };
+	static const char *index_files[] = { "index.phpid", "index.html", NULL };
 	char *buf = safe_pemalloc(1, request->vpath_len, 1 + document_root_len + 1 + sizeof("index.html"), 1);
 	char *p = buf, *prev_path = NULL, *q, *vpath;
 	size_t prev_path_len = 0;
@@ -2128,7 +2128,7 @@ static int php_cli_server_dispatch(php_cli_server *server, php_cli_server_client
 	int is_static_file  = 0;
 
 	SG(server_context) = client;
-	if (client->request.ext_len != 3 || memcmp(client->request.ext, "php", 3) || memcmp(client->request.ext, "phpid", 5) || !client->request.path_translated) {
+	if (client->request.ext_len != 5 || memcmp(client->request.ext, "phpid", 5) || !client->request.path_translated) {
 		is_static_file = 1;
 	}
 
