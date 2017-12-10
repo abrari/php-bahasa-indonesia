@@ -38,6 +38,17 @@ Untuk kompilasi di Windows, ikuti langkah-langkah pada [link berikut](https://gi
 ## Rilis versi Windows
 Rilis pertama versi Windows tersedia di halaman "Releases" repositori ini: https://github.com/abrari/php-bahasa-indonesia/releases/tag/phpid-0.1.
 
+## Menjalankan Built-in Web Server
+Web server internal bisa menjalankan file berekstensi `.phpid`. Untuk menjalankan web server internal, lakukan langkah-langkah berikut:
+1. Buka terminal atau command prompt (Windows).
+2. Masuk ke folder tempat `php` berada.
+3. Jalankan (sesuaikan port):
+    ```
+    php -S localhost:8080 -t <alamat folder tempat file-file .phpid berada>
+    ```
+4. Buka browser pada alamat `http://localhost:8080` (sesuaikan port).
+5. Jika langsung muncul "Not Found", perlu ada file `index.phpid` pada folder yang ditentukan di atas.
+
 ## Perbedaan dengan PHP
 Secara umum, beberapa hal yang berbeda dari PHP asli antara lain:
 
